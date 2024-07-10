@@ -41,7 +41,7 @@ keymap.set("n", "<C-S-k>", "<C-w>+")
 keymap.set("n", "<C-S-j>", "<C-w>-")
 
 -- Terminal
-keymap.set("n", "tm", ":tabnew | term<Return>")
+keymap.set("n", "tm", ":tabnew | term<Return>", opts)
 
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
@@ -59,3 +59,6 @@ keymap.set({ "n", "v" }, "mg", "<cmd>BookmarksGotoRecent<cr>", { desc = "Go to l
 
 -- Go implementation.
 keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" })
+
+-- Open LazyVim package manager
+keymap.set("n", "<Leader>pk", ":Lazy<Return>", opts)

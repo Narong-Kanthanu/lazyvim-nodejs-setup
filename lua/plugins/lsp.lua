@@ -131,6 +131,15 @@ return {
       "nvim-cmp",
       dependencies = { "hrsh7th/cmp-emoji" },
       opts = function(_, opts)
+        local cmp = require("cmp")
+        opts.mapping = cmp.mapping.preset.insert({
+          ["<C-j>"] = cmp.mapping.select_next_item(),
+          ["<C-k>"] = cmp.mapping.select_prev_item(),
+          ["<C-h>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-l>"] = cmp.mapping.scroll_docs(4),
+          ["<Tab>"] = cmp.mapping.confirm({ select = false }),
+        })
+        cmp.setup(opts)
         table.insert(opts.sources, { name = "emoji" })
       end,
     },

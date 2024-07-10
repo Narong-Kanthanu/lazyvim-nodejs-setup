@@ -231,11 +231,7 @@ return {
     end,
   },
   -- blankline
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    opts = {},
-  },
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
   -- rainbow delimiters
   {
     "HiPhish/rainbow-delimiters.nvim",

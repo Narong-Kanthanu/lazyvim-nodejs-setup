@@ -103,7 +103,16 @@ return {
         sorting_strategy = "ascending",
         winblend = 0,
         mappings = {
-          n = {},
+          i = {
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
+            ["<CR>"] = actions.select_default,
+          },
+          n = {
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
+            ["<CR>"] = actions.select_default,
+          },
         },
       })
       opts.pickers = {
