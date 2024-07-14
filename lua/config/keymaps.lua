@@ -11,12 +11,15 @@ keymap.set("n", "-", "<C-x>")
 keymap.set("n", "<C-a>", "gg<S-v>G") -- hold the Control and a to selecte all.
 
 -- Save file and quit
-keymap.set("n", "<Leader>w", ":update<Return>", opts)
-keymap.set("n", "<Leader>q", ":quit<Return>", opts)
-keymap.set("n", "<Leader>Q", ":qa<Return>", opts)
+keymap.set("n", "<Leader>ww", ":update<Return>", opts)
+keymap.set("n", "<Leader>qq", ":quit<Return>", opts)
+keymap.set("n", "<Leader>QQ", ":qa<Return>", opts)
 
 -- File explorer with NvimTree
-keymap.set("n", "<Leader>f", ":NvimTreeFindFileToggle<Return>", opts)
+keymap.set("n", "<Leader>ff", ":NvimTreeFindFileToggle<Return>", opts)
+
+-- Open Mason LSP servers manager
+keymap.set("n", "<Leader>m", ":Mason<Return>", opts)
 
 -- Tabs
 keymap.set("n", "te", ":tabedit")
@@ -61,6 +64,3 @@ keymap.set({ "n", "v" }, "mg", "<cmd>BookmarksGotoRecent<cr>", { desc = "Go to l
 
 -- Go implementation.
 keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" })
-
--- Open Mason LSP servers manager
-keymap.set("n", "<Leader>M", ":Mason<Return>", opts)

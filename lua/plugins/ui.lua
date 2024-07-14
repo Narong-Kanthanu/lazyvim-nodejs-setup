@@ -20,7 +20,22 @@ return {
       sections = {
         lualine_a = { "mode" },
         lualine_b = { "branch" },
-        lualine_c = {},
+        lualine_c = {
+          {
+            "diagnostics",
+            sources = { "nvim_diagnostic", "coc" },
+            sections = { "error", "warn", "info", "hint" },
+            diagnostics_color = {
+              error = "DiagnosticError",
+              warn = "DiagnosticWarn",
+              info = "DiagnosticInfo",
+              hint = "DiagnosticHint",
+            },
+            colored = false,
+            update_in_insert = false,
+            always_visible = false,
+          },
+        },
         lualine_x = {
           { "filetype", colored = true, icon_only = false },
         },
