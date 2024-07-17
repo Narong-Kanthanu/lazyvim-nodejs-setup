@@ -12,7 +12,6 @@ return {
           single_file_support = false,
           settings = {
             typescript = {
-              getInlayHints = false,
               inlayHints = {
                 includeInlayParameterNameHints = "literal",
                 includeInlayParameterNameHintsWhenArgumentMatchesName = false,
@@ -38,7 +37,6 @@ return {
         },
         html = {},
         lua_ls = {
-          -- enabled = false,
           single_file_support = true,
           settings = {
             Lua = {

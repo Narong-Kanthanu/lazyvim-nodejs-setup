@@ -188,6 +188,7 @@ return {
   -- bookmarks
   {
     "LintaoAmons/bookmarks.nvim",
+    tag = "v0.5.4",
     dependencies = {
       { "nvim-telescope/telescope.nvim" },
       { "stevearc/dressing.nvim" },

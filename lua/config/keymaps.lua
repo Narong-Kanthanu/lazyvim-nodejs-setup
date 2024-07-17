@@ -23,8 +23,6 @@ keymap.set("n", "<Leader>m", ":Mason<Return>", opts)
 
 -- Tabs
 keymap.set("n", "te", ":tabedit")
-keymap.set("n", "<tab>", ":tabnext<Return>", opts)
-keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 keymap.set("n", "tw", ":tabclose<Return>", opts)
 
 -- Split window
@@ -55,12 +53,22 @@ end, opts)
 keymap.set("n", "<C-k>", function()
   vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR, wrap = true })
 end, opts)
+keymap.set("n", "<Leader>td", ":Telescope diagnostics<Return>", opts)
 
 -- Bookmarks
-keymap.set({ "n", "v" }, "mm", "<cmd>BookmarksMark<cr>", { desc = "Mark current line into active BookmarkList." })
-keymap.set({ "n", "v" }, "mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to bookmark at current active BookmarkList" })
-keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
-keymap.set({ "n", "v" }, "mg", "<cmd>BookmarksGotoRecent<cr>", { desc = "Go to latest visited/created Bookmark" })
+opts.desc = "Mark current line into active BookmarkList."
+keymap.set({ "n", "v" }, "mm", ":BookmarksMark<Return>", opts)
+opts.desc = "Go to bookmark at current active BookmarkList."
+keymap.set({ "n", "v" }, "mo", ":BookmarksGoto<Return>", opts)
+opts.desc = "Find and trigger a bookmark command."
+keymap.set({ "n", "v" }, "ma", ":BookmarksCommands<Return>", opts)
+opts.desc = "Go to latest visited/created Bookmark"
+keymap.set({ "n", "v" }, "mg", ":BookmarksGotoRecent<Return>", opts)
 
 -- Go implementation.
 keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" })
+
+-- Git
+keymap.set("n", "<Leader>gh", ":Gitsigns preview_hunk<Return>", opts)
+keymap.set("n", "<Leader>gt", ":Gitsigns toggle_current_line_blame<Return>", opts)
+keymap.set("n", "<Leader>gb", ":Git blame<Return>", opts)
