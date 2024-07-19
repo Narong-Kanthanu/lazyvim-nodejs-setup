@@ -148,6 +148,9 @@ return {
   -- explorer
   {
     "nvim-tree/nvim-tree.lua",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
     config = function()
       require("nvim-tree").setup({
         open_on_tab = true,
@@ -191,17 +194,59 @@ return {
         renderer = {
           group_empty = true,
           root_folder_modifier = ":t",
+          root_folder_label = false,
           icons = {
             padding = "  ",
+            webdev_colors = false,
             show = {
               file = true,
               folder = true,
               folder_arrow = true,
+              git = true,
+              modified = true,
+              diagnostics = true,
+              bookmarks = true,
+            },
+            web_devicons = {
+              file = {
+                enable = true,
+                color = true,
+              },
+              folder = {
+                enable = true,
+                color = true,
+              },
+            },
+            glyphs = {
+              default = "",
+              symlink = "",
+              bookmark = "󰆤",
+              modified = "●",
+              folder = {
+                arrow_closed = "",
+                arrow_open = "",
+                default = "",
+                open = "",
+                empty = "",
+                empty_open = "",
+                symlink = "",
+                symlink_open = "",
+              },
+              git = {
+                unstaged = "✗",
+                staged = "✓",
+                unmerged = "",
+                renamed = "➜",
+                untracked = "★",
+                deleted = "",
+                ignored = "◌",
+              },
             },
           },
           indent_markers = {
             enable = true,
           },
+          special_files = { "README.md", "readme.md" },
         },
         filters = {
           dotfiles = true,

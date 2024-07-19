@@ -1,5 +1,6 @@
 vim.g.mapleader = " "
 vim.g.autoformat = true
+
 vim.scriptencoding = "utf-8"
 
 local opt = vim.opt
