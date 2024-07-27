@@ -342,6 +342,12 @@ return {
           javascript = "rainbow-parens",
           typescript = "rainbow-parens",
         },
+        priority = {
+          [""] = 100,
+          lua = 120,
+          javascript = 120,
+          typescript = 120,
+        },
         highlight = scope_highlight,
       }
       require("ibl").setup({

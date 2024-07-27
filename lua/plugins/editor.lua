@@ -45,7 +45,7 @@ return {
         desc = "Lists open buffers",
       },
       {
-        ";;",
+        ";;", -- resume previous command
         function()
           local builtin = require("telescope.builtin")
           builtin.resume()
@@ -188,14 +188,29 @@ return {
   -- bookmarks
   {
     "LintaoAmons/bookmarks.nvim",
-    tag = "v0.5.4",
     dependencies = {
       { "nvim-telescope/telescope.nvim" },
       { "stevearc/dressing.nvim" },
       config = function()
         require("bookmarks").setup({
+          json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
           signs = {
-            mark = { icon = "", color = "grey" },
+            mark = { icon = "", color = "#98C379" },
+          },
+          hooks = {
+            {
+              callback = function(bookmark, projects)
+                local project_path
+                for _, p in ipairs(projects) do
+                  if p.name == bookmark.location.project_name then
+                    project_path = p.path
+                  end
+                  if project_path then
+                    vim.cmd("cd " .. project_path)
+                  end
+                end
+              end,
+            },
           },
         })
       end,
