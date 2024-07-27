@@ -21,10 +21,7 @@ return {
         ";f", -- find in folder
         function()
           local builtin = require("telescope.builtin")
-          builtin.find_files({
-            no_ignore = false,
-            hidden = true,
-          })
+          builtin.find_files()
         end,
         desc = "Lists files in your current working directory, respects .gitignore",
       },
@@ -56,7 +53,7 @@ return {
         ";e",
         function()
           local builtin = require("telescope.builtin")
-          builtin.diagnostics({ bufnr = 0 })
+          builtin.diagnostics()
         end,
         desc = "Lists Diagnostics for all open buffers or a specific buffer at current buffer",
       },
@@ -103,21 +100,49 @@ return {
         sorting_strategy = "ascending",
         winblend = 0,
         mappings = {
-          i = {
+          ["i"] = {
             ["<C-j>"] = actions.move_selection_next,
             ["<C-k>"] = actions.move_selection_previous,
+            ["<C-t>"] = actions.select_tab,
+            ["<C-v"] = actions.select_vertical,
+            ["<C-s>"] = actions.select_horizontal,
             ["<CR>"] = actions.select_default,
           },
-          n = {
-            ["<C-j>"] = actions.move_selection_next,
-            ["<C-k>"] = actions.move_selection_previous,
+          ["v"] = {},
+          ["n"] = {
+            ["j"] = actions.move_selection_next,
+            ["k"] = actions.move_selection_previous,
+            ["t"] = actions.select_tab,
+            ["sv"] = actions.select_vertical,
+            ["ss"] = actions.select_horizontal,
             ["<CR>"] = actions.select_default,
           },
         },
       })
       opts.pickers = {
+        find_files = {
+          no_ignore = false,
+          hidden = true,
+          theme = "dropdown",
+          previewer = false,
+          layout_config = { height = 40 },
+        },
+        buffers = {
+          only_cwd = true,
+          show_all_buffers = false,
+          mappings = {
+            ["i"] = {
+              ["<C-d>"] = actions.delete_buffer,
+            },
+            ["v"] = {},
+            ["n"] = {
+              ["d"] = actions.delete_buffer,
+            },
+          },
+        },
         diagnostics = {
-          theme = "ivy",
+          tbufnr = 0,
+          heme = "ivy",
           initial_mode = "normal",
           layout_config = {
             preview_cutoff = 9999,
@@ -130,17 +155,17 @@ return {
           -- disables netrw and use telescope-file-browser in its place
           hijack_netrw = true,
           mappings = {
-            -- your custom insert mode mappings
+            ["i"] = {},
+            ["v"] = {},
             ["n"] = {
-              -- your custom normal mode mappings
               ["N"] = fb_actions.create,
               ["h"] = fb_actions.goto_parent_dir,
-              ["<C-u>"] = function(prompt_bufnr)
+              ["<C-k>"] = function(prompt_bufnr)
                 for _ = 1, 10 do
                   actions.move_selection_previous(prompt_bufnr)
                 end
               end,
-              ["<C-d>"] = function(prompt_bufnr)
+              ["<C-j>"] = function(prompt_bufnr)
                 for _ = 1, 10 do
                   actions.move_selection_next(prompt_bufnr)
                 end
