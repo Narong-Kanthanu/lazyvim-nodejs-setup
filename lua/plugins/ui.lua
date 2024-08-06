@@ -78,7 +78,6 @@ return {
         view = "notify_send",
         opts = { stop = false },
       })
-
       opts.commands = {
         all = {
           -- options for the message history that you get with `:Noice`
@@ -87,7 +86,6 @@ return {
           filter = {},
         },
       }
-
       opts.presets.lsp_doc_border = true
     end,
   },
@@ -162,7 +160,6 @@ return {
         respect_buf_cwd = true,
         on_attach = function(bufnr)
           local api = require("nvim-tree.api")
-
           local function opts(desc)
             return {
               desc = "nvim-tree: " .. desc,
@@ -339,14 +336,14 @@ return {
         query = {
           [""] = "rainbow-delimiters",
           lua = "rainbow-blocks",
-          javascript = "rainbow-parens",
-          typescript = "rainbow-parens",
+          javascript = "rainbow-blocks",
+          typescript = "rainbow-blocks",
         },
         priority = {
           [""] = 100,
-          lua = 120,
-          javascript = 120,
-          typescript = 120,
+          lua = 210,
+          javascript = 210,
+          typescript = 210,
         },
         highlight = scope_highlight,
       }
