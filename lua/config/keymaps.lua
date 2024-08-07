@@ -19,7 +19,7 @@ keymap.set("n", "<Leader>ff", ":NvimTreeFindFileToggle<Return>", opts)
 
 -- Tabs
 keymap.set("n", "ta", ":tabedit ")
-keymap.set("n", "te", ":tabedit<Return>")
+keymap.set("n", "te", ":tabedit<Return>", opts)
 keymap.set("n", "tw", ":tabclose<Return>", opts)
 
 -- Split window
