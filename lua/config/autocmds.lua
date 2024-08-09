@@ -17,3 +17,6 @@ function DiagnosticsConfig()
   })
 end
 vim.cmd("autocmd BufRead *.ts,*.sh,*.json,*.yml,*.lua lua DiagnosticsConfig()")
+
+-- Load border bg color for nvim-cmp
+vim.cmd("highlight! BorderBG guibg=#2A2A2A")
