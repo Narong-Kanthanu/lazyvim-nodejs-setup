@@ -13,10 +13,37 @@ function DiagnosticsConfig()
     severity_sort = true,
     float = {
       source = true, -- "if_many" | boolean
+      border = "rounded",
     },
   })
 end
-vim.cmd("autocmd BufRead *.ts,*.sh,*.json,*.yml,*.lua lua DiagnosticsConfig()")
+vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DiagnosticsConfig()")
 
 -- Load border bg color for nvim-cmp
 vim.cmd("highlight! BorderBG guibg=#2A2A2A")
+
+-- Set bg of hl for floating
+function SetHlForFloatingWindow()
+  vim.api.nvim_set_hl(0, "NormalFloat", {
+    link = "Normal",
+  })
+  vim.api.nvim_set_hl(0, "FloatBorder", {
+    bg = "none",
+  })
+  vim.api.nvim_set_hl(0, "DiagnosticError", {
+    bg = "none",
+  })
+  vim.api.nvim_set_hl(0, "Float", {
+    bg = "none",
+  })
+  vim.api.nvim_set_hl(0, "NvimFloat", {
+    bg = "none",
+  })
+  vim.api.nvim_set_hl(0, "DiagnosticFloatingError", {
+    bg = "none",
+  })
+  vim.api.nvim_set_hl(0, "CocDiagnosticError", {
+    bg = "none",
+  })
+end
+SetHlForFloatingWindow()

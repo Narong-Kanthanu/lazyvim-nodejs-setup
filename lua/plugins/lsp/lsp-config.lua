@@ -3,31 +3,33 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
-      inlay_hints = { enabled = true },
+      inlay_hints = {
+        enabled = true,
+      },
       servers = {
         vtsls = {
           root_dir = function(...)
             return require("lspconfig.util").root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git")
           end,
-          single_file_support = false,
+          single_file_support = true,
           settings = {
             typescript = {
               inlayHints = {
-                parameterNames = { enabled = "literals" },
+                parameterNames = { enabled = "none" }, -- 'none' | 'literals' | 'all'
                 parameterTypes = { enabled = false },
                 variableTypes = { enabled = false },
                 propertyDeclarationTypes = { enabled = false },
-                functionLikeReturnTypes = { enabled = false },
+                functionLikeReturnTypes = { enabled = true },
                 enumMemberValues = { enabled = false },
               },
             },
             javascript = {
               inlayHints = {
-                parameterNames = { enabled = "all" },
+                parameterNames = { enabled = "none" }, -- 'none' | 'literals' | 'all'
                 parameterTypes = { enabled = false },
                 variableTypes = { enabled = false },
                 propertyDeclarationTypes = { enabled = false },
-                functionLikeReturnTypes = { enabled = false },
+                functionLikeReturnTypes = { enabled = true },
                 enumMemberValues = { enabled = false },
               },
             },
@@ -107,7 +109,11 @@ return {
           },
         },
       },
-      setup = {},
+      setup = {
+        vtsls = function(_, opts)
+          require("typescript").setup(opts)
+        end,
+      },
     },
     -- completion engine
     {

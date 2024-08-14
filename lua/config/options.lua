@@ -23,7 +23,7 @@ opt.smarttab = true
 opt.breakindent = true
 opt.shiftwidth = 2
 opt.tabstop = 2
-opt.wrap = false
+opt.wrap = true
 opt.backspace = { "start", "eol", "indent" }
 opt.path:append({ "**" })
 opt.wildignore:append({ "*/node_modules/*" })
@@ -36,3 +36,4 @@ opt.relativenumber = true
 opt.termguicolors = true
 opt.confirm = true
 opt.cursorline = true
+opt.spell = false
