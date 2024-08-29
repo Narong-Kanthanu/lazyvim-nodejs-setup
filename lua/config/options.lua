@@ -1,7 +1,9 @@
-vim.g.mapleader = " "
-vim.g.autoformat = true
-
 vim.scriptencoding = "utf-8"
+
+local global = vim.g
+global.mapleader = " "
+global.autoformat = true
+global.border_style = "rounded"
 
 local opt = vim.opt
 opt.encoding = "utf-8"

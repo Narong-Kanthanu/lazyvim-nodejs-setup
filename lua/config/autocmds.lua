@@ -19,31 +19,11 @@ function DiagnosticsConfig()
 end
 vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DiagnosticsConfig()")
 
+-- Disable inlay hints for some filetypes
+function DisableInlayHints()
+  vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
+end
+vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DisableInlayHints()")
+
 -- Load border bg color for nvim-cmp
 vim.cmd("highlight! BorderBG guibg=#2A2A2A")
-
--- Set bg of hl for floating
-function SetHlForFloatingWindow()
-  vim.api.nvim_set_hl(0, "NormalFloat", {
-    link = "Normal",
-  })
-  vim.api.nvim_set_hl(0, "FloatBorder", {
-    bg = "none",
-  })
-  vim.api.nvim_set_hl(0, "DiagnosticError", {
-    bg = "none",
-  })
-  vim.api.nvim_set_hl(0, "Float", {
-    bg = "none",
-  })
-  vim.api.nvim_set_hl(0, "NvimFloat", {
-    bg = "none",
-  })
-  vim.api.nvim_set_hl(0, "DiagnosticFloatingError", {
-    bg = "none",
-  })
-  vim.api.nvim_set_hl(0, "CocDiagnosticError", {
-    bg = "none",
-  })
-end
-SetHlForFloatingWindow()
