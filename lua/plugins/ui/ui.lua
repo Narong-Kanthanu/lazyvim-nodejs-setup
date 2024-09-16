@@ -109,8 +109,26 @@ return {
     opts = {
       options = {
         mode = "tabs",
-        show_buffer_close_icons = false,
+        show_tab_indicators = false,
         show_close_icon = false,
+        show_buffer_icons = true,
+        show_buffer_close_icons = false,
+        always_show_bufferline = false,
+        color_icons = true,
+        separator_style = { " ", " " },
+        numbers = "none",
+        indicator = {
+          icon = " ",
+          style = "underline",
+        },
+      },
+      highlights = {
+        indicator_selected = {
+          sp = "#EF6055",
+        },
+        buffer_selected = {
+          sp = "#EF6055",
+        },
       },
     },
   },

@@ -1,0 +1,44 @@
+{
+  "bookmark_lists": [
+    {
+      "bookmarks": [
+        {
+          "content": "export const subscriptionWithAuth: APIGatewayProxyHandler = flowAccountMiddyWithPrisma(",
+          "created_at": 1725945165,
+          "githash": "8370dba7c7",
+          "id": 1725945165,
+          "location": {
+            "col": 7,
+            "line": 13,
+            "path": "/Users/narongkanthanu/Documents/GitKraken/FlowAccount/flowaccount.workspace/apps/api/lambda.notification/src/message-handler.ts",
+            "project_name": "flowaccount.workspace",
+            "relative_path": "apps/api/lambda.notification/src/message-handler.ts"
+          },
+          "name": "1: subscription with auth",
+          "visited_at": 1725945165
+        }
+      ],
+      "id": "2024072612235561721109",
+      "is_active": true,
+      "name": "Default"
+    }
+  ],
+  "projects": [
+    {
+      "name": "flowaccount.workspace",
+      "path": "/Users/narongkanthanu/Documents/GitKraken/FlowAccount/flowaccount.workspace"
+    },
+    {
+      "name": "nvim",
+      "path": "/Users/narongkanthanu/.config/nvim"
+    },
+    {
+      "name": "flowaccount.dotnet.workspace",
+      "path": "/Users/narongkanthanu/Documents/GitKraken/FlowAccount/flowaccount.dotnet.workspace"
+    },
+    {
+      "name": "nx-plugins",
+      "path": "/Users/narongkanthanu/Documents/GitHub/nx-plugins"
+    }
+  ]
+}

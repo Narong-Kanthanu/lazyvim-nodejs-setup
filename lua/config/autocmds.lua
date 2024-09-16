@@ -6,6 +6,9 @@ vim.cmd("autocmd TermOpen * setlocal nonumber norelativenumber") -- no numbers
 vim.cmd("autocmd TermEnter * setlocal signcolumn=no") -- no sign column
 vim.cmd("augroup END")
 
+-- Load border bg color for nvim-cmp
+vim.cmd("highlight! BorderBG guibg=#2a2a2a")
+
 -- Load setup diagnostic when create new buffer
 function DiagnosticsConfig()
   vim.diagnostic.config({
@@ -24,6 +27,3 @@ function DisableInlayHints()
   vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
 end
 vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DisableInlayHints()")
-
--- Load border bg color for nvim-cmp
-vim.cmd("highlight! BorderBG guibg=#2A2A2A")

@@ -1,4 +1,5 @@
 vim.scriptencoding = "utf-8"
+vim.o.pumblend = 0
 
 local global = vim.g
 global.mapleader = " "
