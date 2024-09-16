@@ -10,3 +10,4 @@ data
 .neoconf.*
 bookmarks.db.*
 stylua.toml
+lazy-lock.json
