@@ -39,7 +39,7 @@ keymap.set("n", "<C-S-k>", "<C-w>+")
 keymap.set("n", "<C-S-j>", "<C-w>-")
 
 -- Terminal
-keymap.set("n", "tm", ":tabnew | term<Return>", opts)
+keymap.set("n", "tt", ":tabnew | term<Return>", opts)
 keymap.set("n", "ts", ":sp | term<Return>", opts)
 keymap.set("n", "tv", ":vsp | term<Return>", opts)
 
