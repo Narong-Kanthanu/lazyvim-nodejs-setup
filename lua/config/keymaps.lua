@@ -60,6 +60,7 @@ opts.desc = "Find and trigger a bookmark command."
 keymap.set({ "n", "v" }, "ma", ":BookmarksCommands<Return>", opts)
 opts.desc = "Go to latest visited/created Bookmark"
 keymap.set({ "n", "v" }, "mg", ":BookmarksGotoRecent<Return>", opts)
+keymap.set({ "n", "v" }, "mt", ":BookmarksTree", opts)
 
 -- Go implementation.
 keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" })
