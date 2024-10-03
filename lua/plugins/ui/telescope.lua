@@ -49,7 +49,9 @@ return {
         ";e",
         function()
           local builtin = require("telescope.builtin")
-          builtin.diagnostics()
+          builtin.diagnostics({
+            bufnr = 0,
+          })
         end,
         desc = "Lists Diagnostics for all open buffers or a specific buffer at current buffer",
       },
@@ -153,12 +155,10 @@ return {
           },
         },
         diagnostics = {
-          tbufnr = 0,
           initial_mode = "normal",
           previewer = false,
           layout_config = {
             height = 40,
-            width = 0.4,
           },
         },
         live_grep = {
