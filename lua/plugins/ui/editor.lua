@@ -66,14 +66,14 @@ return {
     },
     keys = {
       {
-        "td",
+        "tk",
         function()
           require("todo-comments").jump_next()
         end,
         desc = "Next Todo Comment",
       },
       {
-        "tD",
+        "tj",
         function()
           require("todo-comments").jump_prev()
         end,
