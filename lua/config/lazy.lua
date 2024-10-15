@@ -35,6 +35,7 @@ require("lazy").setup({
     { import = "plugins.git" },
     { import = "plugins.ui" },
     { import = "plugins.ai" },
+    { import = "plugins.other" },
   },
   defaults = {
     lazy = false,

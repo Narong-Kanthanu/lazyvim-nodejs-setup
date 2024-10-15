@@ -69,3 +69,8 @@ keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" }
 keymap.set("n", "<Leader>gh", ":Gitsigns preview_hunk<Return>", opts)
 keymap.set("n", "<Leader>gt", ":Gitsigns toggle_current_line_blame<Return>", opts)
 keymap.set("n", "<Leader>gb", ":Git blame<Return>", opts)
+
+-- Markdown preview
+keymap.set("n", "<Leader>md", ":MarkdownPreview<Return>", opts)
+keymap.set("n", "<Leader>mD", ":MarkdownPreviewStop<Return>", opts)
+keymap.set("n", "<Leader>mt", ":MarkdownPreviewToggle<Return>", opts)
