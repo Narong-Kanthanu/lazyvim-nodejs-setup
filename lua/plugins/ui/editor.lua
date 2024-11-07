@@ -96,10 +96,23 @@ return {
       { "nvim-telescope/telescope.nvim" },
       { "stevearc/dressing.nvim" },
       config = function()
-        require("bookmarks").setup({
+        local opts = {
           json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
           signs = {
-            mark = { icon = "", color = "#98C379" },
+            mark = { icon = "󰃁", color = "green", line_bg = "#98C379" },
+          },
+          treeview = {
+            keymap = {
+              quit = { "q", "<ESC>" },
+              refresh = "R",
+              create_folder = "a",
+              tree_cut = "x",
+              tree_paste = "p",
+              collapse = "o",
+              delete = "d",
+              active = "s",
+              copy = "c",
+            },
           },
           hooks = {
             {
@@ -116,7 +129,8 @@ return {
               end,
             },
           },
-        })
+        }
+        require("bookmarks").setup(opts)
       end,
     },
   },
