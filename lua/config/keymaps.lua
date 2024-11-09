@@ -42,6 +42,7 @@ keymap.set("n", "<C-S-j>", "<C-w>-")
 keymap.set("n", "tt", ":tabnew | term<Return>", opts)
 keymap.set("n", "ts", ":sp | term<Return>", opts)
 keymap.set("n", "tv", ":vsp | term<Return>", opts)
+keymap.set("t", "<Esc>", [[<C-\><C-n>]], opts)
 
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
