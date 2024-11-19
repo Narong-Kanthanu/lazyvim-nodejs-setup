@@ -3,10 +3,11 @@ return {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
     build = ":Copilot auth",
+    event = "InsertEnter",
     config = function()
       require("copilot").setup({
         suggestion = {
-          enabled = false,
+          enabled = not vim.g.ai_cmp,
           auto_trigger = false,
           hide_during_completion = true,
         },
