@@ -1,7 +1,7 @@
 return {
-  -- lsp servers config
   {
     "neovim/nvim-lspconfig",
+    dependencies = { "saghen/blink.cmp" },
     opts = {
       inlay_hints = {
         enabled = true,
@@ -109,40 +109,15 @@ return {
           },
         },
       },
-      setup = {
-        vtsls = function(_, opts)
-          require("typescript").setup(opts)
-        end,
-      },
     },
-    -- completion engine
-    {
-      "nvim-cmp",
-      dependencies = { "hrsh7th/cmp-emoji" },
-      opts = function(_, opts)
-        local cmp = require("cmp")
-        opts.window = {
-          completion = {
-            border = "rounded",
-            side_padding = 0,
-            winhighlight = "Normal:BorderBG,FloatBorder:BorderBG,CursorLine:PmenuSel,Search:None",
-          },
-          documentation = {
-            border = "rounded",
-            side_padding = 0,
-            winhighlight = "Normal:BorderBG,FloatBorder:BorderBG,CursorLine:PmenuSel,Search:None",
-          },
-        }
-        opts.mapping = cmp.mapping.preset.insert({
-          ["<C-j>"] = cmp.mapping.select_next_item(),
-          ["<C-k>"] = cmp.mapping.select_prev_item(),
-          ["<C-h>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-l>"] = cmp.mapping.scroll_docs(4),
-          ["<Tab>"] = cmp.mapping.confirm({ select = false }),
-        })
-        cmp.setup(opts)
-        table.insert(opts.sources, { name = "emoji" })
-      end,
-    },
+    config = function(_, opts)
+      local lspconfig = require("lspconfig")
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
+      for server, _ in pairs(opts.servers) do
+        if server == "vtsls" or server == "html" or server == "lua_ls" or server == "bashls" then
+          lspconfig[server].setup({ capabilities = capabilities })
+        end
+      end
+    end,
   },
 }

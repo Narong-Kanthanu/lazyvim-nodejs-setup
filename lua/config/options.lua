@@ -5,7 +5,6 @@ local global = vim.g
 global.mapleader = " "
 global.autoformat = true
 global.border_style = "rounded"
-global.lazyvim_blink_main = false
 
 local opt = vim.opt
 opt.encoding = "utf-8"
