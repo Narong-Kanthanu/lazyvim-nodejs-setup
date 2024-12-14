@@ -30,6 +30,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.json" },
     { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
     { import = "lazyvim.plugins.extras.ai.copilot" },
+    { import = "lazyvim.plugins.extras.editor.telescope" },
     { import = "plugins" },
     { import = "plugins.lsp" },
     { import = "plugins.git" },
