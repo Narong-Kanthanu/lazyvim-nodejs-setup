@@ -64,7 +64,10 @@ keymap.set({ "n", "v" }, "mg", ":BookmarksGotoRecent<Return>", opts)
 keymap.set({ "n", "v" }, "mt", ":BookmarksTree<Return>", opts)
 
 -- Go implementation.
+keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go declaration" })
+keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go definition" })
 keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" })
+keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go references" })
 
 -- Git
 keymap.set("n", "<Leader>gh", ":Gitsigns preview_hunk<Return>", opts)
