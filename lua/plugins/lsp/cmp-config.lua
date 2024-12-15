@@ -79,7 +79,7 @@ return {
           "snippet_forward",
           "fallback",
         },
-        ["<CR>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<C-i>"] = { "show", "show_documentation", "hide_documentation" },
       },
     },
   },
