@@ -77,11 +77,6 @@ return {
         },
         compat = {},
       },
-      snippets = {
-        expand = function(snippet, _)
-          return LazyVim.cmp.expand(snippet)
-        end,
-      },
       completion = {
         documentation = {
           auto_show = false,
