@@ -77,6 +77,11 @@ return {
         },
         compat = {},
       },
+      snippets = {
+        expand = function(snippet, _)
+          return LazyVim.cmp.expand(snippet)
+        end,
+      },
       completion = {
         documentation = {
           auto_show = false,
@@ -108,7 +113,7 @@ return {
         },
       },
       keymap = {
-        preset = "super-tab",
+        preset = "none",
         ["<C-j>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback" },
         ["<C-h>"] = { "scroll_documentation_down", "fallback" },
