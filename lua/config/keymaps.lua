@@ -14,9 +14,6 @@ keymap.set("n", "<C-a>", "gg<S-v>G") -- hold the Control and a to selecte all.
 keymap.set("n", "<Leader>qq", ":quit<Return>", opts)
 keymap.set("n", "<Leader>qQ", ":qa<Return>", opts)
 
--- File explorer with NvimTree
-keymap.set("n", "<Leader>ff", ":NvimTreeFindFileToggle<Return>", opts)
-
 -- Tabs
 keymap.set("n", "ta", ":tabedit ")
 keymap.set("n", "te", ":tabedit<Return>", opts)
@@ -63,12 +60,11 @@ opts.desc = "Go to latest visited/created Bookmark"
 keymap.set({ "n", "v" }, "mg", ":BookmarksGotoRecent<Return>", opts)
 keymap.set({ "n", "v" }, "mt", ":BookmarksTree<Return>", opts)
 
--- LSP
+-- Go to definition
 keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go declaration" })
 keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go definition" })
 keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" })
 keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go references" })
-keymap.set({ "n", "v" }, "<Leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
 
 -- Git
 keymap.set("n", "<Leader>gh", ":Gitsigns preview_hunk<Return>", opts)
