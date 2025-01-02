@@ -98,9 +98,13 @@ return {
       { "stevearc/dressing.nvim" },
       config = function()
         local opts = {
-          json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
+          db_dir = nil,
           signs = {
             mark = { icon = "󰃁", color = "green", line_bg = "#98C379" },
+            desc_format = function(bookmark)
+              ---@cast bookmark Bookmarks.Node
+              return bookmark.order .. ": " .. bookmark.name
+            end,
           },
           treeview = {
             keymap = {
