@@ -52,7 +52,9 @@ require("lazy").setup({
     cache = {
       enabled = true,
     },
+    reset_packpath = true,
     rtp = {
+      reset = true,
       disabled_plugins = {
         "gzip",
         -- "matchit",
@@ -67,4 +69,7 @@ require("lazy").setup({
     },
   },
   debug = false,
+  ui = {
+    border = "rounded",
+  },
 })
