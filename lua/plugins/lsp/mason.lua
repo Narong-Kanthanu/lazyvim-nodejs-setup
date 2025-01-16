@@ -13,6 +13,9 @@ return {
         "vtsls", -- vscode tsserver.
         "bash-language-server",
       },
+      ui = {
+        border = "rounded",
+      },
     },
     config = function(_, opts)
       require("mason").setup(opts)
