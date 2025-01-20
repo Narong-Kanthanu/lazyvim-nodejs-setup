@@ -12,7 +12,7 @@ return {
         "shfmt",
         "vtsls", -- vscode tsserver.
         "bash-language-server",
-        "ruby-lsp",
+        "solargraph", -- ruby
       },
       ui = {
         border = "rounded",

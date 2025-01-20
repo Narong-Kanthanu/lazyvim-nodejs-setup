@@ -112,19 +112,18 @@ return {
             },
           },
         },
-        ruby_lsp = {
-          single_file_support = true,
-          cmd_env = { BUNDLE_GEMFILE = vim.fn.getenv("GLOBAL_GEMFILE") },
-          cmd = { "ruby-lsp" },
-          filetypes = {
-            "ruby",
-            "eruby",
+        solargraph = {
+          cmd = {
+            { "solargraph", "stdio" },
           },
-          root_dir = function()
-            return vim.loop.cwd()
-          end,
+          filetypes = { "ruby" },
           init_options = {
-            formatter = "auto",
+            formatting = true,
+          },
+          settings = {
+            solargraph = {
+              diagnostics = true,
+            },
           },
         },
       },
@@ -133,7 +132,7 @@ return {
       local lspconfig = require("lspconfig")
       local capabilities = require("blink.cmp").get_lsp_capabilities()
       for server, _ in pairs(opts.servers) do
-        if server == "vtsls" or server == "html" or server == "lua_ls" or server == "bashls" or server == "ruby_lsp" then
+        if server == "vtsls" or server == "html" or server == "lua_ls" or server == "bashls" or server == "solargraph" then
           lspconfig[server].setup({ capabilities = capabilities })
         end
       end
