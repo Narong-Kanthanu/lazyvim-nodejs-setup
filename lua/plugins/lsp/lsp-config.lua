@@ -114,7 +114,6 @@ return {
         },
         ruby_lsp = {
           single_file_support = true,
-          mason = false,
           cmd_env = { BUNDLE_GEMFILE = vim.fn.getenv("GLOBAL_GEMFILE") },
           cmd = { "ruby-lsp" },
           filetypes = {
