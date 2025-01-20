@@ -12,6 +12,7 @@ return {
         "shfmt",
         "vtsls", -- vscode tsserver.
         "bash-language-server",
+        "ruby-lsp",
       },
       ui = {
         border = "rounded",

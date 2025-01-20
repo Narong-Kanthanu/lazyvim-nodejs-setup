@@ -29,6 +29,7 @@ return {
           "lua",
           "xml",
           "markdown",
+          "ruby",
         },
         query_linter = {
           enable = true,

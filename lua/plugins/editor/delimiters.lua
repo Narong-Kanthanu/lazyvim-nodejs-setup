@@ -59,6 +59,13 @@ return {
             end
             return rainbow_delimiters.strategy["local"]
           end,
+          ruby = function(bufnr)
+            local line_count = vim.api.nvim_buf_line_count(bufnr)
+            if line_count >= 0 and line_count <= 1000 then
+              return rainbow_delimiters.strategy["global"]
+            end
+            return rainbow_delimiters.strategy["local"]
+          end,
         },
         -- define query defines what to language match
         query = {
@@ -66,12 +73,14 @@ return {
           lua = "rainbow-blocks",
           javascript = "rainbow-parens",
           typescript = "rainbow-parens",
+          ruby = "rainbow-delimiters",
         },
         priority = {
           [""] = 100,
           lua = 210,
           javascript = 210,
           typescript = 210,
+          ruby = 210,
         },
         highlight = scope_highlight,
       }

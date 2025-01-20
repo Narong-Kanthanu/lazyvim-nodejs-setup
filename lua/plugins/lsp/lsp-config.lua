@@ -8,10 +8,10 @@ return {
       },
       servers = {
         vtsls = {
+          single_file_support = true,
           root_dir = function(...)
             return require("lspconfig.util").root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git")
           end,
-          single_file_support = true,
           settings = {
             typescript = {
               inlayHints = {
@@ -101,11 +101,31 @@ return {
           },
         },
         bashls = {
+          single_file_support = true,
+          filetypes = {
+            "bash",
+            "sh",
+          },
           settings = {
-            filetypes = {
-              "sh",
-              "zsh",
+            bashIde = {
+              globPattern = "*@(.sh|.inc|.bash|.command)",
             },
+          },
+        },
+        ruby_lsp = {
+          single_file_support = true,
+          mason = false,
+          cmd_env = { BUNDLE_GEMFILE = vim.fn.getenv("GLOBAL_GEMFILE") },
+          cmd = { "ruby-lsp" },
+          filetypes = {
+            "ruby",
+            "eruby",
+          },
+          root_dir = function()
+            return vim.loop.cwd()
+          end,
+          init_options = {
+            formatter = "auto",
           },
         },
       },
@@ -114,7 +134,7 @@ return {
       local lspconfig = require("lspconfig")
       local capabilities = require("blink.cmp").get_lsp_capabilities()
       for server, _ in pairs(opts.servers) do
-        if server == "vtsls" or server == "html" or server == "lua_ls" or server == "bashls" then
+        if server == "vtsls" or server == "html" or server == "lua_ls" or server == "bashls" or server == "ruby_lsp" then
           lspconfig[server].setup({ capabilities = capabilities })
         end
       end
