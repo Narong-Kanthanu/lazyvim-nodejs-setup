@@ -35,6 +35,11 @@ return {
             },
           },
         },
+        eslint = {
+          settings = {
+            workingDirectories = { mode = "auto" },
+          },
+        },
         html = {},
         lua_ls = {
           single_file_support = true,
