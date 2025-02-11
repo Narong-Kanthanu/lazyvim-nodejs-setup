@@ -3,7 +3,7 @@ return {
   event = "VeryLazy",
   keys = {
     {
-      "<leader>fi",
+      "<leader>fm",
       mode = { "n", "v" },
       "<cmd>Yazi<cr>",
       desc = "Open file manager",
