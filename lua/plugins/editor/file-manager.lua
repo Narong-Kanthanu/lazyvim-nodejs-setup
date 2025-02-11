@@ -5,7 +5,7 @@ return {
     {
       "<leader>fm",
       mode = { "n", "v" },
-      "<cmd>Yazi<cr>",
+      "<cmd>Yazi cwd<cr>",
       desc = "Open file manager",
     },
     opts = {
