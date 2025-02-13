@@ -13,6 +13,7 @@ return {
       open_multiple_tabs = false,
       highlight_hovered_buffers_in_same_directory = true,
       floating_window_scaling_factor = 1,
+      yazi_floating_window_border = "rounded",
       keymaps = {
         show_help = "<f1>",
         open_file_in_vertical_split = "<c-v>",
