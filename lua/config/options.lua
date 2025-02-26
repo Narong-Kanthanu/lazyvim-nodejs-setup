@@ -33,7 +33,7 @@ opt.wildignore:append({ "*/node_modules/*" })
 opt.splitbelow = true
 opt.splitright = true
 opt.splitkeep = "cursor"
-opt.mouse = ""
+opt.mouse = "a"
 opt.formatoptions:append({ "r" })
 opt.relativenumber = true
 opt.termguicolors = true
