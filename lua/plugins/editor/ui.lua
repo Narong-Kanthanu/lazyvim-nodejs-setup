@@ -289,6 +289,10 @@ return {
       if vim.fn.argc(-1) == 0 then
         vim.cmd("NvimTreeFocus")
       end
+
+      -- set colors
+      vim.cmd("highlight NvimTreeStatusLine guibg=#3c474e")
+      vim.cmd("highlight NvimTreeWindowPicker guibg=#3c474e")
     end,
   },
   -- snacks
