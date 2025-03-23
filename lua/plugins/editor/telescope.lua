@@ -1,6 +1,8 @@
 return {
   {
-    "telescope.nvim",
+    "nvim-telescope/telescope.nvim",
+    cmd = "Telescope",
+    version = false,
     priority = 1000,
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -9,6 +11,7 @@ return {
         build = "make",
       },
       "nvim-telescope/telescope-file-browser.nvim",
+      "nvim-treesitter/nvim-treesitter",
       "nvim-tree/nvim-web-devicons",
       "debugloop/telescope-undo.nvim",
     },
@@ -128,7 +131,7 @@ return {
       })
       opts.pickers = {
         find_files = {
-          no_ignore = false,
+          find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
           hidden = true,
           theme = "dropdown",
           previewer = false,
