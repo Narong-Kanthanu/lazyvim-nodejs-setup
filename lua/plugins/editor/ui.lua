@@ -117,7 +117,8 @@ return {
         show_buffer_close_icons = false,
         always_show_bufferline = false,
         color_icons = true,
-        separator_style = { " ", " " },
+        themable = false,
+        separator_style = { "", "" },
         numbers = "none",
         indicator = {
           icon = " ",
@@ -127,9 +128,17 @@ return {
       highlights = {
         indicator_selected = {
           sp = "#EF6055",
+          bg = "#2a2a2a",
         },
         buffer_selected = {
           sp = "#EF6055",
+          bg = "#2a2a2a",
+        },
+        fill = {
+          bg = "#2a2a2a",
+        },
+        background = {
+          bg = "#2a2a2a",
         },
       },
     },
