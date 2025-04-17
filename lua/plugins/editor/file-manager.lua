@@ -12,7 +12,8 @@ return {
       open_for_directories = false,
       open_multiple_tabs = false,
       highlight_hovered_buffers_in_same_directory = true,
-      floating_window_scaling_factor = 1,
+      floating_window_scaling_factor = 0.5,
+      yazi_floating_window_winblend = 0,
       yazi_floating_window_border = "rounded",
       keymaps = {
         show_help = "<f1>",
