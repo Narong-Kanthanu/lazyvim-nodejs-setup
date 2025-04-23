@@ -125,67 +125,77 @@ return {
           style = "underline",
         },
       },
-      highlights = {
-        indicator_selected = {
-          sp = "#EF6055",
-          bg = "#2a2a2a",
-        },
-        buffer_selected = {
-          sp = "#EF6055",
-          bg = "#2a2a2a",
-        },
-        fill = {
-          bg = "#2a2a2a",
-        },
-        background = {
-          bg = "#2a2a2a",
-        },
-        diagnostic = {
-          bg = "#2a2a2a",
-        },
-        diagnostic_visible = {
-          bg = "#2a2a2a",
-        },
-        diagnostic_selected = {
-          bg = "#2a2a2a",
-        },
-        hint_diagnostic = {
-          bg = "#2a2a2a",
-        },
-        hint_diagnostic_visible = {
-          bg = "#2a2a2a",
-        },
-        hint_diagnostic_selected = {
-          bg = "#2a2a2a",
-        },
-        info_diagnostic = {
-          bg = "#2a2a2a",
-        },
-        info_diagnostic_visible = {
-          bg = "#2a2a2a",
-        },
-        info_diagnostic_selected = {
-          bg = "#2a2a2a",
-        },
-        warning_diagnostic = {
-          bg = "#2a2a2a",
-        },
-        warning_diagnostic_visible = {
-          bg = "#2a2a2a",
-        },
-        warning_diagnostic_selected = {
-          bg = "#2a2a2a",
-        },
-        error_diagnostic = {
-          bg = "#2a2a2a",
-        },
-        error_diagnostic_visible = {
-          bg = "#2a2a2a",
-        },
-        error_diagnostic_selected = {
-          bg = "#2a2a2a",
-        },
-      },
+      highlights = function()
+        local updated = {}
+        local option_keys = {
+          "fill",
+          "background",
+          "tab",
+          "tab_selected",
+          "tab_separator",
+          "tab_separator_selected",
+          "tab_close",
+          "close_button",
+          "close_button_visible",
+          "close_button_selected",
+          "buffer_visible",
+          "buffer_selected",
+          "numbers",
+          "numbers_visible",
+          "numbers_selected",
+          "diagnostic",
+          "diagnostic_visible",
+          "diagnostic_selected",
+          "hint",
+          "hint_visible",
+          "hint_selected",
+          "hint_diagnostic",
+          "hint_diagnostic_visible",
+          "hint_diagnostic_selected",
+          "info",
+          "info_visible",
+          "info_selected",
+          "info_diagnostic",
+          "info_diagnostic_visible",
+          "info_diagnostic_selected",
+          "warning",
+          "warning_visible",
+          "warning_selected",
+          "warning_diagnostic",
+          "warning_diagnostic_visible",
+          "warning_diagnostic_selected",
+          "error",
+          "error_visible",
+          "error_selected",
+          "error_diagnostic",
+          "error_diagnostic_visible",
+          "error_diagnostic_selected",
+          "modified",
+          "modified_visible",
+          "modified_selected",
+          "duplicate_selected",
+          "duplicate_visible",
+          "duplicate",
+          "separator_selected",
+          "separator_visible",
+          "separator",
+          "indicator_visible",
+          "indicator_selected",
+          "pick_selected",
+          "pick_visible",
+          "pick",
+          "offset_separator",
+          "trunc_marker",
+        }
+        for _, key in ipairs(option_keys) do
+          if key == "indicator_selected" or key == "buffer_selected" then
+            updated[key] = { fg = "#EF6055", bg = "#2a2a2a" }
+          else
+            updated[key] = { bg = "#2a2a2a" }
+          end
+        end
+        return updated
+      end,
     },
   },
   -- show filename with new window on the top
