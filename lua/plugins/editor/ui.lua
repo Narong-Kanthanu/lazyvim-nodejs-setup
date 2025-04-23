@@ -140,6 +140,51 @@ return {
         background = {
           bg = "#2a2a2a",
         },
+        diagnostic = {
+          bg = "#2a2a2a",
+        },
+        diagnostic_visible = {
+          bg = "#2a2a2a",
+        },
+        diagnostic_selected = {
+          bg = "#2a2a2a",
+        },
+        hint_diagnostic = {
+          bg = "#2a2a2a",
+        },
+        hint_diagnostic_visible = {
+          bg = "#2a2a2a",
+        },
+        hint_diagnostic_selected = {
+          bg = "#2a2a2a",
+        },
+        info_diagnostic = {
+          bg = "#2a2a2a",
+        },
+        info_diagnostic_visible = {
+          bg = "#2a2a2a",
+        },
+        info_diagnostic_selected = {
+          bg = "#2a2a2a",
+        },
+        warning_diagnostic = {
+          bg = "#2a2a2a",
+        },
+        warning_diagnostic_visible = {
+          bg = "#2a2a2a",
+        },
+        warning_diagnostic_selected = {
+          bg = "#2a2a2a",
+        },
+        error_diagnostic = {
+          bg = "#2a2a2a",
+        },
+        error_diagnostic_visible = {
+          bg = "#2a2a2a",
+        },
+        error_diagnostic_selected = {
+          bg = "#2a2a2a",
+        },
       },
     },
   },
