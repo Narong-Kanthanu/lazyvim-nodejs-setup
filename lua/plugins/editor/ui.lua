@@ -104,10 +104,20 @@ return {
   {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
-    keys = {
-      { "<Tab>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next tab" },
-      { "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", desc = "Prev tab" },
-    },
+    keys = function()
+      local buffer_keys = {
+        { "<Tab>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next tab" },
+        { "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", desc = "Previous tab" },
+      }
+      for i = 1, 9 do
+        table.insert(buffer_keys, {
+          i .. "<Tab>",
+          "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>",
+          desc = "Go to buffer " .. i,
+        })
+      end
+      return buffer_keys
+    end,
     opts = {
       options = {
         mode = "tabs",
