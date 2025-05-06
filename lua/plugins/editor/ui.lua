@@ -199,7 +199,7 @@ return {
         }
         for _, key in ipairs(option_keys) do
           if key == "indicator_selected" or key == "buffer_selected" then
-            updated[key] = { fg = "#EF6055", bg = "#2a2a2a" }
+            updated[key] = { fg = "#f2f2f2", bg = "#2a2a2a" }
           else
             updated[key] = { bg = "#2a2a2a" }
           end
