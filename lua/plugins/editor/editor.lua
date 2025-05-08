@@ -64,6 +64,9 @@ return {
         pattern = [[\b(KEYWORDS):]],
       },
     },
+    telescope = {
+      path_display = { "smart" },
+    },
     keys = {
       {
         "tj",
