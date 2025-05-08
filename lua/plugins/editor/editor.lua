@@ -74,7 +74,7 @@ return {
       },
       {
         "<leader>td",
-        "<cmd>TodoTelescope keywords=TODO,FIX,FIXME,BUG,HACK,NOTE,PERF,WARNING,INFO cwd=%:p:h search_dirs=%:p previewer=false<cr>",
+        "<cmd>TodoTelescope keywords=TODO,FIX,FIXME,BUG,HACK,NOTE,PERF,WARNING,INFO cwd=%:p:h search_dirs=%:p previewer=false layout_config={height=40,width=0.4}<cr>",
         desc = "List TODO in current file",
       },
       { "<leader>ts", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME,BUG,HACK,NOTE,PERF,WARNING,INFO<cr>", desc = "Find TODO" },
