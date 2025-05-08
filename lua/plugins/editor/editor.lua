@@ -73,20 +73,11 @@ return {
         desc = "Next Todo Comment",
       },
       {
-        "tk",
-        function()
-          require("todo-comments").jump_prev()
-        end,
-        desc = "Previous Todo Comment",
+        "<leader>td",
+        "<cmd>TodoTelescope keywords=TODO,FIX,FIXME,BUG,HACK,NOTE,PERF,WARNING,INFO cwd=%:p:h search_dirs=%:p previewer=false<cr>",
+        desc = "List TODO in current file",
       },
-      { "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todo (Trouble)" },
-      {
-        "<leader>xT",
-        "<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>",
-        desc = "Todo/Fix/Fixme (Trouble)",
-      },
-      { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
-      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
+      { "<leader>ts", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME,BUG,HACK,NOTE,PERF,WARNING,INFO<cr>", desc = "Find TODO" },
     },
   },
 }
