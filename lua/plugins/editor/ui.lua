@@ -375,7 +375,6 @@ return {
     priority = 1000,
     lazy = false,
     opts = {
-      scroll = { enabled = false },
       image = {
         enabled = true,
         border = "rounded",
