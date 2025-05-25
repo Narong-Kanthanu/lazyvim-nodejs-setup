@@ -389,12 +389,6 @@ return {
           "tiff",
           "heic",
           "avif",
-          "mp4",
-          "mov",
-          "avi",
-          "mkv",
-          "webm",
-          "pdf",
         },
         icons = {
           math = "󰪚 ",
@@ -418,7 +412,6 @@ return {
             default = { "{src}[0]", "-scale", "1920x1080>" }, -- default for raster images
             vector = { "-density", 192, "{src}[0]" }, -- used by vector images like svg
             math = { "-density", 192, "{src}[0]", "-trim" },
-            pdf = { "-density", 192, "{src}[0]", "-background", "white", "-alpha", "remove", "-trim" },
           },
         },
       },
