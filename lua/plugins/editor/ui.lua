@@ -396,7 +396,7 @@ return {
           image = " ",
         },
         doc = {
-          enabled = true,
+          enabled = false,
           inline = true,
           float = true,
           max_width = 80,
