@@ -402,6 +402,9 @@ return {
           max_width = 80,
           max_height = 40,
         },
+        math = {
+          enabled = false,
+        },
         convert = {
           notify = true,
           mermaid = function()
