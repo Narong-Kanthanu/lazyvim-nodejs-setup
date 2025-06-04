@@ -5,59 +5,51 @@ return {
   {
     "HiPhish/rainbow-delimiters.nvim",
     config = function()
-      local scope_highlight = {
-        "RainbowRed",
-        "RainbowYellow",
-        "RainbowBlue",
-        "RainbowOrange",
-        "RainbowGreen",
-        "RainbowViolet",
-        "RainbowCyan",
-      }
-      local indent_highlight = {
-        "DimGray",
-      }
+      local rainbow_delimiters = require("rainbow-delimiters")
       local hooks = require("ibl.hooks")
+
+      -- Colors for scope highlights
+      local scope_colors = {
+        RainbowRed = "#E06C75",
+        RainbowYellow = "#E5C07B",
+        RainbowBlue = "#61AFEF",
+        RainbowOrange = "#D19A66",
+        RainbowGreen = "#98C379",
+        RainbowViolet = "#C678DD",
+        RainbowCyan = "#56B6C2",
+      }
+
+      local indent_highlight = { "DimGray" }
+
+      -- Setup highlight groups
       hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
-        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
-        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
-        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
-        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
-        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
-        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+        for group, color in pairs(scope_colors) do
+          vim.api.nvim_set_hl(0, group, { fg = color })
+        end
         vim.api.nvim_set_hl(0, "DimGray", { fg = "#333333" })
       end)
 
-      local rainbow_delimiters = require("rainbow-delimiters")
-      local function line_based_strategy(bufnr, threshold)
-        local line_count = vim.api.nvim_buf_line_count(bufnr)
-        local strategy = rainbow_delimiters.strategy
-        return line_count <= threshold and strategy["global"] or strategy["local"]
+      -- Strategy helper function
+      local function smart_strategy(max_lines)
+        return function(bufnr)
+          local line_count = vim.api.nvim_buf_line_count(bufnr)
+          return line_count <= max_lines and rainbow_delimiters.strategy["global"] or rainbow_delimiters.strategy["local"]
+        end
       end
 
+      -- Rainbow delimiters config
       vim.g.rainbow_delimiters = {
-        -- define strategy for improve editor performance
         strategy = {
-          [""] = rainbow_delimiters.strategy["global"],
-          vim = rainbow_delimiters.strategy["global"],
-          lua = rainbow_delimiters.strategy["global"],
-          gitignore = rainbow_delimiters.strategy["global"],
-          graphql = rainbow_delimiters.strategy["global"],
-          typescript = function(bufnr)
-            return line_based_strategy(bufnr, 1000)
-          end,
-          javascript = function(bufnr)
-            return line_based_strategy(bufnr, 1000)
-          end,
-          json = function(bufnr)
-            return line_based_strategy(bufnr, 100000)
-          end,
-          ruby = function(bufnr)
-            return line_based_strategy(bufnr, 1000)
-          end,
+          [""] = rainbow_delimiters.strategy.global,
+          vim = rainbow_delimiters.strategy.global,
+          lua = rainbow_delimiters.strategy.global,
+          gitignore = rainbow_delimiters.strategy.global,
+          graphql = rainbow_delimiters.strategy.global,
+          typescript = smart_strategy(1000),
+          javascript = smart_strategy(1000),
+          json = smart_strategy(100000),
+          ruby = smart_strategy(1000),
         },
-        -- define query defines what to language match
         query = {
           [""] = "rainbow-delimiters",
           lua = "rainbow-blocks",
@@ -72,8 +64,10 @@ return {
           typescript = 210,
           ruby = 210,
         },
-        highlight = scope_highlight,
+        highlight = vim.tbl_keys(scope_colors),
       }
+
+      -- IBL setup
       require("ibl").setup({
         scope = {
           char = "▎",
@@ -81,7 +75,7 @@ return {
           show_start = true,
           show_end = true,
           injected_languages = true,
-          highlight = scope_highlight,
+          highlight = vim.tbl_keys(scope_colors),
         },
         indent = {
           char = "▎",
