@@ -28,7 +28,13 @@ return {
         vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
         vim.api.nvim_set_hl(0, "DimGray", { fg = "#333333" })
       end)
+
       local rainbow_delimiters = require("rainbow-delimiters")
+      local function line_based_strategy(bufnr, threshold)
+        local line_count = vim.api.nvim_buf_line_count(bufnr)
+        local strategy = rainbow_delimiters.strategy
+        return line_count <= threshold and strategy["global"] or strategy["local"]
+      end
 
       vim.g.rainbow_delimiters = {
         -- define strategy for improve editor performance
@@ -39,32 +45,16 @@ return {
           gitignore = rainbow_delimiters.strategy["global"],
           graphql = rainbow_delimiters.strategy["global"],
           typescript = function(bufnr)
-            local line_count = vim.api.nvim_buf_line_count(bufnr)
-            if line_count >= 0 and line_count <= 1000 then
-              return rainbow_delimiters.strategy["global"]
-            end
-            return rainbow_delimiters.strategy["local"]
+            return line_based_strategy(bufnr, 1000)
           end,
           javascript = function(bufnr)
-            local line_count = vim.api.nvim_buf_line_count(bufnr)
-            if line_count >= 0 and line_count <= 1000 then
-              return rainbow_delimiters.strategy["global"]
-            end
-            return rainbow_delimiters.strategy["local"]
+            return line_based_strategy(bufnr, 1000)
           end,
           json = function(bufnr)
-            local line_count = vim.api.nvim_buf_line_count(bufnr)
-            if line_count >= 0 and line_count <= 100000 then
-              return rainbow_delimiters.strategy["global"]
-            end
-            return rainbow_delimiters.strategy["local"]
+            return line_based_strategy(bufnr, 100000)
           end,
           ruby = function(bufnr)
-            local line_count = vim.api.nvim_buf_line_count(bufnr)
-            if line_count >= 0 and line_count <= 1000 then
-              return rainbow_delimiters.strategy["global"]
-            end
-            return rainbow_delimiters.strategy["local"]
+            return line_based_strategy(bufnr, 1000)
           end,
         },
         -- define query defines what to language match
