@@ -139,7 +139,7 @@ return {
       local lspconfig = require("lspconfig")
       local capabilities = require("blink.cmp").get_lsp_capabilities()
       for server, server_opts in pairs(opts.servers) do
-        if lspconfig[server] then
+        if lspconfig[server] and server ~= "eslint" then
           lspconfig[server].setup(vim.tbl_deep_extend("force", {
             capabilities = capabilities,
           }, server_opts))
