@@ -30,6 +30,7 @@ return {
           "xml",
           "markdown",
           "ruby",
+          "c_sharp",
         },
         query_linter = {
           enable = true,
