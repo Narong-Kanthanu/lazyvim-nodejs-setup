@@ -14,7 +14,7 @@ return {
         "vtsls", -- vscode tsserver.
         "bash-language-server", -- bash scripts
         "solargraph", -- ruby
-        -- "omnisharp", -- dotnet
+        "omnisharp", -- dotnet
       },
       ui = {
         border = "rounded",
