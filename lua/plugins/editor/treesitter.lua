@@ -29,7 +29,6 @@ return {
           "lua",
           "xml",
           "markdown",
-          "ruby",
           "c_sharp",
         },
         query_linter = {

@@ -48,21 +48,18 @@ return {
           typescript = smart_strategy(1000),
           javascript = smart_strategy(1000),
           json = smart_strategy(100000),
-          ruby = smart_strategy(1000),
         },
         query = {
           [""] = "rainbow-delimiters",
           lua = "rainbow-blocks",
           javascript = "rainbow-parens",
           typescript = "rainbow-parens",
-          ruby = "rainbow-delimiters",
         },
         priority = {
           [""] = 100,
           lua = 210,
           javascript = 210,
           typescript = 210,
-          ruby = 210,
         },
         highlight = vim.tbl_keys(scope_colors),
       }

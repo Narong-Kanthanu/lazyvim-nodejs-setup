@@ -13,7 +13,6 @@ return {
         "shfmt",
         "vtsls", -- vscode tsserver.
         "bash-language-server", -- bash scripts
-        "solargraph", -- ruby
         "omnisharp", -- dotnet
       },
       ui = {
