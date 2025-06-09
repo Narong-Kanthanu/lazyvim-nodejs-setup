@@ -124,13 +124,8 @@ return {
               "utf-8",
             },
             filetypes = { "cs" },
-            root_markers = { ".sln", ".csproj", "omnisharp.json", "function.json" },
-            init_options = {},
-            capabilities = {
-              workspace = {
-                workspaceFolders = false,
-              },
-            },
+            root_dir = require("lspconfig.util").root_pattern("*.sln", "*.csproj"),
+            capabilities = vim.lsp.protocol.make_client_capabilities(),
           },
         },
       }
