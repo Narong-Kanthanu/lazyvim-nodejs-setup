@@ -27,3 +27,6 @@ function DisableInlayHints()
   vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
 end
 vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DisableInlayHints()")
+
+-- Very yank to go to the system clipboard automatically
+vim.cmd("autocmd TextYankPost * lua require('osc52').copy_register('+')")
