@@ -5,7 +5,7 @@ return {
       require("osc52").setup({
         max_length = 0, -- No limit
         silent = true,
-        trim = true,
+        trim = false,
         tmux_passthrough = true,
       })
     end,
