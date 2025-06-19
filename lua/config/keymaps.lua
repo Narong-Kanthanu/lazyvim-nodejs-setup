@@ -64,7 +64,3 @@ keymap.set("n", "<Leader>gb", ":Git blame<Return>", opts)
 keymap.set("n", "<Leader>md", ":MarkdownPreview<Return>", opts)
 keymap.set("n", "<Leader>mD", ":MarkdownPreviewStop<Return>", opts)
 keymap.set("n", "<Leader>mt", ":MarkdownPreviewToggle<Return>", opts)
-
--- Swap / and ? search directions
-keymap.set("n", "?", "/")
-keymap.set("n", "/", "?")
