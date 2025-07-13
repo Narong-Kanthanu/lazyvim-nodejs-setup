@@ -30,3 +30,12 @@ vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DisableInlayHints
 
 -- Very yank to go to the system clipboard automatically
 vim.cmd("autocmd TextYankPost * lua require('osc52').copy_register('+')")
+
+-- Enable lazyredraw during macro recording and execution
+vim.cmd([[
+  augroup LazyRedrawMacro
+    autocmd!
+    autocmd RecordingEnter * set lazyredraw
+    autocmd RecordingLeave * set nolazyredraw
+  augroup END
+]])
