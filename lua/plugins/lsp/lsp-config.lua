@@ -21,7 +21,12 @@ return {
         },
         servers = {
           vtsls = {
+            cmd = { "vtsls", "--stdio" },
             single_file_support = true,
+            filetypes = {
+              "typescript",
+              "javascript",
+            },
             root_dir = util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git"),
             settings = {
               typescript = { inlayHints = ts_js_inlay_hints },
@@ -29,13 +34,20 @@ return {
             },
           },
           eslint = {
+            cmd = { "vscode-eslint-language-server", "--stdio" },
+            filetypes = {
+              "typescript",
+              "javascript",
+            },
             settings = {
               workingDirectories = { mode = "auto" },
             },
           },
           html = {},
           lua_ls = {
+            cmd = { "lua-language-server" },
             single_file_support = true,
+            filetypes = { "lua" },
             settings = {
               Lua = {
                 workspace = {
