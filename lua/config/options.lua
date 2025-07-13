@@ -40,3 +40,11 @@ opt.termguicolors = true
 opt.confirm = true
 opt.cursorline = true
 opt.spell = false
+opt.updatetime = 1000
+opt.redrawtime = 5000
+
+-- Performance tweaks
+vim.schedule(function()
+  collectgarbage("setpause", 200)
+  collectgarbage("setstepmul", 400)
+end)
