@@ -22,16 +22,47 @@ return {
         servers = {
           vtsls = {
             cmd = { "vtsls", "--stdio" },
-            single_file_support = true,
+            single_file_support = false,
             filetypes = {
               "typescript",
               "javascript",
             },
-            root_dir = util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git"),
+            root_dir = util.root_pattern("yarn.lock", "package-lock.json", "tsconfig.base.json", "tsconfig.json", "package.json", "jsconfig.json", ".git"),
             settings = {
-              typescript = { inlayHints = ts_js_inlay_hints },
-              javascript = { inlayHints = ts_js_inlay_hints },
+              typescript = {
+                inlayHints = ts_js_inlay_hints,
+                tsserver = {
+                  maxTsServerMemory = 4096, -- increase for large monorepos
+                  useSyntaxServer = "auto", -- balance performance
+                },
+                format = {
+                  enable = true,
+                },
+              },
+              javascript = {
+                inlayHints = ts_js_inlay_hints,
+                tsserver = {
+                  maxTsServerMemory = 4096,
+                },
+              },
+              completions = {
+                completeFunctionCalls = true,
+              },
+              experimental = {
+                enableProjectDiagnostics = false, -- turn off per-project diagnostics (faster)
+              },
             },
+            init_options = {
+              disableSuggestions = true, -- don’t spam suggestions from tsserver
+              preferences = {
+                includeCompletionsForModuleExports = true,
+                includeCompletionsWithInsertText = true,
+              },
+            },
+            on_init = function(client)
+              -- Fix stuck initialize loop by notifying configuration change
+              client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+            end,
           },
           eslint = {
             cmd = { "vscode-eslint-language-server", "--stdio" },
