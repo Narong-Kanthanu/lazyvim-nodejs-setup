@@ -19,40 +19,61 @@ return {
       {
         ";f", -- find in folder
         function()
-          local builtin = require("telescope.builtin")
-          builtin.find_files()
+          require("telescope.builtin").find_files()
         end,
         desc = "Lists files in your current working directory, respects .gitignore",
       },
       {
         ";r", -- search file from string
         function()
-          local builtin = require("telescope.builtin")
-          builtin.live_grep()
+          require("telescope.builtin").live_grep()
         end,
         desc = "Search for a string in your current working directory and get results live as you type, respects .gitignore",
       },
       {
+        ";d", -- search file from string at specific dir
+        function()
+          vim.ui.input({ prompt = "Enter directory to grep in: " }, function(dir)
+            if not dir then
+              return
+            end
+
+            dir = vim.trim(dir)
+            if dir == "" then
+              vim.notify("No directory provided", vim.log.levels.WARN)
+              return
+            end
+
+            local title = string.format("Live Grep in [%s]", dir)
+            local cwd = require("lazyvim.util").root()
+            local search_dir = vim.fs.joinpath(cwd, dir)
+
+            require("telescope.builtin").live_grep({
+              search_dirs = { search_dir },
+              prompt_title = title,
+            })
+          end)
+        end,
+        desc = "Search for a string in your specidic dir, respects .gitignore",
+      },
+      {
         "\\\\", -- list open buffer files
         function()
-          local builtin = require("telescope.builtin")
-          builtin.buffers()
+          require("telescope.builtin").buffers()
         end,
         desc = "Lists open buffers",
       },
       {
         ";;", -- resume previous command
         function()
-          local builtin = require("telescope.builtin")
-          builtin.resume()
+          require("telescope.builtin").resume()
         end,
         desc = "Resume the previous telescope picker",
       },
       {
         ";e",
         function()
-          local builtin = require("telescope.builtin")
-          builtin.diagnostics({
+          require("telescope.builtin").diagnostics({
             bufnr = 0,
           })
         end,
@@ -61,8 +82,7 @@ return {
       {
         ";s",
         function()
-          local builtin = require("telescope.builtin")
-          builtin.treesitter()
+          require("telescope.builtin").treesitter()
         end,
         desc = "Lists Function names, variables, from Treesitter",
       },
