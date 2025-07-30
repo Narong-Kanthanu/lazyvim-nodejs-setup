@@ -53,7 +53,7 @@ return {
           text = function()
             local icon = "[ZOOM]"
             local file = vim.fn.expand("%:t")
-            return string.format("▍ %s %s", file ~= "" and file or "", icon)
+            return string.format("▍ %s %s", file ~= "" and (file == "zsh" and "terminal" or file) or "", icon)
           end,
           minimal = true,
           enter = false,
