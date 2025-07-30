@@ -50,10 +50,10 @@ keymap.set("n", "<C-k>", function()
 end, opts)
 
 -- Go to definition
-keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go declaration" })
-keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go definition" })
-keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go implementation" })
-keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go references" })
+keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go declaration" }))
+keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go definition" }))
+keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go implementation" }))
+keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go references" }))
 
 -- Git
 keymap.set("n", "<Leader>gh", ":Gitsigns preview_hunk<Return>", opts)
@@ -64,3 +64,8 @@ keymap.set("n", "<Leader>gb", ":Git blame<Return>", opts)
 keymap.set("n", "<Leader>md", ":MarkdownPreview<Return>", opts)
 keymap.set("n", "<Leader>mD", ":MarkdownPreviewStop<Return>", opts)
 keymap.set("n", "<Leader>mt", ":MarkdownPreviewToggle<Return>", opts)
+
+-- Zen Zoom mode
+keymap.set("n", "<leader>zz", function()
+  require("snacks").zen.zoom()
+end, vim.tbl_extend("force", opts, { desc = "Enable Zoom Mode" }))
