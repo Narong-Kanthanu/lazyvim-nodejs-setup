@@ -48,6 +48,22 @@ return {
           },
         },
       },
+      styles = {
+        zoom_indicator = {
+          text = function()
+            local icon = "[ZOOM]"
+            local file = vim.fn.expand("%:t")
+            return string.format("▍ %s %s", file ~= "" and file or "", icon)
+          end,
+          minimal = true,
+          enter = false,
+          focusable = false,
+          height = 1,
+          row = 0,
+          col = -1,
+          backdrop = false,
+        },
+      },
     },
   },
 }
