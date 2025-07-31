@@ -66,9 +66,17 @@ keymap.set("n", "<Leader>mD", ":MarkdownPreviewStop<Return>", opts)
 keymap.set("n", "<Leader>mt", ":MarkdownPreviewToggle<Return>", opts)
 
 -- Zen Zoom mode
+local is_zoomed = false
 keymap.set("n", "<leader>zz", function()
   local snacks = require("snacks")
   local incline = require("incline")
+
   snacks.zen.zoom()
-  incline.toggle()
+
+  is_zoomed = not is_zoomed
+  if is_zoomed then
+    incline.disable()
+  else
+    incline.enable()
+  end
 end, vim.tbl_extend("force", opts, { desc = "Enable Zoom Mode" }))
