@@ -57,6 +57,13 @@ return {
         desc = "Search for a string in your specidic dir, respects .gitignore",
       },
       {
+        ";m",
+        function()
+          require("telescope.builtin").marks()
+        end,
+        desc = "Lists marks points in the current buffer",
+      },
+      {
         "\\\\", -- list open buffer files
         function()
           require("telescope.builtin").buffers()
@@ -90,21 +97,7 @@ return {
         "sf",
         function()
           local telescope = require("telescope")
-
-          local function telescope_buffer_dir()
-            return vim.fn.expand("%:p:h")
-          end
-
-          telescope.extensions.file_browser.file_browser({
-            path = "%:p:h",
-            cwd = telescope_buffer_dir(),
-            respect_gitignore = false,
-            hidden = true,
-            grouped = true,
-            previewer = false,
-            initial_mode = "normal",
-            layout_config = { height = 40 },
-          })
+          telescope.extensions.file_browser.file_browser()
         end,
         desc = "Open File Browser with the path of the current buffer",
       },
@@ -155,9 +148,7 @@ return {
           hidden = true,
           theme = "dropdown",
           previewer = false,
-          layout_config = {
-            height = 40,
-          },
+          layout_config = { height = 40 },
         },
         buffers = {
           only_cwd = true,
@@ -180,9 +171,7 @@ return {
         diagnostics = {
           initial_mode = "normal",
           previewer = false,
-          layout_config = {
-            height = 40,
-          },
+          layout_config = { height = 40 },
         },
         live_grep = {
           no_ignore = false,
@@ -190,12 +179,36 @@ return {
           previewer = true,
           layout_config = { height = 40 },
         },
+        marks = {
+          initial_mode = "normal",
+          mark_type = "local",
+          no_ignore = false,
+          hidden = true,
+          previewer = true,
+          mappings = {
+            ["i"] = {
+              ["<C-d>"] = actions.delete_mark,
+            },
+            ["v"] = {},
+            ["n"] = {
+              ["d"] = actions.delete_mark,
+            },
+          },
+          layout_config = { height = 40 },
+        },
       }
       opts.extensions = {
         file_browser = {
           theme = "dropdown",
-          -- disables netrw and use telescope-file-browser in its place
           hijack_netrw = true,
+          path = "%:p:h",
+          cwd = vim.fn.expand("%:p:h"),
+          respect_gitignore = false,
+          hidden = true,
+          grouped = true,
+          previewer = false,
+          initial_mode = "normal",
+          layout_config = { height = 40 },
           mappings = {
             ["i"] = {},
             ["v"] = {},
