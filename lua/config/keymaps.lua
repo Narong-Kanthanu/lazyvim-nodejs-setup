@@ -41,14 +41,6 @@ keymap.set("n", "ts", ":sp | term<Return>", opts)
 keymap.set("n", "tv", ":vsp | term<Return>", opts)
 keymap.set("t", "<Esc>", [[<C-\><C-n>]], opts)
 
--- Diagnostics
-keymap.set("n", "<C-j>", function()
-  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR, wrap = true })
-end, opts)
-keymap.set("n", "<C-k>", function()
-  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR, wrap = true })
-end, opts)
-
 -- Go to definition
 keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go declaration" }))
 keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go definition" }))
