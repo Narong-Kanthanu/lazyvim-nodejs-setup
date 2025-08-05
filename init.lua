@@ -32,3 +32,9 @@ function SetHlForFloatingWindow()
   })
 end
 SetHlForFloatingWindow()
+
+-- Set fg of hl for window separator
+function SetHlForWinSeparator()
+  vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#b4bcfc" })
+end
+SetHlForWinSeparator()
