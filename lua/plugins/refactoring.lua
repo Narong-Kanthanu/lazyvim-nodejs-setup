@@ -17,7 +17,6 @@ return {
     },
     config = true,
   },
-
   -- Refactoring tool
   {
     "ThePrimeagen/refactoring.nvim",
