@@ -2,7 +2,13 @@ return {
   -- Search and navigation plugin that provides a powerful way to jump to text in the current buffer.
   "folke/flash.nvim",
   event = "VeryLazy",
-  opts = {},
+  opts = {
+    modes = {
+      search = {
+        enabled = true,
+      },
+    },
+  },
   keys = {
     {
       "s",
