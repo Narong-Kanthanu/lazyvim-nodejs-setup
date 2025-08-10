@@ -180,7 +180,7 @@ return {
       },
       marks = {
         initial_mode = "normal",
-        mark_type = "local",
+        mark_type = "all",
         no_ignore = false,
         hidden = true,
         previewer = true,
