@@ -76,6 +76,13 @@ return {
         desc = "Next Todo Comment",
       },
       {
+        "tk",
+        function()
+          require("todo-comments").jump_prev()
+        end,
+        desc = "Next Todo Comment",
+      },
+      {
         "<leader>td",
         "<cmd>TodoTelescope keywords=TODO,FIX,FIXME,BUG,HACK,NOTE,PERF,WARNING,INFO cwd=%:p:h search_dirs=%:p previewer=false layout_config={height=40,width=0.4}<cr>",
         desc = "List TODO comment in current file",
