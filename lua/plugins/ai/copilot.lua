@@ -42,11 +42,27 @@ return {
       { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
       { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
       {
-        "<leader>aa",
+        "<leader>av",
         function()
-          return require("CopilotChat").toggle()
+          return require("CopilotChat").toggle({
+            window = {
+              layout = "vertical",
+            },
+          })
         end,
-        desc = "Toggle (CopilotChat)",
+        desc = "Toggle vertical (CopilotChat)",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>as",
+        function()
+          return require("CopilotChat").toggle({
+            window = {
+              layout = "horizontal",
+            },
+          })
+        end,
+        desc = "Toggle horizontal (CopilotChat)",
         mode = { "n", "v" },
       },
       {
