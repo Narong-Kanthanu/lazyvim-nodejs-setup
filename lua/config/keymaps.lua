@@ -15,8 +15,8 @@ keymap.set("n", "<Leader>qq", ":quit<Return>", opts)
 keymap.set("n", "<Leader>qQ", ":qa<Return>", opts)
 
 -- Tabs
-keymap.set("n", "ta", ":tabedit ")
-keymap.set("n", "te", ":tabedit<Return>", opts)
+keymap.set("n", "te", ":tabedit ")
+keymap.set("n", "ta", ":tabnew<Return>", opts)
 keymap.set("n", "tw", ":tabclose<Return>", opts)
 
 -- Split window

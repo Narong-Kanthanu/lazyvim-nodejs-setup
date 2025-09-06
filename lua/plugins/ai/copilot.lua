@@ -66,6 +66,17 @@ return {
         mode = { "n", "v" },
       },
       {
+        "<leader>at",
+        function()
+          vim.cmd("tabnew")
+          require("CopilotChat").toggle({
+            window = { layout = "replace" },
+          })
+        end,
+        desc = "Toggle new tab (CopilotChat)",
+        mode = { "n", "v" },
+      },
+      {
         "<leader>ax",
         function()
           return require("CopilotChat").reset()
