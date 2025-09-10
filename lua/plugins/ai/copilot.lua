@@ -24,23 +24,41 @@ return {
   -- copilot chat
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "main",
+    dependencies = {
+      { "nvim-lua/plenary.nvim", branch = "master" },
+    },
+    build = "make tiktoken",
     cmd = "CopilotChat",
     opts = function()
       local user = vim.env.USER or "User"
       user = user:sub(1, 1):upper() .. user:sub(2)
       return {
         auto_insert_mode = true,
-        question_header = "  " .. user .. " ",
-        answer_header = "  Copilot ",
+        show_folds = true,
+        insert_at_end = true,
+        stop_on_function_failure = true,
+        separator = "━━",
         window = {
           width = 0.5,
+        },
+        headers = {
+          user = "  " .. user .. " ",
+          assistant = "  Copilot ",
+          tool = "🛠Tool",
         },
       }
     end,
     keys = {
       { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
       { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
+      {
+        "<leader>am",
+        function()
+          vim.cmd("CopilotChatModels")
+        end,
+        desc = "Select AI models",
+        mode = { "n", "v" },
+      },
       {
         "<leader>av",
         function()
