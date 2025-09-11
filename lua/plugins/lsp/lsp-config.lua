@@ -162,56 +162,56 @@ return {
             },
           },
         },
-        omnisharp = {
-          cmd = {
-            vim.fn.executable("OmniSharp") == 1 and "OmniSharp" or "omnisharp",
-            "--languageserver",
-            "--hostPID",
-            tostring(vim.fn.getpid()),
-            "--encoding",
-            "utf-8",
-            "--config:DotNet:enablePackageRestore=false",
-          },
-          filetypes = { "cs" },
-
-          -- Make root_dir only the folder of the opened file
-          root_dir = function(fname)
-            return util.path.dirname(fname) -- No .sln or .csproj scanning
-          end,
-
-          enable_roslyn_analyzers = false,
-          organize_imports_on_format = true,
-          enable_import_completion = false,
-
-          settings = {
-            MsBuild = {
-              LoadProjectsOnDemand = true, -- avoid loading the whole solution
-            },
-            RoslynExtensionsOptions = {
-              enableAnalyzersSupport = false,
-              enableImportCompletion = false,
-            },
-            FormattingOptions = {
-              enableEditorConfigSupport = true,
-            },
-          },
-
-          on_attach = function(client, bufnr)
-            -- Only format .cs files
-            if vim.api.nvim_buf_get_option(bufnr, "filetype") ~= "cs" then
-              client.stop()
-              return
-            end
-
-            -- Optional: auto-format on save
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              buffer = bufnr,
-              callback = function()
-                vim.lsp.buf.format({ async = false })
-              end,
-            })
-          end,
-        },
+        -- omnisharp = {
+        --   cmd = {
+        --     vim.fn.executable("OmniSharp") == 1 and "OmniSharp" or "omnisharp",
+        --     "--languageserver",
+        --     "--hostPID",
+        --     tostring(vim.fn.getpid()),
+        --     "--encoding",
+        --     "utf-8",
+        --     "--config:DotNet:enablePackageRestore=false",
+        --   },
+        --   filetypes = { "cs" },
+        --
+        --   -- Make root_dir only the folder of the opened file
+        --   root_dir = function(fname)
+        --     return util.path.dirname(fname) -- No .sln or .csproj scanning
+        --   end,
+        --
+        --   enable_roslyn_analyzers = false,
+        --   organize_imports_on_format = true,
+        --   enable_import_completion = false,
+        --
+        --   settings = {
+        --     MsBuild = {
+        --       LoadProjectsOnDemand = true, -- avoid loading the whole solution
+        --     },
+        --     RoslynExtensionsOptions = {
+        --       enableAnalyzersSupport = false,
+        --       enableImportCompletion = false,
+        --     },
+        --     FormattingOptions = {
+        --       enableEditorConfigSupport = true,
+        --     },
+        --   },
+        --
+        --   on_attach = function(client, bufnr)
+        --     -- Only format .cs files
+        --     if vim.api.nvim_buf_get_option(bufnr, "filetype") ~= "cs" then
+        --       client.stop()
+        --       return
+        --     end
+        --
+        --     -- Optional: auto-format on save
+        --     vim.api.nvim_create_autocmd("BufWritePre", {
+        --       buffer = bufnr,
+        --       callback = function()
+        --         vim.lsp.buf.format({ async = false })
+        --       end,
+        --     })
+        --   end,
+        -- },
       },
     }
   end,
