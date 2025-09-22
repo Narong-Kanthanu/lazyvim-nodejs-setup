@@ -37,6 +37,7 @@ return {
         show_folds = true,
         insert_at_end = true,
         stop_on_function_failure = true,
+        model = "claude-4-sonnet",
         separator = "━━",
         window = {
           width = 0.5,
