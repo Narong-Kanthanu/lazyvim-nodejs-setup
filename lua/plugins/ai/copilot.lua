@@ -38,7 +38,21 @@ return {
         show_folds = true,
         insert_at_end = true,
         stop_on_function_failure = true,
-        model = "claude-4-sonnet",
+        model = "gpt-4",
+        prompts = {
+          Explain = {
+            model = "gpt-4", -- Use GPT-4 for complex explanations
+          },
+          Review = {
+            model = "gpt-4", -- Use GPT-4 for code reviews
+          },
+          Tests = {
+            model = "gpt-4", -- Use GPT-4 for generating tests
+          },
+          Commit = {
+            model = "gpt-3.5-turbo", -- Use faster model for commit messages
+          },
+        },
         separator = "━━",
         window = {
           width = 0.5,
