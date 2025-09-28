@@ -38,19 +38,19 @@ return {
         show_folds = true,
         insert_at_end = true,
         stop_on_function_failure = true,
-        model = "gpt-4",
+        model = "claude-sonnet-4",
         prompts = {
           Explain = {
-            model = "gpt-4", -- Use GPT-4 for complex explanations
+            model = "claude-sonnet-4", -- Use Claude Sonnet 4 for complex explanations
           },
           Review = {
-            model = "gpt-4", -- Use GPT-4 for code reviews
+            model = "gpt-5", -- Use GPT-5 for code reviews
           },
           Tests = {
-            model = "gpt-4", -- Use GPT-4 for generating tests
+            model = "gpt-5-codex", -- Use GPT-5-Codex for generating tests
           },
           Commit = {
-            model = "gpt-3.5-turbo", -- Use faster model for commit messages
+            model = "gpt-5-mini", -- Use faster model for commit messages
           },
         },
         separator = "━━",
