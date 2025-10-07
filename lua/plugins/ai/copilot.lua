@@ -38,6 +38,8 @@ return {
         show_folds = true,
         insert_at_end = true,
         stop_on_function_failure = true,
+        allow_functions = true,
+        show_help = true,
         model = "claude-sonnet-4",
         prompts = {
           Explain = {
