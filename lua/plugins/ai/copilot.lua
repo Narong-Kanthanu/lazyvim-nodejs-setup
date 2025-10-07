@@ -142,6 +142,14 @@ return {
         desc = "Prompt Actions (CopilotChat)",
         mode = { "n", "v" },
       },
+      {
+        "<leader>ah",
+        function()
+          vim.cmd("MCPHub")
+        end,
+        desc = "Open MCP management",
+        mode = { "n", "v" },
+      },
     },
     config = function(_, opts)
       local chat = require("CopilotChat")
