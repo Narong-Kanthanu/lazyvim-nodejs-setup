@@ -40,10 +40,10 @@ return {
         stop_on_function_failure = true,
         allow_functions = true,
         show_help = true,
-        model = "claude-sonnet-4",
+        model = "claude-sonnet-4.5",
         prompts = {
           Explain = {
-            model = "claude-sonnet-4", -- Use Claude Sonnet 4 for complex explanations
+            model = "claude-sonnet-4.5", -- Use Claude Sonnet 4 for complex explanations
           },
           Review = {
             model = "gpt-5", -- Use GPT-5 for code reviews

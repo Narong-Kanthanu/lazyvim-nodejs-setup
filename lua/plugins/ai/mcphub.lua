@@ -29,13 +29,21 @@ return {
         wo = { -- window-scoped options (vim.wo)
           winhl = "Normal:MCPHubNormal,FloatBorder:MCPHubBorder",
         },
-        on_ready = function(hub)
-          -- Called when hub is ready
-        end,
-        on_error = function(err)
-          -- Called on errors
-        end,
       },
+      extensions = {
+        copilotchat = {
+          enabled = true,
+          convert_tools_to_functions = true, -- Convert MCP tools to CopilotChat functions
+          convert_resources_to_functions = true, -- Convert MCP resources to CopilotChat functions
+          add_mcp_prefix = false,
+        },
+      },
+      on_ready = function(hub)
+        -- Called when hub is ready
+      end,
+      on_error = function(err)
+        -- Called on errors
+      end,
     })
   end,
 }
