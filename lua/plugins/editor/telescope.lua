@@ -195,6 +195,11 @@ return {
         },
         layout_config = { height = 40 },
       },
+      treesitter = {
+        initial_mode = "normal",
+        previewer = true,
+        layout_config = { height = 40 },
+      },
     }
     opts.extensions = {
       file_browser = {
