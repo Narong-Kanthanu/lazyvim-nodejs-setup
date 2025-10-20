@@ -198,7 +198,10 @@ return {
       treesitter = {
         initial_mode = "normal",
         previewer = true,
-        layout_config = { height = 40 },
+        layout_config = {
+          height = 40,
+          preview_width = 0.65,
+        },
       },
     }
     opts.extensions = {
