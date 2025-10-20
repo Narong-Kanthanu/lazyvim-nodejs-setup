@@ -242,7 +242,10 @@ return {
         previewer = true,
         side_by_side = true,
         saved_only = false,
-        layout_config = { height = 40 },
+        layout_config = {
+          height = 40,
+          preview_width = 0.65,
+        },
         mappings = {
           ["i"] = {
             ["<cr>"] = undo_actions.restore,
