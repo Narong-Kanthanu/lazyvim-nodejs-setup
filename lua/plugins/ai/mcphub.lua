@@ -30,14 +30,14 @@ return {
           winhl = "Normal:MCPHubNormal,FloatBorder:MCPHubBorder",
         },
       },
-      extensions = {
-        copilotchat = {
-          enabled = true,
-          convert_tools_to_functions = true, -- Convert MCP tools to CopilotChat functions
-          convert_resources_to_functions = true, -- Convert MCP resources to CopilotChat functions
-          add_mcp_prefix = false,
-        },
-      },
+      -- extensions = {
+      --   copilotchat = {
+      --     enabled = true,
+      --     convert_tools_to_functions = true, -- Convert MCP tools to CopilotChat functions
+      --     convert_resources_to_functions = true, -- Convert MCP resources to CopilotChat functions
+      --     add_mcp_prefix = false,
+      --   },
+      -- },
       on_ready = function(hub)
         -- Called when hub is ready
       end,

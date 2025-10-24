@@ -6,7 +6,10 @@ return {
     "sources.default",
   },
   dependencies = {
-    "rafamadriz/friendly-snippets",
+    { "olimorris/codecompanion.nvim" },
+    {
+      "rafamadriz/friendly-snippets",
+    },
     {
       "giuxtaposition/blink-cmp-copilot",
     },
@@ -73,6 +76,9 @@ return {
             return items
           end,
         },
+      },
+      per_filetype = {
+        codecompanion = { "codecompanion" },
       },
       compat = {},
     },
