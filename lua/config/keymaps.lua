@@ -56,8 +56,3 @@ keymap.set("n", "<Leader>gb", ":Git blame<Return>", opts)
 keymap.set("n", "<Leader>md", ":MarkdownPreview<Return>", opts)
 keymap.set("n", "<Leader>mD", ":MarkdownPreviewStop<Return>", opts)
 keymap.set("n", "<Leader>mt", ":MarkdownPreviewToggle<Return>", opts)
-
--- Zen Zoom mode
-keymap.set("n", "<leader>zz", function()
-  require("snacks").zen.zoom()
-end, vim.tbl_extend("force", opts, { desc = "Enable Zoom Mode" }))

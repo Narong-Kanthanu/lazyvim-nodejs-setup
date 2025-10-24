@@ -2,6 +2,15 @@ return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
+  keys = {
+    {
+      "<leader>zz",
+      function()
+        require("snacks").zen.zoom()
+      end,
+      vim.tbl_extend("force", { noremap = true, silent = true }, { desc = "Enable Zoom Mode" }),
+    },
+  },
   opts = {
     scroll = { enabled = false },
     image = {

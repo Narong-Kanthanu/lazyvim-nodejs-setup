@@ -2,6 +2,16 @@ return {
   "ravitemer/mcphub.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
   build = "npm install -g mcp-hub@latest",
+  keys = {
+    {
+      "<leader>ah",
+      function()
+        vim.cmd("MCPHub")
+      end,
+      desc = "Open MCP manager",
+      mode = { "n", "v" },
+    },
+  },
   config = function()
     require("mcphub").setup({
       config = vim.fn.expand("~/.config/mcphub/servers.json"), -- Absolute path to MCP Servers config file (will create if not exists)
