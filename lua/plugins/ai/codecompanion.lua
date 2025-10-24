@@ -36,8 +36,9 @@ return {
     {
       "<leader>ax",
       ":'<,'>CodeCompanionChat Add<Return>",
-      desc = "Visually selected chat to AI",
+      desc = "Visually selected to AI Chat",
       mode = { "x" },
+      silent = true,
     },
   },
   opts = {
@@ -146,7 +147,7 @@ return {
             linebreak = true,
             list = false,
             numberwidth = 1,
-            signcolumn = "yes:1",
+            signcolumn = "auto:1",
             spell = false,
             wrap = true,
           },
