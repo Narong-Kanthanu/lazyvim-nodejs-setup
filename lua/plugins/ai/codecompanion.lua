@@ -71,8 +71,10 @@ return {
         },
       },
       inline = {
-        adapter = "anthropic",
-        model = "claude-sonnet-4-20250514",
+        adapter = {
+          name = "anthropic",
+          model = "claude-sonnet-4-20250514",
+        },
         keymaps = {
           accept_change = {
             modes = { n = "aa" },
@@ -86,8 +88,10 @@ return {
         },
       },
       cmd = {
-        adapter = "copilot",
-        model = "gpt-5-codex",
+        adapter = {
+          name = "copilot",
+          model = "gpt-5-codex",
+        },
       },
     },
     adapters = {
@@ -97,10 +101,24 @@ return {
             env = {
               api_key = "", -- set yout API key
             },
+            schema = {
+              model = {
+                default = "claude-sonnet-4.5",
+              },
+            },
           })
         end,
       },
-      acp = {}, -- set your Agent Client Protocol
+      acp = {
+        claude_code = function()
+          return require("codecompanion.adapters").extend("claude_code", {
+            env = {
+              ANTHROPIC_API_KEY = "", -- set your api key
+              CLAUDE_CODE_OAUTH_TOKEN = "", -- set your oauth token
+            },
+          })
+        end,
+      },
     },
     display = {
       chat = {
