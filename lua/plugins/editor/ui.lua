@@ -128,6 +128,13 @@ return {
             return buf.name
           end
         end,
+        get_element_icon = function(element)
+          local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(element.filetype, { default = false })
+          if element.filetype == "codecompanion" then
+            icon = " "
+          end
+          return icon, hl
+        end,
         show_tab_indicators = false,
         show_close_icon = false,
         show_buffer_icons = true,
