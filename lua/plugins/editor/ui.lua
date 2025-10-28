@@ -121,6 +121,13 @@ return {
     opts = {
       options = {
         mode = "tabs",
+        name_formatter = function(buf)
+          if buf.name:match("CodeCompanion") then
+            return "AI Chat"
+          else
+            return buf.name
+          end
+        end,
         show_tab_indicators = false,
         show_close_icon = false,
         show_buffer_icons = true,
