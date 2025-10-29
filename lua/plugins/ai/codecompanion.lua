@@ -44,10 +44,7 @@ return {
   opts = {
     strategies = {
       chat = {
-        adapter = {
-          name = "copilot",
-          model = "claude-sonnet-4.5",
-        },
+        adapter = "claude_code",
         keymaps = {
           send = {
             modes = { n = "<C-s>", i = "<C-s>" },
@@ -71,10 +68,7 @@ return {
         },
       },
       inline = {
-        adapter = {
-          name = "anthropic",
-          model = "claude-sonnet-4-20250514",
-        },
+        adapter = "claude_code",
         keymaps = {
           accept_change = {
             modes = { n = "aa" },
@@ -88,10 +82,7 @@ return {
         },
       },
       cmd = {
-        adapter = {
-          name = "copilot",
-          model = "gpt-5-codex",
-        },
+        adapter = "claude_code",
       },
     },
     adapters = {
@@ -112,10 +103,10 @@ return {
       acp = {
         claude_code = function()
           return require("codecompanion.adapters").extend("claude_code", {
-            env = {
-              ANTHROPIC_API_KEY = "", -- set your api key
-              CLAUDE_CODE_OAUTH_TOKEN = "", -- set your oauth token
-            },
+            -- Look at (https://codecompanion.olimorris.dev/configuration/adapters#setup-claude-code-via-acp)
+            -- env = {
+            --   ANTHROPIC_API_KEY = "",
+            -- },
           })
         end,
       },
