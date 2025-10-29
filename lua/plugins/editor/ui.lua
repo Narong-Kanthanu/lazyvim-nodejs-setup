@@ -122,15 +122,15 @@ return {
       options = {
         mode = "tabs",
         name_formatter = function(buf)
-          if buf.name:match("CodeCompanion") then
-            return "AI Chat"
+          if buf.name:match("CodeCompanion") or buf.name:match("claude") then
+            return "AI Agent"
           else
             return buf.name
           end
         end,
         get_element_icon = function(element)
           local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(element.filetype, { default = false })
-          if element.filetype == "codecompanion" then
+          if element.path:match("CodeCompanion") or element.path:match("claude") then
             icon = " "
           end
           return icon, hl
