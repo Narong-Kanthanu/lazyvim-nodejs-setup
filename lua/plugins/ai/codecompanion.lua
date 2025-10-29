@@ -40,6 +40,15 @@ return {
       mode = { "x" },
       silent = true,
     },
+    {
+      "<leader>aj",
+      function()
+        vim.cmd("tabnew | term claude")
+      end,
+      desc = "New Tab with AI Agent",
+      mode = { "n", "v" },
+      silent = true,
+    },
   },
   opts = {
     strategies = {
