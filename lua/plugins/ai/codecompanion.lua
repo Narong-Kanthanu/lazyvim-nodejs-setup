@@ -9,37 +9,13 @@ return {
     {
       "<leader>av",
       function()
-        vim.cmd("vsp | term claude")
-      end,
-      desc = "Open Vertical Claude Code Agent",
-      mode = { "n", "v" },
-    },
-    {
-      "<leader>as",
-      function()
-        vim.cmd("sp | term claude")
-      end,
-      desc = "Open Horizontal Claude Code Agent",
-      mode = { "n", "v" },
-    },
-    {
-      "<leader>at",
-      function()
-        vim.cmd("tabnew | term claude")
-      end,
-      desc = "New Tab Claude Code Agent",
-      mode = { "n", "v" },
-    },
-    {
-      "<leader>aV",
-      function()
         return require("codecompanion").toggle({ window_opts = { position = "vertical", width = 0.5, height = 1 } })
       end,
       desc = "Toggle Vertical AI Chat",
       mode = { "n", "v" },
     },
     {
-      "<leader>aS",
+      "<leader>as",
       function()
         return require("codecompanion").toggle({ window_opts = { layout = "horizontal", width = 1, height = 0.5 } })
       end,
@@ -47,7 +23,7 @@ return {
       mode = { "n", "v" },
     },
     {
-      "<leader>aT",
+      "<leader>at",
       function()
         vim.cmd("tabnew")
         vim.schedule(function()
@@ -204,7 +180,7 @@ return {
             linebreak = true,
             list = false,
             numberwidth = 1,
-            signcolumn = "auto:1",
+            signcolumn = "auto",
             spell = false,
             wrap = true,
           },
