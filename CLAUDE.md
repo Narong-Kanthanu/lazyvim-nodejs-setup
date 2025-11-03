@@ -50,7 +50,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 - **codecompanion.lua**: Primary AI interface
   - Adapters: claude_code (ACP) and HTTP (Anthropic API, sonnet-4.5)
-  - Keymaps: `<Leader>av/as/at` for different chat layouts, `<Leader>aj` for agent in new tab
+  - Keymaps: `<Leader>av/as/at` for different chat layouts, `<Leader>aj` for agent in new tmux window
   - Memory system with common rule files (.clinerules, CLAUDE.md, etc.)
   - MCPHub integration for MCP tools/resources
 - **copilot.lua**: GitHub Copilot (manual activation, integrated with blink.cmp)
@@ -90,7 +90,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 ### AI Integration
 - `<Leader>av/as/at`: AI chat (vertical/horizontal/tab)
 - `<Leader>ax`: Send selection to chat
-- `<Leader>aj`: New tab with Claude agent
+- `<Leader>aj`: New tmux window with Claude Code CLI agent
 - `<Leader>ah`: MCP manager
 
 ### Git
@@ -119,12 +119,12 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - Memory system automatically includes context from .clinerules, CLAUDE.md, etc.
 - MCP servers can be managed via `<Leader>ah` with auto-toggle based on workspace
 - AI chat can be opened in different layouts for different workflows (vertical for side-by-side coding, tab for focus)
-- Agent mode (`<Leader>aj`) opens in new tab with custom buffer naming
+- Agent mode (`<Leader>aj`) launches Claude Code CLI in a new tmux window named " _agent" with the current working directory, allowing long-running AI tasks without blocking the editor
 
 ## Special UI Features
 
 - Transparent backgrounds configured in init.lua
 - Rounded borders for all floating windows
 - Minimal UI (cmdheight=0, laststatus=0)
-- Bufferline styled as tabs with custom formatter for AI Agent tabs
+- Bufferline styled as tabs
 - Incline shows floating filename indicators per window
