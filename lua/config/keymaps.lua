@@ -51,8 +51,3 @@ keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { de
 keymap.set("n", "<Leader>gh", ":Gitsigns preview_hunk<Return>", opts)
 keymap.set("n", "<Leader>gt", ":Gitsigns toggle_current_line_blame<Return>", opts)
 keymap.set("n", "<Leader>gb", ":Git blame<Return>", opts)
-
--- Markdown preview
-keymap.set("n", "<Leader>md", ":MarkdownPreview<Return>", opts)
-keymap.set("n", "<Leader>mD", ":MarkdownPreviewStop<Return>", opts)
-keymap.set("n", "<Leader>mt", ":MarkdownPreviewToggle<Return>", opts)
