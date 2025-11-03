@@ -43,9 +43,10 @@ return {
     {
       "<leader>aj",
       function()
-        vim.cmd("tabnew | term claude")
+        local name = " _agent"
+        vim.cmd('!tmux new-window -n "' .. name .. '" -c "' .. vim.fn.getcwd() .. '" "claude"')
       end,
-      desc = "New Tab with AI Agent",
+      desc = "New TMUX window with AI Agent",
       mode = { "n", "v" },
       silent = true,
     },
