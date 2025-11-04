@@ -27,7 +27,7 @@ return {
         mode = { "n" },
       },
       {
-        "<Leader>mD",
+        "<Leader>mq",
         function()
           require("peek").close()
         end,
