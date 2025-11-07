@@ -41,7 +41,7 @@ return {
       silent = true,
     },
     {
-      "<leader>aj",
+      "<leader>ag",
       function()
         local name = " _agent"
         vim.cmd('!tmux new-window -n "' .. name .. '" -c "' .. vim.fn.getcwd() .. '" "claude"')
