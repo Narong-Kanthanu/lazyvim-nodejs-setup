@@ -45,7 +45,7 @@ return {
       function()
         local name = " _agent"
         local cwd = vim.fn.getcwd()
-        vim.cmd('!tmux new-window -n "' .. name .. '" -c "' .. cwd .. '" "claude"; tmux set-window-option -t "' .. name .. '" mouse on')
+        vim.cmd('!tmux new-window -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
       end,
       desc = "New TMUX window with AI Agent",
       mode = { "n", "v" },
