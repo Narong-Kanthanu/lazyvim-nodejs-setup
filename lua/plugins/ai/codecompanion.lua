@@ -1,5 +1,6 @@
 return {
   "olimorris/codecompanion.nvim",
+  tag = "v17.33.0",
   dependencies = {
     { "nvim-lua/plenary.nvim", branch = "master" },
     { "ravitemer/mcphub.nvim" },
