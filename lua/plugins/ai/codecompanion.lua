@@ -1,6 +1,5 @@
 return {
   "olimorris/codecompanion.nvim",
-  -- tag = "v17.33.0",
   dependencies = {
     { "nvim-lua/plenary.nvim", branch = "master" },
     { "ravitemer/mcphub.nvim" },
@@ -44,8 +43,9 @@ return {
     {
       "<leader>ag",
       function()
-        local name = " _agent"
         local cwd = vim.fn.getcwd()
+        local dir = vim.fn.fnamemodify(cwd, ":t")
+        local name = dir .. "[ ]"
         vim.cmd('!tmux new-window -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
       end,
       desc = "New TMUX window with AI Agent",
