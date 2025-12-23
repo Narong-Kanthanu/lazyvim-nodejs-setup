@@ -177,6 +177,7 @@ return {
         hidden = true,
         previewer = true,
         layout_config = { height = 40 },
+        max_results = 20,
       },
       marks = {
         initial_mode = "normal",
