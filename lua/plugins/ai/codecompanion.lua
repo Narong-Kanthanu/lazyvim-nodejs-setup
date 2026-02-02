@@ -25,7 +25,7 @@ return {
     {
       "<leader>at",
       function()
-        vim.cmd("tabnew")
+        vim.fn.jobstart("tabnew", { detach = false })
         vim.schedule(function()
           require("codecompanion").chat({ window_opts = { layout = "buffer", width = 1, height = 1 } })
         end)
@@ -46,7 +46,7 @@ return {
         local cwd = vim.fn.getcwd()
         local dir = vim.fn.fnamemodify(cwd, ":t")
         local name = dir .. "[ ]"
-        vim.cmd('!tmux new-window -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
+        vim.fn.jobstart('tmux new-window -n "' .. name .. '" -c "' .. cwd .. '" "claude"', { detach = false })
       end,
       desc = "New TMUX window with AI Agent",
       mode = { "n", "v" },
@@ -56,7 +56,7 @@ return {
       "<leader>aS",
       function()
         local cwd = vim.fn.getcwd()
-        vim.cmd('!tmux split-window -v -c "' .. cwd .. '" "claude"')
+        vim.fn.jobstart('tmux split-window -v -c "' .. cwd .. '" "claude"', { detach = false })
       end,
       desc = "New TMUX horizontal pane with AI Agent",
       mode = { "n", "v" },
@@ -66,7 +66,7 @@ return {
       "<leader>aV",
       function()
         local cwd = vim.fn.getcwd()
-        vim.cmd('!tmux split-window -h -c "' .. cwd .. '" "claude"')
+        vim.fn.jobstart('tmux split-window -h -c "' .. cwd .. '" "claude"', { detach = false })
       end,
       desc = "New TMUX vertical pane with AI Agent",
       mode = { "n", "v" },
