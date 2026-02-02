@@ -52,6 +52,26 @@ return {
       mode = { "n", "v" },
       silent = true,
     },
+    {
+      "<leader>aS",
+      function()
+        local cwd = vim.fn.getcwd()
+        vim.cmd('!tmux split-window -v -c "' .. cwd .. '" "claude"')
+      end,
+      desc = "New TMUX horizontal pane with AI Agent",
+      mode = { "n", "v" },
+      silent = true,
+    },
+    {
+      "<leader>aV",
+      function()
+        local cwd = vim.fn.getcwd()
+        vim.cmd('!tmux split-window -h -c "' .. cwd .. '" "claude"')
+      end,
+      desc = "New TMUX vertical pane with AI Agent",
+      mode = { "n", "v" },
+      silent = true,
+    },
   },
   opts = {
     strategies = {
