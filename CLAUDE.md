@@ -199,6 +199,15 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - Noice.nvim for enhanced messages and command line
 - nvim-notify for notifications (2500ms timeout)
 
+## Claude Code Hooks
+
+Project-level hooks in `.claude/settings.json` enforce documentation hygiene:
+
+- **PreToolUse hook** (`.claude/hooks/pre-commit-doc-check.sh`): Blocks `git commit` until CLAUDE.md has been reviewed. Creates a marker file in `/tmp/` per-project to track review status.
+- **PostToolUse hook** (`.claude/hooks/post-commit-cleanup.sh`): Removes the marker after a successful commit so the next commit triggers a fresh review.
+- **Flow**: Commit blocked → Claude reviews staged changes → updates CLAUDE.md if needed → creates marker → retries commit → marker cleaned up after success.
+- Local overrides via `.claude/settings.local.json` (gitignored).
+
 ## Remote Development
 
 - OSC52 clipboard integration for SSH clipboard sync

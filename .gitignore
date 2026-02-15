@@ -11,3 +11,4 @@ data
 bookmarks.db.*
 stylua.toml
 lazy-lock.json
+.claude/settings.local.json
