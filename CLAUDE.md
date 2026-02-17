@@ -51,7 +51,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - **delimiters.lua**: Rainbow brackets with smart strategy (global for ≤1000 lines, local for larger)
 - **file-manager.lua**: Yazi integration (`<Leader>fm`)
 - **flash.lua**: Jump navigation (`s` to jump, `S` for treesitter jump)
-- **editor.lua**: TODO comments with navigation (`tj/tk`) and search (`<Leader>td/tf`), mini.hipatterns
+- **editor.lua**: TODO comments with navigation (`tj/tk`) and search (`<Leader>td/tf`), mini.hipatterns (hex color highlighting)
 - **snacks.nvim**: Image preview (PNG, JPG, GIF, WebP), zoom mode (`<Leader>zz`), mermaid support
 
 #### AI Integration (`lua/plugins/ai/`)
