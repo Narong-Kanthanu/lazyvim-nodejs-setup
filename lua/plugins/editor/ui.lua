@@ -6,8 +6,8 @@ return {
   },
   -- neo-tree
   { "nvim-neo-tree/neo-tree.nvim", enabled = false },
-  -- dressing
-  { "stevearc/dressing.nvim", enabled = false },
+  -- dressing (provides vim.ui.select/input floating UI for code actions, etc.)
+  { "stevearc/dressing.nvim", enabled = true },
   -- status line
   {
     "nvim-lualine/lualine.nvim",
