@@ -16,7 +16,7 @@ return {
     require("mcphub").setup({
       config = vim.fn.expand("~/.config/mcphub/servers.json"), -- Absolute path to MCP Servers config file (will create if not exists)
       port = 37373,
-      shutdown_delay = 5 * 60 * 000, -- Delay in ms before shutting down the server when last instance closes (default: 5 minutes)
+      shutdown_delay = 5 * 60 * 1000, -- Delay in ms before shutting down the server when last instance closes (default: 5 minutes)
       mcp_request_timeout = 60000, --Max time allowed for a MCP tool or resource to execute in milliseconds
       auto_approve = false, -- Auto approve mcp tool calls
       auto_toggle_mcp_servers = true,

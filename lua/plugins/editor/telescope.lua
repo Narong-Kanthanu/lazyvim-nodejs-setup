@@ -53,7 +53,7 @@ return {
           })
         end)
       end,
-      desc = "Search for a string in your specidic dir, respects .gitignore",
+      desc = "Search for a string in your specific dir, respects .gitignore",
     },
     {
       ";m",
@@ -126,7 +126,7 @@ return {
           ["<C-j>"] = actions.move_selection_next,
           ["<C-k>"] = actions.move_selection_previous,
           ["<C-t>"] = actions.select_tab,
-          ["<C-v"] = actions.select_vertical,
+          ["<C-v>"] = actions.select_vertical,
           ["<C-s>"] = actions.select_horizontal,
           ["<CR>"] = actions.select_default,
         },
