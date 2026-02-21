@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/cover.svg" alt="lazyvim-nodejs-setup" width="100%"/>
+</p>
+
 # lazyvim-nodejs-setup
 
 A LazyVim-based Neovim configuration optimized for Node.js/TypeScript development with extensive AI integration. Features a modular plugin architecture, performance optimizations for large monorepos, and seamless AI-assisted coding workflows.
