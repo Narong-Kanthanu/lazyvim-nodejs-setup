@@ -20,7 +20,7 @@ This is a LazyVim-based Neovim configuration optimized for Node.js/TypeScript de
 Located in `lua/config/`:
 - **options.lua**: Editor settings (2-space indent, no mouse, minimal UI with cmdheight=0, laststatus=0)
 - **keymaps.lua**: Custom keybindings for window/tab management, LSP, Git, terminals
-- **autocmds.lua**: Auto-commands for terminal behavior, diagnostics config, OSC52 clipboard, macro performance
+- **autocmds.lua**: Auto-commands for terminal behavior, diagnostics config, macro performance
 
 ### Plugin Organization
 
@@ -73,7 +73,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 #### Other Plugins (`lua/plugins/other/`)
 
-- **clipboard.lua**: OSC52 clipboard support for SSH/remote development
+- **clipboard.lua**: OSC52 clipboard support for SSH/remote development (auto-copies on yank)
 - **which-key.lua**: Keymap display helper with modern preset
 - **peek.lua**: Markdown preview with webview (`<Leader>md` open, `<Leader>mq` close)
 
