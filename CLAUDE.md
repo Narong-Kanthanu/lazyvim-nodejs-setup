@@ -18,7 +18,7 @@ This is a LazyVim-based Neovim configuration optimized for Node.js/TypeScript de
 ### Configuration Files
 
 Located in `lua/config/`:
-- **options.lua**: Editor settings (2-space indent, no mouse, minimal UI with cmdheight=0, laststatus=0)
+- **options.lua**: Editor settings (2-space indent, no mouse, unnamedplus clipboard, minimal UI with cmdheight=0, laststatus=0)
 - **keymaps.lua**: Custom keybindings for window/tab management, LSP, Git, terminals
 - **autocmds.lua**: Auto-commands for terminal behavior, diagnostics config, macro performance
 

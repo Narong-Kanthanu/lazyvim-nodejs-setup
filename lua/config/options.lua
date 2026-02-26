@@ -34,6 +34,7 @@ opt.splitbelow = true
 opt.splitright = true
 opt.splitkeep = "cursor"
 opt.mouse = ""
+opt.clipboard = "unnamedplus"
 opt.formatoptions:append({ "r" })
 opt.relativenumber = true
 opt.termguicolors = true
