@@ -1,6 +1,5 @@
 return {
   "olimorris/codecompanion.nvim",
-  build = false, -- disable post-install build step
   dependencies = {
     "nvim-lua/plenary.nvim",
     "ravitemer/mcphub.nvim",
