@@ -1,8 +1,10 @@
 return {
   "olimorris/codecompanion.nvim",
+  build = false, -- disable post-install build step
   dependencies = {
-    { "nvim-lua/plenary.nvim", branch = "master" },
-    { "ravitemer/mcphub.nvim" },
+    "nvim-lua/plenary.nvim",
+    "ravitemer/mcphub.nvim",
+    "nvim-treesitter/nvim-treesitter",
   },
   keys = {
     { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
