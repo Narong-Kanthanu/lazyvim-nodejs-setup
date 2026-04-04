@@ -69,7 +69,7 @@ return {
             "typescript",
             "javascript",
           },
-          root_dir = function(bufnr, on_dir)
+          root_dir = function(fname)
             local root_file_patterns = {
               ".eslintrc",
               ".eslintrc.js",
@@ -84,9 +84,8 @@ return {
               "eslint.config.mts",
               "eslint.config.cts",
             }
-            local fname = vim.api.nvim_buf_get_name(bufnr)
             root_file_patterns = util.insert_package_json(root_file_patterns, "eslintConfig", fname)
-            on_dir(vim.fs.dirname(vim.fs.find(root_file_patterns, { path = fname, upward = true })[1]))
+            return vim.fs.dirname(vim.fs.find(root_file_patterns, { path = fname, upward = true })[1])
           end,
           settings = {
             workingDirectories = { mode = "auto" },
