@@ -150,7 +150,7 @@ return {
         anthropic = function()
           return require("codecompanion.adapters").extend("anthropic", {
             env = {
-              api_key = "", -- set yout API key
+              api_key = "cmd:echo ${ANTHROPIC_API_KEY}",
             },
             schema = {
               model = {

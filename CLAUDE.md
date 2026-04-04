@@ -45,7 +45,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
   - FZF native integration for performance
   - Undo extension with side-by-side preview
 - **nvim-tree.lua**: File explorer (width: 35, auto-open on startup, filters dotfiles and node_modules)
-- **treesitter.lua**: Syntax highlighting (disabled for files >500KB), auto-tag support
+- **treesitter.lua**: Syntax highlighting via `vim.treesitter.start()` (disabled for files >500KB, skips special buffers), treesitter-based folding, auto-tag as standalone plugin
 - **ui.lua**: Status line (lualine), bufferline, notifications (noice, notify), incline
 - **colorscheme.lua**: Sonokai theme (shusia variant, transparent background)
 - **delimiters.lua**: Rainbow brackets with smart strategy (global for ≤1000 lines, local for larger)

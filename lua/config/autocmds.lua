@@ -23,10 +23,12 @@ end
 vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DiagnosticsConfig()")
 
 -- Disable inlay hints for some filetypes
-function DisableInlayHints()
-  vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
-end
-vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DisableInlayHints()")
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = { "*.ts", "*.js", "*.sh", "*.json", "*.yml", "*.lua" },
+  callback = function()
+    vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
+  end,
+})
 
 -- Enable lazyredraw during macro recording and execution
 vim.cmd([[

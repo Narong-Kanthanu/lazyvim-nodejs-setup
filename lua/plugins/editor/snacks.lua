@@ -58,10 +58,16 @@ return {
     },
     zen = {
       on_open = function()
-        require("incline").disable()
+        local ok, incline = pcall(require, "incline")
+        if ok then
+          incline.disable()
+        end
       end,
       on_close = function()
-        require("incline").enable()
+        local ok, incline = pcall(require, "incline")
+        if ok then
+          incline.enable()
+        end
       end,
     },
     styles = {

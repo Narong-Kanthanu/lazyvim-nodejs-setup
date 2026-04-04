@@ -229,7 +229,7 @@ return {
   -- show filename with new window on the top
   {
     "b0o/incline.nvim",
-    dependencies = {},
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "BufReadPre",
     priority = 1200,
     config = function()

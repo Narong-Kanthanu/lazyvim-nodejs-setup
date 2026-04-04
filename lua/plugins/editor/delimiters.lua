@@ -1,9 +1,7 @@
 return {
-  -- blankline
-  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
-  -- rainbow delimiters
   {
     "HiPhish/rainbow-delimiters.nvim",
+    dependencies = { "lukas-reineke/indent-blankline.nvim" },
     config = function()
       local rainbow_delimiters = require("rainbow-delimiters")
       local hooks = require("ibl.hooks")
