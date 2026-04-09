@@ -58,7 +58,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 - **codecompanion.lua**: Primary AI interface
   - Adapters: copilot (claude-sonnet-4.5 primary), claude_code (ACP), anthropic (HTTP)
-  - Keymaps: `<Leader>av/as/at` for different chat layouts, `<Leader>ag` for agent in new tmux window
+  - Keymaps: `<Leader>av/as/at` for different chat layouts, `<Leader>ag` for agent in dedicated "AI workspace" tmux session (mouse scrolling enabled)
   - Memory system with common rule files (.clinerules, .cursorrules, .goosehints, CLAUDE.md, AGENT.md, etc.)
   - MCPHub integration for MCP tools/resources
   - Chat keymaps: `<C-s>` send, `<C-c>` close, `<C-l>` clear
@@ -119,7 +119,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 ### AI Integration
 - `<Leader>av/as/at`: AI chat (vertical/horizontal/tab)
 - `<Leader>ax`: Send selection to chat (visual mode)
-- `<Leader>ag`: New tmux window with Claude Code CLI agent
+- `<Leader>ag`: New tmux window with Claude Code CLI agent (in dedicated "AI workspace" session with mouse scroll)
 - `<Leader>ah`: MCP manager
 
 ### Git
@@ -187,7 +187,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - MCP servers can be managed via `<Leader>ah` with auto-toggle based on workspace
 - Workspace MCP config: .mcphub/servers.json, .vscode/mcp.json
 - AI chat can be opened in different layouts for different workflows (vertical for side-by-side coding, tab for focus)
-- Agent mode (`<Leader>ag`) launches Claude Code CLI in a new tmux window named " _agent" with the current working directory
+- Agent mode (`<Leader>ag`) launches Claude Code CLI in a dedicated "AI workspace" tmux session with mouse scrolling enabled. Creates the session if it doesn't exist, or adds a new window if it does. Auto-returns to previous session when last agent window closes.
 
 ## Special UI Features
 
