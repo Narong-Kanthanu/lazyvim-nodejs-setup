@@ -42,10 +42,8 @@ return {
     {
       "<leader>at",
       function()
-        vim.fn.jobstart("tabnew", { detach = false })
-        vim.schedule(function()
-          require("codecompanion").chat({ window_opts = { layout = "buffer", width = 1, height = 1 } })
-        end)
+        vim.cmd("tabnew")
+        require("codecompanion").chat({ window_opts = { layout = "buffer", width = 1, height = 1 } })
       end,
       desc = "New Tab AI Chat",
       mode = { "n", "v" },
