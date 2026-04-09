@@ -7,6 +7,7 @@ return {
       require("nvim-treesitter").setup()
 
       require("nvim-treesitter").install({
+        "bash",
         "javascript",
         "typescript",
         "gitignore",
@@ -16,6 +17,7 @@ return {
         "vim",
         "vimdoc",
         "lua",
+        "regex",
         "xml",
         "markdown",
         "markdown_inline",
