@@ -1,17 +1,15 @@
-local AGENT_SESSION = "AI workspace"
-
 local function open_agent(name, cwd)
   if not vim.env.TMUX then
     vim.notify("Not inside tmux", vim.log.levels.WARN)
     return
   end
-  local s = vim.fn.shellescape(AGENT_SESSION)
+  local s = vim.fn.shellescape("AI workspace")
   vim.fn.system("tmux has-session -t " .. s .. " 2>/dev/null")
   local is_new = vim.v.shell_error ~= 0
   if is_new then
-    vim.fn.system('tmux new-session -d -s ' .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
+    vim.fn.system("tmux new-session -d -s " .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
   else
-    vim.fn.system('tmux new-window -t ' .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
+    vim.fn.system("tmux new-window -t " .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
   end
   vim.fn.system("tmux set-option -t " .. s .. " mouse on && tmux set-option -t " .. s .. " detach-on-destroy off && tmux switch-client -t " .. s)
 end
