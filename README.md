@@ -83,7 +83,7 @@ nvim
 | `<Leader>as` | AI chat (horizontal split) |
 | `<Leader>at` | AI chat (new tab) |
 | `<Leader>ax` | Send selection to chat |
-| `<Leader>ag` | Claude Code agent (tmux) |
+| `<Leader>ag` | Claude Code agent (dedicated tmux session) |
 | `<Leader>ah` | MCP server manager |
 
 ### Git
