@@ -11,8 +11,8 @@ keymap.set("n", "-", "<C-x>")
 keymap.set("n", "<C-a>", "gg<S-v>G") -- hold the Control and a to selecte all.
 
 -- Save file and quit
-keymap.set("n", "<Leader>qq", ":quit<Return>", opts)
-keymap.set("n", "<Leader>qQ", ":qa<Return>", opts)
+keymap.set("n", "<Leader>qq", ":ConfirmQuit<Return>", opts)
+keymap.set("n", "<Leader>qQ", ":ConfirmQall<Return>", opts)
 
 -- Tabs
 keymap.set("n", "te", ":tabedit ")
