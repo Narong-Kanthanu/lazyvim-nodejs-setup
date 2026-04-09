@@ -112,7 +112,8 @@ nvim
 │   │   ├── lazy.lua         # Plugin manager setup
 │   │   ├── options.lua      # Editor settings
 │   │   ├── keymaps.lua      # Key bindings
-│   │   └── autocmds.lua     # Auto-commands
+│   │   ├── autocmds.lua     # Auto-commands
+│   │   └── confirm.lua      # Custom save confirm dialog
 │   └── plugins/
 │       ├── lsp/             # LSP, completion, mason
 │       ├── editor/          # Telescope, treesitter, UI
