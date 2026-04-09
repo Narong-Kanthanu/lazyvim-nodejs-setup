@@ -1,81 +1,49 @@
--- Compact floating confirm dialog for unsaved changes
--- Replaces vim's built-in confirm dialog with a minimal centered popup
+-- Custom confirm dialog: compact floating popup with [Y]es [N]o [C]ancel
 local function confirm_save(on_yes, on_no)
-  local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
-  if filename == "" then
-    filename = "[No Name]"
-  end
-
-  local title = ' Save changes to "' .. filename .. '"? '
+  local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+  local title = string.format(' Save changes to "%s"? ', name ~= "" and name or "[No Name]")
   local choices = "[Y]es  [N]o  [C]ancel"
-  local width = math.max(#title + 2, #choices + 4)
-  local pad = string.rep(" ", math.floor((width - #choices) / 2))
+  local w = math.max(#title + 2, #choices + 4)
 
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { pad .. choices })
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { string.rep(" ", math.floor((w - #choices) / 2)) .. choices })
   vim.bo[buf].modifiable = false
 
   local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    width = width,
-    height = 1,
-    row = math.floor((vim.o.lines - 1) / 2),
-    col = math.floor((vim.o.columns - width) / 2),
-    style = "minimal",
-    border = "rounded",
-    title = title,
-    title_pos = "center",
+    relative = "editor", style = "minimal", border = "rounded",
+    width = w, height = 1,
+    row = math.floor((vim.o.lines - 1) / 2), col = math.floor((vim.o.columns - w) / 2),
+    title = title, title_pos = "center",
   })
 
-  local function close(callback)
-    if vim.api.nvim_win_is_valid(win) then
-      vim.api.nvim_win_close(win, true)
-    end
-    if vim.api.nvim_buf_is_valid(buf) then
-      vim.api.nvim_buf_delete(buf, { force = true })
-    end
-    if callback then
-      vim.schedule(callback)
-    end
+  local function close(cb)
+    if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
+    if vim.api.nvim_buf_is_valid(buf) then vim.api.nvim_buf_delete(buf, { force = true }) end
+    if cb then vim.schedule(cb) end
   end
 
-  for key, cb in pairs({ y = on_yes, n = on_no }) do
-    vim.keymap.set("n", key, function() close(cb) end, { buffer = buf, nowait = true })
-  end
-  for _, key in ipairs({ "c", "<Esc>" }) do
-    vim.keymap.set("n", key, function() close() end, { buffer = buf, nowait = true })
-  end
+  local map = function(key, cb) vim.keymap.set("n", key, function() close(cb) end, { buffer = buf, nowait = true }) end
+  map("y", on_yes)
+  map("n", on_no)
+  map("c", nil)
+  map("<Esc>", nil)
 end
 
-vim.api.nvim_create_user_command("ConfirmQuit", function(args)
-  if args.bang or not vim.bo.modified then
-    vim.cmd("quit" .. (args.bang and "!" or ""))
-    return
+local function has_modified_bufs()
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted and vim.bo[b].modified then return true end
   end
-  confirm_save(function()
-    vim.cmd("write | quit")
-  end, function()
-    vim.cmd("quit!")
-  end)
+  return false
+end
+
+vim.api.nvim_create_user_command("ConfirmQuit", function(a)
+  if a.bang or not vim.bo.modified then return vim.cmd("quit" .. (a.bang and "!" or "")) end
+  confirm_save(function() vim.cmd("write | quit") end, function() vim.cmd("quit!") end)
 end, { bang = true })
 
-vim.api.nvim_create_user_command("ConfirmQall", function(args)
-  if args.bang then
-    vim.cmd("qall!")
-    return
-  end
-  local modified = vim.tbl_filter(function(b)
-    return vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted and vim.bo[b].modified
-  end, vim.api.nvim_list_bufs())
-  if #modified == 0 then
-    vim.cmd("qall")
-    return
-  end
-  confirm_save(function()
-    vim.cmd("wall | qall")
-  end, function()
-    vim.cmd("qall!")
-  end)
+vim.api.nvim_create_user_command("ConfirmQall", function(a)
+  if a.bang or not has_modified_bufs() then return vim.cmd("qall" .. (a.bang and "!" or "")) end
+  confirm_save(function() vim.cmd("wall | qall") end, function() vim.cmd("qall!") end)
 end, { bang = true })
 
 vim.cmd([[cnoreabbrev <expr> q  getcmdtype() == ':' && getcmdline() ==# 'q'  ? 'ConfirmQuit'  : 'q']])
