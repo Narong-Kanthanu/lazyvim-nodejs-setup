@@ -75,7 +75,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 - **clipboard.lua**: OSC52 clipboard support for SSH/remote development (auto-copies on yank)
 - **which-key.lua**: Keymap display helper with modern preset
-- **markdown.lua**: Markdown preview with peek.nvim (`<Leader>md` open, `<Leader>mq` close), Obsidian.nvim integration with workspace-aware vault graph (`<Leader>mg`)
+- **markdown.lua**: Markdown preview with peek.nvim (`<Leader>md` open, `<Leader>mq` close), Obsidian.nvim integration with workspace-aware vault graph (`<Leader>mo`)
 
 #### Scripts (`lua/scripts/`)
 
@@ -154,7 +154,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 ### Markdown
 - `<Leader>md`: Open markdown preview
 - `<Leader>mq`: Close markdown preview
-- `<Leader>mg`: Open vault graph (multi-workspace D3 force-directed graph)
+- `<Leader>mo`: Open Obsidian graph (multi-workspace D3 force-directed graph)
 
 ### Refactoring
 - `<Leader>rn`: Incremental rename

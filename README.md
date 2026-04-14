@@ -103,7 +103,7 @@ nvim
 |-----|--------|
 | `<Leader>md` | Markdown preview |
 | `<Leader>mq` | Close markdown preview |
-| `<Leader>mg` | Vault graph (multi-workspace D3 graph) |
+| `<Leader>mo` | Obsidian graph (multi-workspace D3 graph) |
 
 ### File Management
 
@@ -160,7 +160,7 @@ export PERSONAL_VAULT_PATH="~/path/to/personal/vault"
 export WORK_VAULT_PATH="~/path/to/work/vault"
 ```
 
-Press `<Leader>mg` to generate an interactive D3 force-directed graph of your vault's `[[wikilinks]]`. The graph includes a workspace selector dropdown to switch between vaults. The HTML output is saved to the common parent directory of your vaults.
+Press `<Leader>mo` to generate an interactive D3 force-directed graph of your vault's `[[wikilinks]]`. The graph includes a workspace selector dropdown to switch between vaults. The HTML output is saved to the common parent directory of your vaults.
 
 The script can also be run standalone:
 

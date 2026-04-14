@@ -57,7 +57,7 @@ return {
     },
     keys = {
       {
-        "<leader>mg",
+        "<leader>mo",
         function()
           local ws = Obsidian.workspace
           local script = vim.fn.stdpath("config") .. "/lua/scripts/vault-graph.py"
@@ -70,7 +70,7 @@ return {
           }, { detach = true })
         end,
         mode = { "n" },
-        desc = "Open vault graph",
+        desc = "Open Obsidian graph",
       },
     },
   },
