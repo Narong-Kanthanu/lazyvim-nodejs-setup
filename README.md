@@ -40,6 +40,8 @@ nvim
 - [fd](https://github.com/sharkdp/fd) for telescope file finding
 - [lazygit](https://github.com/jesseduffield/lazygit) (optional) for git UI
 - [yazi](https://github.com/sxyazi/yazi) (optional) for file manager
+- [Python 3](https://www.python.org/) (optional) for vault graph generator
+- [deno](https://deno.land/) (optional) for markdown preview (peek.nvim)
 - A [Nerd Font](https://www.nerdfonts.com/) for icons
 
 ## Key Bindings
@@ -95,6 +97,14 @@ nvim
 | `<Leader>gb` | Git blame |
 | `<Leader>gg` | LazyGit |
 
+### Markdown / Obsidian
+
+| Key | Action |
+|-----|--------|
+| `<Leader>md` | Markdown preview |
+| `<Leader>mq` | Close markdown preview |
+| `<Leader>mg` | Vault graph (multi-workspace D3 graph) |
+
 ### File Management
 
 | Key | Action |
@@ -119,7 +129,9 @@ nvim
 │       ├── editor/          # Telescope, treesitter, UI
 │       ├── ai/              # CodeCompanion, Copilot, MCP
 │       ├── git/             # Gitsigns, LazyGit
-│       └── other/           # Clipboard, which-key, peek
+│       └── other/           # Clipboard, which-key, markdown/obsidian
+│   └── scripts/
+│       └── vault-graph.py   # Obsidian vault graph generator
 ```
 
 ## AI Setup
@@ -138,6 +150,25 @@ Uses GitHub Copilot's Claude model by default. Configure API keys in environment
 Manage MCP servers with `<Leader>ah`. Workspace-local config supported via:
 - `.mcphub/servers.json`
 - `.vscode/mcp.json`
+
+### Obsidian Vault Graph
+
+Set environment variables to point to your Obsidian vaults:
+
+```bash
+export PERSONAL_VAULT_PATH="~/path/to/personal/vault"
+export WORK_VAULT_PATH="~/path/to/work/vault"
+```
+
+Press `<Leader>mg` to generate an interactive D3 force-directed graph of your vault's `[[wikilinks]]`. The graph includes a workspace selector dropdown to switch between vaults. The HTML output is saved to the common parent directory of your vaults.
+
+The script can also be run standalone:
+
+```bash
+python3 lua/scripts/vault-graph.py --all          # all workspaces
+python3 lua/scripts/vault-graph.py -w personal     # specific workspace
+python3 lua/scripts/vault-graph.py ~/my-vault      # arbitrary path
+```
 
 ## Performance Notes
 

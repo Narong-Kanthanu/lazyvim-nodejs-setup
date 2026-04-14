@@ -75,7 +75,11 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 - **clipboard.lua**: OSC52 clipboard support for SSH/remote development (auto-copies on yank)
 - **which-key.lua**: Keymap display helper with modern preset
-- **peek.lua**: Markdown preview with webview (`<Leader>md` open, `<Leader>mq` close)
+- **markdown.lua**: Markdown preview with peek.nvim (`<Leader>md` open, `<Leader>mq` close), Obsidian.nvim integration with workspace-aware vault graph (`<Leader>mg`)
+
+#### Scripts (`lua/scripts/`)
+
+- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive D3 force-directed graph HTML with in-browser workspace selector dropdown. Output saved to common parent of workspace paths.
 
 #### Refactoring (`lua/plugins/refactoring.lua`)
 
@@ -150,6 +154,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 ### Markdown
 - `<Leader>md`: Open markdown preview
 - `<Leader>mq`: Close markdown preview
+- `<Leader>mg`: Open vault graph (multi-workspace D3 force-directed graph)
 
 ### Refactoring
 - `<Leader>rn`: Incremental rename
