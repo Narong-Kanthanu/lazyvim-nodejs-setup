@@ -20,6 +20,8 @@ import os
 import re
 import json
 import argparse
+import subprocess
+import sys
 import webbrowser
 from pathlib import Path
 from collections import defaultdict
@@ -543,6 +545,78 @@ def generate_html(workspaces_data: dict, active: str) -> str:
     return html
 
 
+# ── Browser open / refresh ────────────────────────────────────────────────────
+
+def open_or_refresh(file_path: Path):
+    """Refresh existing browser tab if open, otherwise open a new one."""
+    url = f"file://{file_path}"
+
+    if sys.platform == "darwin":
+        # Try Chrome first, then Safari, via AppleScript
+        for browser, script in [
+            ("Google Chrome", _chrome_applescript(url)),
+            ("Safari", _safari_applescript(url)),
+        ]:
+            try:
+                result = subprocess.run(
+                    ["osascript", "-e", script],
+                    capture_output=True, text=True, timeout=5,
+                )
+                if result.returncode == 0 and result.stdout.strip() == "found":
+                    print(f"Refreshed in {browser}")
+                    return
+            except (subprocess.TimeoutExpired, FileNotFoundError):
+                continue
+
+    # Fallback: open new tab
+    webbrowser.open(url)
+    print("Opening in browser...")
+
+
+def _chrome_applescript(url: str) -> str:
+    return f'''
+tell application "System Events"
+    if not (exists process "Google Chrome") then return "missing"
+end tell
+tell application "Google Chrome"
+    repeat with w in windows
+        set ti to 0
+        repeat with t in tabs of w
+            set ti to ti + 1
+            if URL of t starts with "{url}" then
+                set active tab index of w to ti
+                set index of w to 1
+                tell t to reload
+                return "found"
+            end if
+        end repeat
+    end repeat
+end tell
+return "notfound"
+'''
+
+
+def _safari_applescript(url: str) -> str:
+    return f'''
+tell application "System Events"
+    if not (exists process "Safari") then return "missing"
+end tell
+tell application "Safari"
+    repeat with w in windows
+        repeat with t in tabs of w
+            if URL of t starts with "{url}" then
+                set current tab of w to t
+                set index of w to 1
+                tell t to do JavaScript "location.reload()"
+                return "found"
+            end if
+        end repeat
+    end repeat
+end tell
+return "notfound"
+'''
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -656,8 +730,7 @@ def main():
     print(f"Graph saved: {out_path}")
 
     if not args.no_open:
-        webbrowser.open(f"file://{out_path}")
-        print("Opening in browser...")
+        open_or_refresh(out_path)
 
     return 0
 
