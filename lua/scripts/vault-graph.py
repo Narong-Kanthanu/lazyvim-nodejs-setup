@@ -185,25 +185,26 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <title>Vault Graph</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0d0d14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; }
-  #canvas { width: 100vw; height: 100vh; }
+  body { background: #1a2332; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; }
+  #network-container { width: 100vw; height: 100vh; }
 
   /* Tooltip */
   #tooltip {
     position: absolute;
-    background: #1a1a2e;
-    border: 1px solid #7f77dd44;
+    background: #152030;
+    border: 1px solid #3a5a6a44;
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 12px;
-    color: #afa9ec;
+    color: #a0b8c8;
     pointer-events: none;
     opacity: 0;
     transition: opacity .15s;
     max-width: 220px;
+    z-index: 10;
   }
-  #tooltip .title { font-size: 13px; font-weight: 600; color: #ece9ff; margin-bottom: 4px; }
-  #tooltip .meta { color: #7f77dd; font-size: 11px; }
+  #tooltip .title { font-size: 13px; font-weight: 600; color: #cdd3da; margin-bottom: 4px; }
+  #tooltip .meta { color: #79a8eb; font-size: 11px; }
 
   /* Controls */
   #controls {
@@ -213,30 +214,32 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     display: flex;
     flex-direction: column;
     gap: 8px;
+    z-index: 5;
   }
   #workspace-select, #search-box {
-    background: #1a1a2e;
-    border: 1px solid #7f77dd44;
+    background: #152030;
+    border: 1px solid #3a5a6a44;
     border-radius: 8px;
     padding: 7px 12px;
-    color: #ece9ff;
+    color: #cdd3da;
     font-size: 13px;
     outline: none;
     width: 200px;
   }
   #workspace-select { cursor: pointer; }
-  #workspace-select:focus, #search-box:focus { border-color: #7f77dd; }
-  #search-box::placeholder { color: #534ab7; }
+  #workspace-select:focus, #search-box:focus { border-color: #79a8eb; }
+  #search-box::placeholder { color: #4a6a7a; }
 
   /* Stats */
   #stats {
     position: absolute;
     bottom: 16px;
     left: 16px;
-    color: #534ab7;
+    color: #4a6a7a;
     font-size: 11px;
     font-family: monospace;
     line-height: 1.8;
+    z-index: 5;
   }
 
   /* Legend */
@@ -244,15 +247,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     position: absolute;
     top: 16px;
     right: 16px;
-    background: #1a1a2e;
-    border: 1px solid #7f77dd22;
+    background: #152030;
+    border: 1px solid #3a5a6a22;
     border-radius: 8px;
     padding: 10px 14px;
     font-size: 11px;
-    color: #7f77dd;
+    color: #79a8eb;
     min-width: 130px;
+    z-index: 5;
   }
-  #legend .legend-title { color: #afa9ec; font-size: 12px; margin-bottom: 8px; font-weight: 600; }
+  #legend .legend-title { color: #a0b8c8; font-size: 12px; margin-bottom: 8px; font-weight: 600; }
   .legend-item { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
   .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
@@ -261,30 +265,31 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     position: absolute;
     bottom: 16px;
     right: 16px;
-    color: #2a2a40;
+    color: #2a3a4a;
     font-size: 11px;
     text-align: right;
     line-height: 1.8;
+    z-index: 5;
   }
 
   /* Reset button */
   #reset-btn {
-    background: #1a1a2e;
-    border: 1px solid #7f77dd44;
+    background: #152030;
+    border: 1px solid #3a5a6a44;
     border-radius: 8px;
     padding: 6px 12px;
-    color: #7f77dd;
+    color: #79a8eb;
     font-size: 12px;
     cursor: pointer;
     transition: background .15s;
     width: 200px;
   }
-  #reset-btn:hover { background: #2a2a44; }
+  #reset-btn:hover { background: #1e3040; }
 </style>
 </head>
 <body>
 
-<svg id="canvas"></svg>
+<div id="network-container"></div>
 <div id="tooltip"><div class="title"></div><div class="meta"></div></div>
 
 <div id="controls">
@@ -299,30 +304,71 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </div>
 
 <div id="stats"></div>
-<div id="hint">drag · scroll to zoom · hover to highlight</div>
+<div id="hint">drag · scroll to zoom · hover to highlight · click to focus</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 <script>
 const WORKSPACES_DATA = __WORKSPACES_DATA__;
 const ACTIVE_WORKSPACE = "__ACTIVE_WORKSPACE__";
 
-// ── Color palette ─────────────────────────────────────────────────────────
+// ── Color palette (Obsidian-style: yellow-green, teal, blue tones) ────────
 const PALETTE = [
-  '#7f77dd', '#1d9e75', '#d85a30', '#ba7517',
-  '#d4537e', '#378add', '#639922', '#888780',
-  '#534ab7', '#0f6e56',
+  '#c8d84e', '#4ecdc4', '#79a8eb', '#a882ff',
+  '#e8d44d', '#56c1b3', '#6bb5e0', '#d4a0e0',
+  '#8ecf65', '#45b7d1',
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────
-let sim = null;
+let network = null;
+let nodesDS = null;
+let edgesDS = null;
+let GROUP_COLORS = {};
+let focusedNode = null;
+let searchActive = false;
+let savedSearchQuery = '';
+const container = document.getElementById('network-container');
 
-// ── Setup SVG ─────────────────────────────────────────────────────────────
-const W = window.innerWidth, H = window.innerHeight;
-const svg = d3.select('#canvas').attr('width', W).attr('height', H);
-const gRoot = svg.append('g');
+// ── vis.js options ────────────────────────────────────────────────────────
+const options = {
+  physics: {
+    solver: 'barnesHut',
+    barnesHut: {
+      gravitationalConstant: -2500,
+      centralGravity: 0.3,
+      springLength: 95,
+      springConstant: 0.04,
+      damping: 0.09,
+      avoidOverlap: 0.1,
+    },
+    stabilization: { iterations: 150 },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+    dragNodes: true,
+    dragView: true,
+    zoomView: true,
+    zoomSpeed: 0.6,
+  },
+  nodes: {
+    shape: 'dot',
+    borderWidth: 0,
+    shadow: { enabled: true, size: 12, x: 0, y: 0 },
+    font: { face: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif' },
+  },
+  edges: {
+    smooth: false,
+    color: { inherit: false },
+    width: 0.5,
+  },
+};
 
-const zoom = d3.zoom().scaleExtent([0.1, 8]).on('zoom', e => gRoot.attr('transform', e.transform));
-svg.call(zoom);
+// ── Node size helper ──────────────────────────────────────────────────────
+function nodeSize(n) {
+  const total = (n.links_in || 0) + (n.links_out || 0);
+  if (n.group === 'unresolved') return 2;
+  return 3 + Math.min(total * 0.8, 8);
+}
 
 // ── Build workspace selector ──────────────────────────────────────────────
 const wsSelect = document.getElementById('workspace-select');
@@ -342,34 +388,17 @@ wsNames.forEach(name => {
 
 wsSelect.addEventListener('change', () => renderGraph(wsSelect.value));
 
-// ── Node radius ───────────────────────────────────────────────────────────
-function nodeR(d) {
-  const total = (d.links_in || 0) + (d.links_out || 0);
-  if (d.group === 'unresolved') return 3;
-  return 4 + Math.min(total * 1.2, 12);
-}
-
 // ── Render graph ──────────────────────────────────────────────────────────
 function renderGraph(wsName) {
-  // Stop previous simulation
-  if (sim) sim.stop();
+  if (network) { network.destroy(); network = null; }
 
-  // Clear SVG content
-  gRoot.selectAll('*').remove();
-
-  // Reset zoom
-  svg.call(zoom.transform, d3.zoomIdentity);
-
-  // Deep-copy data so D3 mutation doesn't corrupt the source
   const data = WORKSPACES_DATA[wsName];
-  const nodes = data.nodes.map(n => ({ ...n }));
-  const links = data.links.map(l => ({ ...l }));
 
   // Build color map
-  const GROUP_COLORS = {};
-  const groups = [...new Set(nodes.map(n => n.group))].filter(g => g !== 'unresolved');
+  GROUP_COLORS = {};
+  const groups = [...new Set(data.nodes.map(n => n.group))].filter(g => g !== 'unresolved');
   groups.forEach((g, i) => { GROUP_COLORS[g] = PALETTE[i % PALETTE.length]; });
-  GROUP_COLORS['unresolved'] = '#2a2a3e';
+  GROUP_COLORS['unresolved'] = '#2a3a4a';
 
   // Legend
   const legendEl = document.getElementById('legend-items');
@@ -377,155 +406,292 @@ function renderGraph(wsName) {
   groups.forEach(grp => {
     const item = document.createElement('div');
     item.className = 'legend-item';
-    item.innerHTML = `<div class="legend-dot" style="background:${GROUP_COLORS[grp]}"></div><span>${grp}</span>`;
+    item.innerHTML = '<div class="legend-dot" style="background:' + GROUP_COLORS[grp] + '"></div><span>' + grp + '</span>';
     legendEl.appendChild(item);
   });
-  if (GROUP_COLORS['unresolved']) {
-    const item = document.createElement('div');
-    item.className = 'legend-item';
-    item.innerHTML = `<div class="legend-dot" style="background:#2a2a3e;border:1px solid #534ab7"></div><span style="color:#534ab7">unresolved</span>`;
-    legendEl.appendChild(item);
-  }
+  const unresolvedItem = document.createElement('div');
+  unresolvedItem.className = 'legend-item';
+  unresolvedItem.innerHTML = '<div class="legend-dot" style="background:#2a3a4a;border:1px solid #4a6a7a"></div><span style="color:#4a6a7a">unresolved</span>';
+  legendEl.appendChild(unresolvedItem);
 
   // Stats
-  const realNodes = nodes.filter(n => n.group !== 'unresolved');
-  const statsEl = document.getElementById('stats');
-  statsEl.innerHTML = `${wsName}<br>${realNodes.length} notes &nbsp;&middot;&nbsp; ${links.length} links`;
+  const realNodes = data.nodes.filter(n => n.group !== 'unresolved');
+  document.getElementById('stats').innerHTML = wsName + '<br>' + realNodes.length + ' notes &nbsp;&middot;&nbsp; ' + data.links.length + ' links';
 
-  // Simulation
-  const curW = window.innerWidth, curH = window.innerHeight;
-  sim = d3.forceSimulation(nodes)
-    .force('link', d3.forceLink(links).id(d => d.id).distance(90).strength(0.35))
-    .force('charge', d3.forceManyBody().strength(-250))
-    .force('center', d3.forceCenter(curW / 2, curH / 2))
-    .force('collide', d3.forceCollide(d => nodeR(d) + 6));
+  // Build vis.js datasets
+  const visNodes = data.nodes.map(n => {
+    const total = (n.links_in || 0) + (n.links_out || 0);
+    const color = GROUP_COLORS[n.group] || '#4a6a7a';
+    const isUnresolved = n.group === 'unresolved';
+    return {
+      id: n.id,
+      label: total >= 3 ? n.label : undefined,
+      size: nodeSize(n),
+      color: {
+        background: color,
+        border: color,
+        highlight: { background: '#ffffff', border: '#ffffff' },
+        hover: { background: '#ffffff', border: '#ffffff' },
+      },
+      opacity: isUnresolved ? 0.25 : 0.9,
+      shadow: { enabled: !isUnresolved, color: color + '80', size: 8 + Math.min(total * 2, 16), x: 0, y: 0 },
+      font: {
+        color: '#cdd3da',
+        size: total > 4 ? 11 : 9,
+        strokeWidth: 2,
+        strokeColor: '#1a2332',
+        vadjust: -(nodeSize(n) + 4),
+      },
+      // Metadata for hover/search
+      _label: n.label,
+      _group: n.group,
+      _color: color,
+      _links_in: n.links_in || 0,
+      _links_out: n.links_out || 0,
+      _words: n.words || 0,
+      _total: total,
+    };
+  });
 
-  // Links
-  const linkEl = gRoot.append('g').selectAll('line')
-    .data(links).join('line')
-    .attr('stroke', '#7f77dd')
-    .attr('stroke-opacity', 0.2)
-    .attr('stroke-width', 1);
+  const visEdges = data.links.map((l, i) => ({
+    id: 'e' + i,
+    from: l.source,
+    to: l.target,
+    color: { color: '#3a5a63', opacity: 0.35 },
+    width: 0.5,
+  }));
 
-  // Nodes
-  const nodeG = gRoot.append('g').selectAll('g')
-    .data(nodes).join('g')
-    .attr('cursor', d => d.group !== 'unresolved' ? 'pointer' : 'default')
-    .call(d3.drag()
-      .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-      .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
-      .on('end',   (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
+  nodesDS = new vis.DataSet(visNodes);
+  edgesDS = new vis.DataSet(visEdges);
 
-  nodeG.append('circle')
-    .attr('r', nodeR)
-    .attr('fill', d => GROUP_COLORS[d.group] || '#534ab7')
-    .attr('fill-opacity', d => d.group === 'unresolved' ? 0.3 : 0.85)
-    .attr('stroke', d => GROUP_COLORS[d.group] || '#534ab7')
-    .attr('stroke-opacity', d => d.group === 'unresolved' ? 0.3 : 0.6)
-    .attr('stroke-width', 1.5);
+  network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, options);
 
-  // Labels
-  nodeG.append('text')
-    .text(d => d.label)
-    .attr('font-size', d => {
-      const total = (d.links_in || 0) + (d.links_out || 0);
-      return total > 4 ? 12 : 10;
-    })
-    .attr('fill', d => GROUP_COLORS[d.group] || '#534ab7')
-    .attr('fill-opacity', 0.85)
-    .attr('text-anchor', 'middle')
-    .attr('dy', d => -(nodeR(d) + 5))
-    .attr('pointer-events', 'none')
-    .attr('class', 'node-label')
-    .attr('opacity', d => {
-      const total = (d.links_in || 0) + (d.links_out || 0);
-      return total >= 3 ? 1 : 0;
-    });
-
-  // Tooltip
+  // ── Hover highlight ──────────────────────────────────────────────────
   const tip = document.getElementById('tooltip');
 
-  nodeG.on('mouseover', function(e, d) {
-    if (d.group === 'unresolved') return;
+  function resetHover() {
+    tip.style.opacity = 0;
+    nodesDS.update(nodesDS.get().map(n => ({
+      id: n.id,
+      opacity: n._group === 'unresolved' ? 0.25 : 0.9,
+      label: n._total >= 3 ? n._label : undefined,
+    })));
+    edgesDS.update(edgesDS.get().map(e => ({
+      id: e.id,
+      color: { color: '#3a5a63', opacity: 0.35 },
+      width: 0.5,
+    })));
+  }
 
-    const connected = new Set([d.id]);
-    links.forEach(l => {
-      if (l.source.id === d.id) connected.add(l.target.id);
-      if (l.target.id === d.id) connected.add(l.source.id);
-    });
+  network.on('hoverNode', function(params) {
+    if (searchActive || focusedNode) return;
+    const nodeId = params.node;
+    const nd = nodesDS.get(nodeId);
+    if (nd._group === 'unresolved') return;
 
-    linkEl
-      .attr('stroke-opacity', l => l.source.id === d.id || l.target.id === d.id ? 0.9 : 0.03)
-      .attr('stroke-width',   l => l.source.id === d.id || l.target.id === d.id ? 2 : 0.8);
-    nodeG.select('circle').attr('fill-opacity', n => connected.has(n.id) ? 1 : 0.1);
-    nodeG.select('.node-label').attr('opacity', n => connected.has(n.id) ? 1 : 0);
+    const connNodes = new Set([nodeId, ...network.getConnectedNodes(nodeId)]);
+    const connEdges = new Set(network.getConnectedEdges(nodeId));
 
-    tip.querySelector('.title').textContent = d.label;
+    nodesDS.update(nodesDS.get().map(n => ({
+      id: n.id,
+      opacity: connNodes.has(n.id) ? 1 : 0.08,
+      label: connNodes.has(n.id) ? n._label : undefined,
+    })));
+
+    edgesDS.update(edgesDS.get().map(e => ({
+      id: e.id,
+      color: { color: connEdges.has(e.id) ? '#79a8eb' : '#3a5a6a', opacity: connEdges.has(e.id) ? 0.8 : 0.03 },
+      width: connEdges.has(e.id) ? 1.5 : 0.3,
+    })));
+
+    tip.querySelector('.title').textContent = nd._label;
     tip.querySelector('.meta').innerHTML =
-      `${d.group} &nbsp;&middot;&nbsp; ${d.links_in} &larr; &nbsp; ${d.links_out} &rarr;` +
-      (d.words > 0 ? `<br>${d.words} words` : '');
+      nd._group + ' &nbsp;&middot;&nbsp; ' + nd._links_in + ' &larr; &nbsp; ' + nd._links_out + ' &rarr;' +
+      (nd._words > 0 ? '<br>' + nd._words + ' words' : '');
     tip.style.opacity = 1;
+  });
 
-  }).on('mousemove', e => {
-    tip.style.left = (e.pageX + 14) + 'px';
-    tip.style.top  = (e.pageY - 32) + 'px';
-  }).on('mouseout', () => {
-    linkEl.attr('stroke-opacity', 0.2).attr('stroke-width', 1);
-    nodeG.select('circle').attr('fill-opacity', d => d.group === 'unresolved' ? 0.3 : 0.85);
-    nodeG.select('.node-label').attr('opacity', d => {
-      const total = (d.links_in || 0) + (d.links_out || 0);
-      return total >= 3 ? 1 : 0;
-    });
+  network.on('blurNode', function() {
+    if (searchActive || focusedNode) return;
+    nodesDS.update(nodesDS.get().map(n => ({
+      id: n.id,
+      opacity: n._group === 'unresolved' ? 0.25 : 0.9,
+      label: n._total >= 3 ? n._label : undefined,
+    })));
+
+    edgesDS.update(edgesDS.get().map(e => ({
+      id: e.id,
+      color: { color: '#3a5a63', opacity: 0.35 },
+      width: 0.5,
+    })));
+
     tip.style.opacity = 0;
   });
 
-  // Tick
-  sim.on('tick', () => {
-    linkEl
-      .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
-      .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-    nodeG.attr('transform', d => `translate(${d.x},${d.y})`);
+  // Position tooltip via mouse
+  container.addEventListener('mousemove', function(e) {
+    tip.style.left = (e.pageX + 14) + 'px';
+    tip.style.top = (e.pageY - 32) + 'px';
   });
 
-  // Search — rebind to current data
+  // ── Search ───────────────────────────────────────────────────────────
   const searchBox = document.getElementById('search-box');
   searchBox.value = '';
-  // Remove old listener by replacing the element
   const newSearch = searchBox.cloneNode(true);
   searchBox.parentNode.replaceChild(newSearch, searchBox);
+
+  function applySearch(q) {
+    // Find matched nodes and all their connected neighbors
+    const directMatched = nodesDS.get().filter(n => n._label.toLowerCase().includes(q));
+    const matchedIds = new Set(directMatched.map(n => n.id));
+    const visibleNodes = new Set(matchedIds);
+    const visibleEdges = new Set();
+
+    matchedIds.forEach(id => {
+      network.getConnectedNodes(id).forEach(nid => visibleNodes.add(nid));
+      network.getConnectedEdges(id).forEach(eid => visibleEdges.add(eid));
+    });
+
+    // Hide non-related, show matched + connections with labels
+    nodesDS.update(nodesDS.get().map(n => ({
+      id: n.id,
+      hidden: !visibleNodes.has(n.id),
+      opacity: matchedIds.has(n.id) ? 1 : (visibleNodes.has(n.id) ? 0.6 : 0),
+      label: visibleNodes.has(n.id) ? n._label : undefined,
+      font: visibleNodes.has(n.id) ? {
+        color: matchedIds.has(n.id) ? '#ffffff' : '#cdd3da',
+        size: matchedIds.has(n.id) ? 13 : 11,
+        strokeWidth: 2, strokeColor: '#1a2332',
+        vadjust: -(nodeSize(n) + 4),
+      } : n.font,
+    })));
+
+    edgesDS.update(edgesDS.get().map(e => ({
+      id: e.id,
+      hidden: !visibleEdges.has(e.id),
+      color: { color: '#79a8eb', opacity: visibleEdges.has(e.id) ? 0.6 : 0 },
+      width: visibleEdges.has(e.id) ? 1.2 : 0,
+    })));
+
+    // Zoom to fit visible nodes
+    if (visibleNodes.size > 0) {
+      network.fit({
+        nodes: [...visibleNodes],
+        animation: { duration: 400, easingFunction: 'easeInOutQuad' },
+      });
+    }
+  }
+
+  function restoreNormal() {
+    searchActive = false;
+    savedSearchQuery = '';
+    newSearch.value = '';
+    tip.style.opacity = 0;
+    nodesDS.update(nodesDS.get().map(n => ({
+      id: n.id,
+      hidden: false,
+      opacity: n._group === 'unresolved' ? 0.25 : 0.9,
+      label: n._total >= 3 ? n._label : undefined,
+      font: { color: '#cdd3da', size: n._total > 4 ? 11 : 9, strokeWidth: 2, strokeColor: '#1a2332', vadjust: -(nodeSize(n) + 4) },
+    })));
+    edgesDS.update(edgesDS.get().map(e => ({
+      id: e.id,
+      hidden: false,
+      color: { color: '#3a5a63', opacity: 0.35 },
+      width: 0.5,
+    })));
+    network.fit({ animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
+  }
 
   newSearch.addEventListener('input', function() {
     const q = this.value.trim().toLowerCase();
     if (!q) {
-      nodeG.select('circle').attr('fill-opacity', d => d.group === 'unresolved' ? 0.3 : 0.85);
-      nodeG.select('.node-label').attr('opacity', d => {
-        const total = (d.links_in || 0) + (d.links_out || 0);
-        return total >= 3 ? 1 : 0;
-      });
-      linkEl.attr('stroke-opacity', 0.2);
+      restoreNormal();
+      return;
+    }
+    resetHover();
+    searchActive = true;
+    savedSearchQuery = q;
+    applySearch(q);
+  });
+
+  // ── Focus mode (click node to zoom, click background to exit) ────────
+  function enterFocus(nodeId) {
+    focusedNode = nodeId;
+    const nd = nodesDS.get(nodeId);
+    if (!nd || nd._group === 'unresolved') return;
+
+    const connNodes = new Set([nodeId, ...network.getConnectedNodes(nodeId)]);
+    const connEdges = new Set(network.getConnectedEdges(nodeId));
+
+    // Show connected nodes with labels, hide the rest
+    nodesDS.update(nodesDS.get().map(n => {
+      const visible = connNodes.has(n.id);
+      return {
+        id: n.id,
+        hidden: !visible,
+        label: visible ? n._label : undefined,
+        opacity: visible ? 1 : 0,
+        font: visible ? { color: '#cdd3da', size: n.id === nodeId ? 14 : 12, strokeWidth: 2, strokeColor: '#1a2332' } : n.font,
+      };
+    }));
+
+    edgesDS.update(edgesDS.get().map(e => ({
+      id: e.id,
+      hidden: !connEdges.has(e.id),
+      color: { color: '#79a8eb', opacity: connEdges.has(e.id) ? 0.7 : 0 },
+      width: connEdges.has(e.id) ? 1.5 : 0,
+    })));
+
+    // Zoom to fit the connected subgraph
+    network.fit({
+      nodes: [...connNodes],
+      animation: { duration: 500, easingFunction: 'easeInOutQuad' },
+    });
+  }
+
+  function exitFocus() {
+    if (!focusedNode) return;
+    focusedNode = null;
+
+    // If search was active before focus, return to search results
+    if (savedSearchQuery) {
+      searchActive = true;
+      applySearch(savedSearchQuery);
       return;
     }
 
-    const matched = new Set(nodes.filter(n => n.label.toLowerCase().includes(q)).map(n => n.id));
-    nodeG.select('circle').attr('fill-opacity', d => matched.has(d.id) ? 1 : 0.05);
-    nodeG.select('.node-label').attr('opacity', d => matched.has(d.id) ? 1 : 0);
-    linkEl.attr('stroke-opacity', l =>
-      matched.has(l.source.id) || matched.has(l.target.id) ? 0.7 : 0.02);
+    // Otherwise restore normal mode
+    restoreNormal();
+  }
+
+  network.on('click', function(params) {
+    if (params.nodes.length > 0) {
+      // Clicked a node — enter focus (S2)
+      // savedSearchQuery is already set if search was active
+      searchActive = false;
+      enterFocus(params.nodes[0]);
+    } else {
+      // Clicked empty space — step back one level
+      if (focusedNode) {
+        // S2 → S1 (if search was active) or S2 → Normal
+        exitFocus();
+      } else if (searchActive) {
+        // S1 → Normal
+        restoreNormal();
+      }
+    }
   });
 }
 
 // ── Reset view ────────────────────────────────────────────────────────────
 function resetView() {
-  svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity);
+  if (network) network.fit({ animation: { duration: 600, easingFunction: 'easeInOutQuad' } });
 }
 
 // ── Resize ────────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => {
-  const nw = window.innerWidth, nh = window.innerHeight;
-  svg.attr('width', nw).attr('height', nh);
-  if (sim) {
-    sim.force('center', d3.forceCenter(nw / 2, nh / 2)).alpha(0.1).restart();
-  }
+  if (network) network.redraw();
 });
 
 // ── Initial render ────────────────────────────────────────────────────────

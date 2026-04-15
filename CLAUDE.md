@@ -79,7 +79,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 #### Scripts (`lua/scripts/`)
 
-- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive D3 force-directed graph HTML with in-browser workspace selector dropdown. Output saved to common parent of workspace paths.
+- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive vis.js force-directed graph HTML (canvas-based) with in-browser workspace selector dropdown. Output saved to common parent of workspace paths.
 
 #### Refactoring (`lua/plugins/refactoring.lua`)
 
@@ -154,7 +154,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 ### Markdown
 - `<Leader>md`: Open markdown preview
 - `<Leader>mq`: Close markdown preview
-- `<Leader>mo`: Open Obsidian graph (multi-workspace D3 force-directed graph)
+- `<Leader>mo`: Open Obsidian graph (multi-workspace vis.js force-directed graph)
 
 ### Refactoring
 - `<Leader>rn`: Incremental rename
