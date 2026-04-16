@@ -717,45 +717,104 @@ function renderGraph(wsName) {
     restoreNormal();
   }
 
+  // ── Open-in-nvim helpers ─────────────────────────────────────────────
+  function resolveFilePath(nd) {
+    if (nd._path) return nd._path;
+    // Unresolved node: find matching resolved node by ID
+    const target = nd.id.replace('__unresolved__/', '');
+    const match = nodesDS.get().find(n =>
+      n._path && (n.id.endsWith(target + '.md') || n.id.endsWith(target))
+    );
+    if (match) return match._path;
+    // Fallback: construct from vault_path + label
+    const vaultPath = (WORKSPACES_DATA[wsSelect.value] || {}).vault_path;
+    if (vaultPath && nd._label) {
+      return vaultPath + '/' + nd._label.replace(/\.md$/, '') + '.md';
+    }
+    return null;
+  }
+
+  function findNearestNode(canvasPos) {
+    let best = null, bestDist = Infinity;
+    nodesDS.get().forEach(n => {
+      const pos = network.getPositions([n.id])[n.id];
+      const d = Math.hypot(canvasPos.x - pos.x, canvasPos.y - pos.y);
+      if (d < bestDist) { bestDist = d; best = n; }
+    });
+    return bestDist < 80 ? best : null;
+  }
+
   // ── Click ────────────────────────────────────────────────────────────
   // Dot click:   single → focus, double → open file
-  // Label click: single → open file immediately
+  // Label click: single → open file
   // Empty click: exit focus / restore
   network.on('click', function(params) {
     if (params.nodes.length > 0) {
+      const nodeId = params.nodes[0];
+      const nd = nodesDS.get(nodeId);
+
+      // Label click → open file immediately
+      if (IS_SERVER_MODE && nd) {
+        const pos = network.getPositions([nodeId])[nodeId];
+        const canvas = params.pointer.canvas;
+        const dist = Math.hypot(canvas.x - pos.x, canvas.y - pos.y);
+        if (dist > (nd.size || 5)) {
+          if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+          const filePath = resolveFilePath(nd);
+          if (filePath) {
+            fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
+          }
+          return;
+        }
+      }
+
+      // Dot click → focus mode
       if (IS_SERVER_MODE) {
-        // Delay focus to allow double-click detection
         if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
         clickTimer = setTimeout(() => {
           clickTimer = null;
           searchActive = false;
-          enterFocus(params.nodes[0]);
+          enterFocus(nodeId);
         }, 250);
       } else {
         searchActive = false;
-        enterFocus(params.nodes[0]);
+        enterFocus(nodeId);
       }
+    } else if (IS_SERVER_MODE) {
+      // Label area miss — try nearest node fallback
+      const nd = findNearestNode(params.pointer.canvas);
+      if (nd) {
+        const filePath = resolveFilePath(nd);
+        if (filePath) {
+          fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
+          return;
+        }
+      }
+      if (focusedNode) exitFocus();
+      else if (searchActive) restoreNormal();
     } else {
       if (focusedNode) exitFocus();
       else if (searchActive) restoreNormal();
     }
   });
 
-  // Double-click dot: open file in nvim
+  // Double-click: open file in nvim
   network.on('doubleClick', function(params) {
     if (!IS_SERVER_MODE) return;
     if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
-    if (params.nodes.length > 0) {
-      const nd = nodesDS.get(params.nodes[0]);
-      if (nd && nd._path) {
-        fetch('/api/open?path=' + encodeURIComponent(nd._path)).catch(() => {});
-      }
+    const nd = params.nodes.length > 0
+      ? nodesDS.get(params.nodes[0])
+      : findNearestNode(params.pointer.canvas);
+    if (!nd) return;
+    const filePath = resolveFilePath(nd);
+    if (filePath) {
+      fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
     }
   });
 
   if (IS_SERVER_MODE) {
     document.getElementById('hint').textContent =
-      'drag \u00b7 scroll to zoom \u00b7 hover to highlight \u00b7 click to focus \u00b7 double-click to open in nvim';
+      'drag \u00b7 scroll to zoom \u00b7 hover to highlight \u00b7 click dot to focus \u00b7 click label or double-click to open in nvim';
   }
 }
 
@@ -1064,7 +1123,7 @@ def main():
         nodes, links = scan_vault(vault_path)
         real_count = sum(1 for n in nodes if n['group'] != 'unresolved')
         print(f"  {real_count} notes, {len(links)} links")
-        workspaces_data[name] = {"nodes": nodes, "links": links}
+        workspaces_data[name] = {"nodes": nodes, "links": links, "vault_path": str(vault_path)}
 
     if not workspaces_data:
         print("Error: no valid vaults to scan.")
