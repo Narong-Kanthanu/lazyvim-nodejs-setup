@@ -252,6 +252,41 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     z-index: 5;
   }
 
+  /* Confirm modal */
+  #confirm-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 15, 25, 0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  #confirm-overlay.active { display: flex; }
+  #confirm-box {
+    background: #152030;
+    border: 1px solid #3a5a6a;
+    border-radius: 12px;
+    padding: 24px 32px;
+    max-width: 420px;
+    text-align: center;
+  }
+  #confirm-box .msg { color: #cdd3da; font-size: 14px; margin-bottom: 6px; }
+  #confirm-box .sub { color: #4a6a7a; font-size: 12px; margin-bottom: 20px; }
+  #confirm-box .btns { display: flex; gap: 12px; justify-content: center; }
+  #confirm-box button {
+    padding: 8px 24px;
+    border-radius: 8px;
+    border: 1px solid #3a5a6a44;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  #confirm-box .btn-cancel { background: #1e3040; color: #79a8eb; }
+  #confirm-box .btn-cancel:hover { background: #253a50; }
+  #confirm-box .btn-open { background: #79a8eb; color: #0d1520; font-weight: 600; border-color: #79a8eb; }
+  #confirm-box .btn-open:hover { background: #5a90d0; }
+
   /* Keymap help */
   #keymap-help {
     position: absolute;
@@ -335,6 +370,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 <div id="stats"></div>
 <div id="keymap-help"></div>
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <div class="msg"></div>
+    <div class="sub"></div>
+    <div class="btns">
+      <button class="btn-cancel">Cancel</button>
+      <button class="btn-open">Open</button>
+    </div>
+  </div>
+</div>
 <div id="hint">drag · scroll to zoom · hover to highlight · click to focus</div>
 
 <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
@@ -848,6 +893,43 @@ function renderGraph(wsName) {
     return null;
   }
 
+  const confirmOverlay = document.getElementById('confirm-overlay');
+  const confirmBox = document.getElementById('confirm-box');
+
+  function showConfirm(msg, sub, onOpen) {
+    confirmBox.querySelector('.msg').textContent = msg;
+    confirmBox.querySelector('.sub').textContent = sub;
+    confirmOverlay.classList.add('active');
+    const btnOpen = confirmBox.querySelector('.btn-open');
+    const btnCancel = confirmBox.querySelector('.btn-cancel');
+    function cleanup() {
+      confirmOverlay.classList.remove('active');
+      btnOpen.replaceWith(btnOpen.cloneNode(true));
+      btnCancel.replaceWith(btnCancel.cloneNode(true));
+    }
+    btnOpen.addEventListener('click', () => { cleanup(); onOpen(); });
+    btnCancel.addEventListener('click', cleanup);
+  }
+
+  function openInNvim(filePath) {
+    const vaultPath = (WORKSPACES_DATA[wsSelect.value] || {}).vault_path;
+    fetch('/api/cwd').then(r => r.json()).then(data => {
+      const cwd = data.cwd || '';
+      if (!vaultPath || cwd.startsWith(vaultPath)) {
+        fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
+      } else {
+        const name = filePath.split('/').pop();
+        showConfirm(
+          'Open ' + name + '?',
+          'Neovim is in ' + cwd,
+          () => fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {}),
+        );
+      }
+    }).catch(() => {
+      fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
+    });
+  }
+
   function findNearestNode(canvasPos) {
     let best = null, bestDist = Infinity;
     nodesDS.get().forEach(n => {
@@ -875,9 +957,7 @@ function renderGraph(wsName) {
         if (dist > (nd.size || 5)) {
           if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
           const filePath = resolveFilePath(nd);
-          if (filePath) {
-            fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
-          }
+          if (filePath) openInNvim(filePath);
           return;
         }
       }
@@ -899,10 +979,7 @@ function renderGraph(wsName) {
       const nd = findNearestNode(params.pointer.canvas);
       if (nd) {
         const filePath = resolveFilePath(nd);
-        if (filePath) {
-          fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
-          return;
-        }
+        if (filePath) { openInNvim(filePath); return; }
       }
       if (focusedNode) exitFocus();
       else if (searchActive) restoreNormal();
@@ -921,9 +998,7 @@ function renderGraph(wsName) {
       : findNearestNode(params.pointer.canvas);
     if (!nd) return;
     const filePath = resolveFilePath(nd);
-    if (filePath) {
-      fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
-    }
+    if (filePath) openInNvim(filePath);
   });
 
   if (IS_SERVER_MODE) {
@@ -969,7 +1044,7 @@ function renderGraph(wsName) {
       const nd = nodesDS.get(selectedNode);
       if (nd) {
         const filePath = resolveFilePath(nd);
-        if (filePath) fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
+        if (filePath) openInNvim(filePath);
       }
     }
   });
@@ -1131,6 +1206,21 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(b'{"ok":true}')
+            elif parsed.path == '/api/cwd':
+                cwd = ''
+                if nvim_server:
+                    try:
+                        result = subprocess.run(
+                            ['nvim', '--server', nvim_server, '--remote-expr', 'getcwd()'],
+                            capture_output=True, text=True, timeout=5,
+                        )
+                        cwd = result.stdout.strip()
+                    except Exception:
+                        pass
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({"cwd": cwd}).encode())
             elif parsed.path == '/api/heartbeat':
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
