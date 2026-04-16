@@ -580,6 +580,7 @@ function renderGraph(wsName) {
 
   // Position tooltip via mouse
   container.addEventListener('mousemove', function(e) {
+    tip.style.right = 'auto';
     tip.style.left = (e.pageX + 14) + 'px';
     tip.style.top = (e.pageY - 32) + 'px';
   });
@@ -666,6 +667,11 @@ function renderGraph(wsName) {
     applySearch(q);
   });
 
+  newSearch.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); newSearch.blur(); }
+    if (e.key === 'Escape') { e.preventDefault(); newSearch.blur(); restoreNormal(); }
+  });
+
   // ── Focus mode (click node to zoom, click background to exit) ────────
   function enterFocus(nodeId) {
     focusedNode = nodeId;
@@ -719,16 +725,50 @@ function renderGraph(wsName) {
   }
 
   // ── Vim navigation (hjkl + Enter) ──────────────────────────────────
+  const origSizes = new Map();
+
   function selectNode(nodeId) {
+    // Restore previous node
     if (selectedNode) {
+      const origSize = origSizes.get(selectedNode);
       const prev = nodesDS.get(selectedNode);
-      if (prev) nodesDS.update({ id: selectedNode, borderWidth: 0 });
+      if (prev) nodesDS.update({
+        id: selectedNode,
+        borderWidth: 0,
+        size: origSize != null ? origSize : prev.size,
+        shadow: { enabled: prev._group !== 'unresolved', color: (prev._color || '#4ecdc4') + '80', size: 8, x: 0, y: 0 },
+      });
     }
     selectedNode = nodeId;
-    if (!nodeId) return;
-    nodesDS.update({ id: nodeId, borderWidth: 3, color: { ...nodesDS.get(nodeId).color, border: '#ff4444' } });
+    if (!nodeId) { tip.style.opacity = 0; return; }
+
+    const nd = nodesDS.get(nodeId);
+    if (!origSizes.has(nodeId)) origSizes.set(nodeId, nd.size);
+    const baseSize = origSizes.get(nodeId);
+
+    // Highlight: red border + enlarged + glow
+    nodesDS.update({
+      id: nodeId,
+      borderWidth: 3,
+      size: baseSize * 1.8,
+      color: { ...nd.color, border: '#ff4444' },
+      shadow: { enabled: true, color: '#ff444488', size: 25, x: 0, y: 0 },
+    });
+
+    // Show tooltip under Folders legend (top-right)
+    tip.querySelector('.title').textContent = nd._label;
+    tip.querySelector('.meta').innerHTML =
+      (nd._group || '') + ' &nbsp;&middot;&nbsp; ' + (nd._links_in || 0) + ' &larr; &nbsp; ' + (nd._links_out || 0) + ' &rarr;' +
+      (nd._words > 0 ? '<br>' + nd._words + ' words' : '');
+    const legendRect = document.getElementById('legend').getBoundingClientRect();
+    tip.style.right = '16px';
+    tip.style.left = 'auto';
+    tip.style.top = (legendRect.bottom + 8) + 'px';
+    tip.style.opacity = 1;
+
+    // Smooth pan
     const pos = network.getPositions([nodeId])[nodeId];
-    network.moveTo({ position: pos, animation: { duration: 300, easingFunction: 'easeInOutQuad' } });
+    network.moveTo({ position: pos, scale: network.getScale(), animation: { duration: 400, easingFunction: 'easeInOutCubic' } });
   }
 
   function navigateVim(direction) {
@@ -749,7 +789,8 @@ function renderGraph(wsName) {
 
     const curPos = network.getPositions([selectedNode])[selectedNode];
     if (!curPos) return;
-    let best = null, bestDist = Infinity;
+    const connected = new Set(network.getConnectedNodes(selectedNode));
+    let best = null, bestScore = Infinity;
 
     allNodes.forEach(n => {
       if (n.id === selectedNode) return;
@@ -763,7 +804,8 @@ function renderGraph(wsName) {
       if (direction === 'k') valid = dy < 0 && Math.abs(dy) > Math.abs(dx) * 0.3;
       if (!valid) return;
       const d = Math.hypot(dx, dy);
-      if (d < bestDist) { bestDist = d; best = n.id; }
+      const score = connected.has(n.id) ? d * 0.5 : d;
+      if (score < bestScore) { bestScore = score; best = n.id; }
     });
 
     if (best) selectNode(best);
@@ -866,18 +908,25 @@ function renderGraph(wsName) {
 
   if (IS_SERVER_MODE) {
     document.getElementById('hint').textContent =
-      'hjkl navigate \u00b7 enter to focus \u00b7 esc to go back \u00b7 click label to open in nvim';
+      'f to search \u00b7 hjkl navigate \u00b7 enter to focus \u00b7 o to open \u00b7 esc to go back';
   }
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       if (focusedNode) exitFocus();
       else if (selectedNode) selectNode(null);
+      else if (searchActive) restoreNormal();
       else resetView();
       return;
     }
     // Skip vim keys when search box is focused
     if (document.activeElement === newSearch) return;
+    if (e.key === 'f') {
+      e.preventDefault();
+      newSearch.focus();
+      newSearch.select();
+      return;
+    }
     if ('hjkl'.includes(e.key)) {
       e.preventDefault();
       navigateVim(e.key);
