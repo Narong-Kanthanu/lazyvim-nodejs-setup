@@ -252,6 +252,25 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     z-index: 5;
   }
 
+  /* Keymap help */
+  #keymap-help {
+    position: absolute;
+    bottom: 50px;
+    right: 16px;
+    background: #15203088;
+    border: 1px solid #3a5a6a22;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-family: monospace;
+    color: #4a6a7a;
+    line-height: 1.7;
+    z-index: 5;
+    display: none;
+  }
+  #keymap-help .key { color: #79a8eb; font-weight: 600; display: inline-block; min-width: 60px; }
+  #keymap-help .desc { color: #4a6a7a; }
+
   /* Legend */
   #legend {
     position: absolute;
@@ -315,6 +334,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </div>
 
 <div id="stats"></div>
+<div id="keymap-help"></div>
 <div id="hint">drag · scroll to zoom · hover to highlight · click to focus</div>
 
 <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
@@ -909,6 +929,15 @@ function renderGraph(wsName) {
   if (IS_SERVER_MODE) {
     document.getElementById('hint').textContent =
       'f to search \u00b7 hjkl navigate \u00b7 enter to focus \u00b7 o to open \u00b7 esc to go back';
+    const keymapEl = document.getElementById('keymap-help');
+    keymapEl.innerHTML = [
+      ['h j k l', 'navigate'],
+      ['f', 'search'],
+      ['enter', 'focus node'],
+      ['o', 'open in nvim'],
+      ['esc', 'go back'],
+    ].map(([k, d]) => '<div><span class="key">' + k + '</span><span class="desc">' + d + '</span></div>').join('');
+    keymapEl.style.display = 'block';
   }
 
   document.addEventListener('keydown', function(e) {
