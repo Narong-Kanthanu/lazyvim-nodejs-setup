@@ -338,6 +338,7 @@ let focusedNode = null;
 let searchActive = false;
 let savedSearchQuery = '';
 let clickTimer = null;
+let selectedNode = null;
 const container = document.getElementById('network-container');
 const IS_SERVER_MODE = location.protocol === 'http:' || location.protocol === 'https:';
 
@@ -704,7 +705,7 @@ function renderGraph(wsName) {
   function exitFocus() {
     if (!focusedNode) return;
     focusedNode = null;
-
+    selectNode(null);
 
     // If search was active before focus, return to search results
     if (savedSearchQuery) {
@@ -715,6 +716,57 @@ function renderGraph(wsName) {
 
     // Otherwise restore normal mode
     restoreNormal();
+  }
+
+  // ── Vim navigation (hjkl + Enter) ──────────────────────────────────
+  function selectNode(nodeId) {
+    if (selectedNode) {
+      const prev = nodesDS.get(selectedNode);
+      if (prev) nodesDS.update({ id: selectedNode, borderWidth: 0 });
+    }
+    selectedNode = nodeId;
+    if (!nodeId) return;
+    nodesDS.update({ id: nodeId, borderWidth: 3, color: { ...nodesDS.get(nodeId).color, border: '#ff4444' } });
+    const pos = network.getPositions([nodeId])[nodeId];
+    network.moveTo({ position: pos, animation: { duration: 300, easingFunction: 'easeInOutQuad' } });
+  }
+
+  function navigateVim(direction) {
+    const allNodes = nodesDS.get().filter(n => !n.hidden);
+    if (!allNodes.length) return;
+
+    if (!selectedNode) {
+      const center = network.getViewPosition();
+      let best = null, bestDist = Infinity;
+      allNodes.forEach(n => {
+        const pos = network.getPositions([n.id])[n.id];
+        const d = Math.hypot(pos.x - center.x, pos.y - center.y);
+        if (d < bestDist) { bestDist = d; best = n.id; }
+      });
+      selectNode(best);
+      return;
+    }
+
+    const curPos = network.getPositions([selectedNode])[selectedNode];
+    if (!curPos) return;
+    let best = null, bestDist = Infinity;
+
+    allNodes.forEach(n => {
+      if (n.id === selectedNode) return;
+      const pos = network.getPositions([n.id])[n.id];
+      const dx = pos.x - curPos.x;
+      const dy = pos.y - curPos.y;
+      let valid = false;
+      if (direction === 'h') valid = dx < 0 && Math.abs(dx) > Math.abs(dy) * 0.3;
+      if (direction === 'l') valid = dx > 0 && Math.abs(dx) > Math.abs(dy) * 0.3;
+      if (direction === 'j') valid = dy > 0 && Math.abs(dy) > Math.abs(dx) * 0.3;
+      if (direction === 'k') valid = dy < 0 && Math.abs(dy) > Math.abs(dx) * 0.3;
+      if (!valid) return;
+      const d = Math.hypot(dx, dy);
+      if (d < bestDist) { bestDist = d; best = n.id; }
+    });
+
+    if (best) selectNode(best);
   }
 
   // ── Open-in-nvim helpers ─────────────────────────────────────────────
@@ -814,13 +866,33 @@ function renderGraph(wsName) {
 
   if (IS_SERVER_MODE) {
     document.getElementById('hint').textContent =
-      'drag \u00b7 scroll to zoom \u00b7 hover to highlight \u00b7 click dot to focus \u00b7 click label or double-click to open in nvim \u00b7 esc to go back';
+      'hjkl navigate \u00b7 enter to focus \u00b7 esc to go back \u00b7 click label to open in nvim';
   }
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       if (focusedNode) exitFocus();
+      else if (selectedNode) selectNode(null);
       else resetView();
+      return;
+    }
+    // Skip vim keys when search box is focused
+    if (document.activeElement === newSearch) return;
+    if ('hjkl'.includes(e.key)) {
+      e.preventDefault();
+      navigateVim(e.key);
+    }
+    if (e.key === 'Enter' && selectedNode) {
+      e.preventDefault();
+      enterFocus(selectedNode);
+    }
+    if (e.key === 'o' && selectedNode) {
+      e.preventDefault();
+      const nd = nodesDS.get(selectedNode);
+      if (nd) {
+        const filePath = resolveFilePath(nd);
+        if (filePath) fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
+      }
     }
   });
 }
