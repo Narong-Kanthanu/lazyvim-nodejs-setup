@@ -1014,6 +1014,7 @@ function renderGraph(wsName) {
     keymapEl.innerHTML = [
       ['h j k l', 'navigate'],
       ['f', 'search'],
+      ['w', 'workspace (j/k pick)'],
       ['enter', 'focus node'],
       ['o', 'open in nvim'],
       ['y / n', 'confirm / cancel'],
@@ -1024,18 +1025,46 @@ function renderGraph(wsName) {
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
+      if (document.activeElement === wsSelect) {
+        e.preventDefault();
+        if (wsSelect._prevValue) wsSelect.value = wsSelect._prevValue;
+        wsSelect.blur();
+        return;
+      }
       if (focusedNode) exitFocus();
       else if (selectedNode) selectNode(null);
       else if (searchActive) restoreNormal();
       else resetView();
       return;
     }
-    // Skip vim keys when search box is focused
-    if (document.activeElement === newSearch) return;
+    // Input mode: disable vim navigation, handle only input-specific keys
+    if (document.activeElement === newSearch || document.activeElement === wsSelect) {
+      if (document.activeElement === wsSelect) {
+        if (e.key === 'j' || e.key === 'k') {
+          e.preventDefault();
+          const idx = wsSelect.selectedIndex;
+          if (e.key === 'j' && idx < wsSelect.options.length - 1) wsSelect.selectedIndex = idx + 1;
+          if (e.key === 'k' && idx > 0) wsSelect.selectedIndex = idx - 1;
+        }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          wsSelect.blur();
+          renderGraph(wsSelect.value);
+        }
+      }
+      // Block all other keys from reaching vim navigation
+      return;
+    }
     if (e.key === 'f') {
       e.preventDefault();
       newSearch.focus();
       newSearch.select();
+      return;
+    }
+    if (e.key === 'w' && wsNames.length > 1) {
+      e.preventDefault();
+      wsSelect._prevValue = wsSelect.value;
+      wsSelect.focus();
       return;
     }
     if ('hjkl'.includes(e.key)) {
