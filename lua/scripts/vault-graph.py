@@ -1299,6 +1299,10 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
     except KeyboardInterrupt:
         pass
     finally:
+        try:
+            subprocess.run(['tmux', 'kill-window', '-t', 'vault'], capture_output=True, timeout=3)
+        except Exception:
+            pass
         PID_FILE.unlink(missing_ok=True)
         print('Server stopped')
     return 0
