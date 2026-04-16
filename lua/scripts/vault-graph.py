@@ -921,7 +921,7 @@ function renderGraph(wsName) {
     const vaultPath = (WORKSPACES_DATA[wsSelect.value] || {}).vault_path;
     fetch('/api/cwd').then(r => r.json()).then(data => {
       const cwd = data.cwd || '';
-      if (!vaultPath || cwd.startsWith(vaultPath)) {
+      if (!vaultPath || cwd.startsWith(vaultPath) || vaultPath.startsWith(cwd)) {
         fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
       } else {
         const name = filePath.split('/').pop();
