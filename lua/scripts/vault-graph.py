@@ -375,8 +375,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <div class="msg"></div>
     <div class="sub"></div>
     <div class="btns">
-      <button class="btn-cancel">Cancel</button>
-      <button class="btn-open">Open</button>
+      <button class="btn-cancel">[n] Cancel</button>
+      <button class="btn-open">[y] Open</button>
     </div>
   </div>
 </div>
@@ -906,7 +906,13 @@ function renderGraph(wsName) {
       confirmOverlay.classList.remove('active');
       btnOpen.replaceWith(btnOpen.cloneNode(true));
       btnCancel.replaceWith(btnCancel.cloneNode(true));
+      document.removeEventListener('keydown', onKey);
     }
+    function onKey(e) {
+      if (e.key === 'y') { e.preventDefault(); cleanup(); onOpen(); }
+      if (e.key === 'n' || e.key === 'Escape') { e.preventDefault(); cleanup(); }
+    }
+    document.addEventListener('keydown', onKey);
     btnOpen.addEventListener('click', () => { cleanup(); onOpen(); });
     btnCancel.addEventListener('click', cleanup);
   }
@@ -921,7 +927,7 @@ function renderGraph(wsName) {
         const name = filePath.split('/').pop();
         showConfirm(
           'Open ' + name + '?',
-          'Neovim is in ' + cwd,
+          'Neovim is outside your vault (' + cwd.split('/').pop() + ')',
           () => fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {}),
         );
       }
@@ -1010,6 +1016,7 @@ function renderGraph(wsName) {
       ['f', 'search'],
       ['enter', 'focus node'],
       ['o', 'open in nvim'],
+      ['y / n', 'confirm / cancel'],
       ['esc', 'go back'],
     ].map(([k, d]) => '<div><span class="key">' + k + '</span><span class="desc">' + d + '</span></div>').join('');
     keymapEl.style.display = 'block';
