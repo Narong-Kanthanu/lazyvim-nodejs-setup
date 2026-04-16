@@ -470,6 +470,12 @@ wsSelect.addEventListener('change', () => renderGraph(wsSelect.value));
 // ── Render graph ──────────────────────────────────────────────────────────
 function renderGraph(wsName) {
   if (network) { network.destroy(); network = null; }
+  selectedNode = null;
+  focusedNode = null;
+  searchActive = false;
+  savedSearchQuery = '';
+  document.getElementById('search-box').value = '';
+  document.getElementById('tooltip').style.opacity = 0;
 
   const data = WORKSPACES_DATA[wsName];
 
@@ -644,11 +650,13 @@ function renderGraph(wsName) {
   });
 
   // Position tooltip via mouse
-  container.addEventListener('mousemove', function(e) {
+  if (window._mouseMoveHandler) container.removeEventListener('mousemove', window._mouseMoveHandler);
+  window._mouseMoveHandler = function(e) {
     tip.style.right = 'auto';
     tip.style.left = (e.pageX + 14) + 'px';
     tip.style.top = (e.pageY - 32) + 'px';
-  });
+  };
+  container.addEventListener('mousemove', window._mouseMoveHandler);
 
   // ── Search ───────────────────────────────────────────────────────────
   const searchBox = document.getElementById('search-box');
@@ -1023,7 +1031,9 @@ function renderGraph(wsName) {
     keymapEl.style.display = 'block';
   }
 
-  document.addEventListener('keydown', function(e) {
+  // Remove previous keydown handler before adding new one
+  if (window._graphKeyHandler) document.removeEventListener('keydown', window._graphKeyHandler);
+  window._graphKeyHandler = function(e) {
     if (e.key === 'Escape') {
       if (document.activeElement === wsSelect) {
         e.preventDefault();
@@ -1052,7 +1062,6 @@ function renderGraph(wsName) {
           renderGraph(wsSelect.value);
         }
       }
-      // Block all other keys from reaching vim navigation
       return;
     }
     if (e.key === 'f') {
@@ -1083,7 +1092,8 @@ function renderGraph(wsName) {
         if (filePath) openInNvim(filePath);
       }
     }
-  });
+  };
+  document.addEventListener('keydown', window._graphKeyHandler);
 }
 
 // ── Reset view ────────────────────────────────────────────────────────────
