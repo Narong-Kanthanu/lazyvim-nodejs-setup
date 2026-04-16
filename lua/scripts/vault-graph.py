@@ -814,8 +814,15 @@ function renderGraph(wsName) {
 
   if (IS_SERVER_MODE) {
     document.getElementById('hint').textContent =
-      'drag \u00b7 scroll to zoom \u00b7 hover to highlight \u00b7 click dot to focus \u00b7 click label or double-click to open in nvim';
+      'drag \u00b7 scroll to zoom \u00b7 hover to highlight \u00b7 click dot to focus \u00b7 click label or double-click to open in nvim \u00b7 esc to go back';
   }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (focusedNode) exitFocus();
+      else resetView();
+    }
+  });
 }
 
 // ── Reset view ────────────────────────────────────────────────────────────
