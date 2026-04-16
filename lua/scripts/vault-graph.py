@@ -903,12 +903,18 @@ function renderGraph(wsName) {
       if (!vaultPath || cwd.startsWith(vaultPath) || vaultPath.startsWith(cwd)) {
         fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
       } else {
-        const name = filePath.split('/').pop();
-        showConfirm(
-          'Open ' + name + '?',
-          'Neovim is outside your vault (' + cwd.split('/').pop() + ')',
-          () => fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {}),
-        );
+        // Outside vault — try tmux first, fall back to confirm modal
+        fetch('/api/open-in-tmux?path=' + encodeURIComponent(filePath) + '&vault=' + encodeURIComponent(vaultPath))
+          .then(r => r.json()).then(res => {
+            if (!res.tmux) {
+              const name = filePath.split('/').pop();
+              showConfirm('Open ' + name + '?',
+                'Neovim is outside your vault (' + cwd.split('/').pop() + ')',
+                () => fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {}));
+            }
+          }).catch(() => {
+            fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
+          });
       }
     }).catch(() => {
       fetch('/api/open?path=' + encodeURIComponent(filePath)).catch(() => {});
@@ -1230,6 +1236,25 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
                     except Exception:
                         pass
                 self._json(json.dumps({"cwd": cwd}).encode())
+            elif parsed.path == '/api/open-in-tmux':
+                params = urllib.parse.parse_qs(parsed.query)
+                file_path = params.get('path', [None])[0]
+                vault_path = params.get('vault', [None])[0]
+                opened = False
+                if file_path and vault_path:
+                    try:
+                        tmux_check = subprocess.run(['tmux', 'list-sessions'], capture_output=True, timeout=3)
+                        if tmux_check.returncode == 0:
+                            win_check = subprocess.run(['tmux', 'list-windows', '-F', '#{window_name}'], capture_output=True, text=True, timeout=3)
+                            if 'vault' in (win_check.stdout or '').split('\n'):
+                                subprocess.run(['tmux', 'select-window', '-t', 'vault'], capture_output=True, timeout=3)
+                                subprocess.run(['tmux', 'send-keys', '-t', 'vault', f':e {file_path}', 'Enter'], capture_output=True, timeout=3)
+                            else:
+                                subprocess.run(['tmux', 'new-window', '-n', 'vault', '-c', vault_path, 'nvim', file_path], capture_output=True, timeout=5)
+                            opened = True
+                    except Exception:
+                        pass
+                self._json(json.dumps({"ok": opened, "tmux": opened}).encode())
             elif parsed.path == '/api/heartbeat':
                 self._json()
             elif parsed.path == '/api/shutdown':
