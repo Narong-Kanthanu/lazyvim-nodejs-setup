@@ -67,6 +67,8 @@ return {
             "--all",
             "--active",
             ws.name,
+            "--nvim-server",
+            vim.v.servername,
           }, { detach = true })
         end,
         mode = { "n" },

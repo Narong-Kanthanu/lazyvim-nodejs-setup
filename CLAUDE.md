@@ -79,7 +79,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 #### Scripts (`lua/scripts/`)
 
-- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive vis.js force-directed graph HTML (canvas-based) with in-browser workspace selector dropdown. Output saved to common parent of workspace paths.
+- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive vis.js force-directed graph HTML (canvas-based) with in-browser workspace selector dropdown. When launched from Neovim with `--nvim-server`, serves via HTTP (port 18765) with an `/api/open` endpoint — double-clicking a node opens the `.md` file in the running Neovim instance via `nvim --server --remote`. Previous server killed on re-invocation via PID file.
 
 #### Refactoring (`lua/plugins/refactoring.lua`)
 

@@ -14,6 +14,9 @@ Usage:
     python3 vault-graph.py -w work
     python3 vault-graph.py --all          # all workspaces with in-browser selector
     python3 vault-graph.py --list         # list available workspaces
+
+    # Open-in-nvim mode (serves via HTTP, double-click node to open in nvim)
+    python3 vault-graph.py --all --nvim-server /tmp/nvimXXX/0
 """
 
 import os
@@ -22,7 +25,10 @@ import json
 import argparse
 import subprocess
 import sys
+import signal
 import webbrowser
+import http.server
+import urllib.parse
 from pathlib import Path
 from collections import defaultdict
 
@@ -33,6 +39,9 @@ WORKSPACES = {
     "personal": "PERSONAL_VAULT_PATH",
     "work": "WORK_VAULT_PATH",
 }
+
+SERVER_PORT = 18765
+PID_FILE = Path("/tmp/vault-graph-server.pid")
 
 
 def get_workspaces() -> dict[str, Path]:
@@ -76,6 +85,7 @@ def parse_args():
     parser.add_argument("--list", action="store_true", help="List available workspaces")
     parser.add_argument("--output", help="Output HTML file path (default: temp file)")
     parser.add_argument("--no-open", action="store_true", help="Don't open browser")
+    parser.add_argument("--nvim-server", help="Neovim server address (enables HTTP server with open-in-nvim)")
     return parser.parse_args()
 
 
@@ -285,6 +295,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     width: 200px;
   }
   #reset-btn:hover { background: #1e3040; }
+
 </style>
 </head>
 <body>
@@ -326,7 +337,9 @@ let GROUP_COLORS = {};
 let focusedNode = null;
 let searchActive = false;
 let savedSearchQuery = '';
+let clickTimer = null;
 const container = document.getElementById('network-container');
+const IS_SERVER_MODE = location.protocol === 'http:' || location.protocol === 'https:';
 
 // ── vis.js options ────────────────────────────────────────────────────────
 const options = {
@@ -442,7 +455,7 @@ function renderGraph(wsName) {
         strokeColor: '#1a2332',
         vadjust: -(nodeSize(n) + 4),
       },
-      // Metadata for hover/search
+      // Metadata for hover/search/open
       _label: n.label,
       _group: n.group,
       _color: color,
@@ -450,6 +463,7 @@ function renderGraph(wsName) {
       _links_out: n.links_out || 0,
       _words: n.words || 0,
       _total: total,
+      _path: n.path || '',
     };
   });
 
@@ -622,6 +636,7 @@ function renderGraph(wsName) {
     savedSearchQuery = '';
     newSearch.value = '';
     tip.style.opacity = 0;
+
     nodesDS.update(nodesDS.get().map(n => ({
       id: n.id,
       hidden: false,
@@ -683,11 +698,13 @@ function renderGraph(wsName) {
       nodes: [...connNodes],
       animation: { duration: 500, easingFunction: 'easeInOutQuad' },
     });
+
   }
 
   function exitFocus() {
     if (!focusedNode) return;
     focusedNode = null;
+
 
     // If search was active before focus, return to search results
     if (savedSearchQuery) {
@@ -700,23 +717,46 @@ function renderGraph(wsName) {
     restoreNormal();
   }
 
+  // ── Click ────────────────────────────────────────────────────────────
+  // Dot click:   single → focus, double → open file
+  // Label click: single → open file immediately
+  // Empty click: exit focus / restore
   network.on('click', function(params) {
     if (params.nodes.length > 0) {
-      // Clicked a node — enter focus (S2)
-      // savedSearchQuery is already set if search was active
-      searchActive = false;
-      enterFocus(params.nodes[0]);
+      if (IS_SERVER_MODE) {
+        // Delay focus to allow double-click detection
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+        clickTimer = setTimeout(() => {
+          clickTimer = null;
+          searchActive = false;
+          enterFocus(params.nodes[0]);
+        }, 250);
+      } else {
+        searchActive = false;
+        enterFocus(params.nodes[0]);
+      }
     } else {
-      // Clicked empty space — step back one level
-      if (focusedNode) {
-        // S2 → S1 (if search was active) or S2 → Normal
-        exitFocus();
-      } else if (searchActive) {
-        // S1 → Normal
-        restoreNormal();
+      if (focusedNode) exitFocus();
+      else if (searchActive) restoreNormal();
+    }
+  });
+
+  // Double-click dot: open file in nvim
+  network.on('doubleClick', function(params) {
+    if (!IS_SERVER_MODE) return;
+    if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+    if (params.nodes.length > 0) {
+      const nd = nodesDS.get(params.nodes[0]);
+      if (nd && nd._path) {
+        fetch('/api/open?path=' + encodeURIComponent(nd._path)).catch(() => {});
       }
     }
   });
+
+  if (IS_SERVER_MODE) {
+    document.getElementById('hint').textContent =
+      'drag \u00b7 scroll to zoom \u00b7 hover to highlight \u00b7 click to focus \u00b7 double-click to open in nvim';
+  }
 }
 
 // ── Reset view ────────────────────────────────────────────────────────────
@@ -748,10 +788,8 @@ def generate_html(workspaces_data: dict, active: str) -> str:
 
 # ── Browser open / refresh ────────────────────────────────────────────────────
 
-def open_or_refresh(file_path: Path):
+def open_or_refresh(url: str):
     """Refresh existing browser tab if open, otherwise open a new one."""
-    url = f"file://{file_path}"
-
     if sys.platform == "darwin":
         # Try Chrome first, then Safari, via AppleScript
         for browser, script in [
@@ -816,6 +854,81 @@ tell application "Safari"
 end tell
 return "notfound"
 '''
+
+
+# ── HTTP server mode (for open-in-nvim) ──────────────────────────────────────
+
+def kill_previous_server():
+    """Kill a previously running vault-graph server."""
+    if PID_FILE.exists():
+        try:
+            old_pid = int(PID_FILE.read_text().strip())
+            os.kill(old_pid, signal.SIGTERM)
+            import time; time.sleep(0.3)
+        except (ProcessLookupError, ValueError, PermissionError, OSError):
+            pass
+        PID_FILE.unlink(missing_ok=True)
+
+
+def start_server(html_content: str, nvim_server: str, no_open: bool):
+    """Start HTTP server that serves the graph and handles open-in-nvim requests."""
+    kill_previous_server()
+    PID_FILE.write_text(str(os.getpid()))
+
+    class Handler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            parsed = urllib.parse.urlparse(self.path)
+            if parsed.path in ('/', '/index.html'):
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(html_content.encode('utf-8'))
+            elif parsed.path == '/api/open':
+                params = urllib.parse.parse_qs(parsed.query)
+                file_path = params.get('path', [None])[0]
+                if file_path and nvim_server:
+                    try:
+                        subprocess.run(
+                            ['nvim', '--server', nvim_server, '--remote', file_path],
+                            capture_output=True, timeout=5,
+                        )
+                    except Exception:
+                        pass
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"ok":true}')
+            else:
+                self.send_response(404)
+                self.end_headers()
+
+        def log_message(self, format, *args):
+            pass  # suppress request logs
+
+    http.server.HTTPServer.allow_reuse_address = True
+    server = http.server.HTTPServer(('127.0.0.1', SERVER_PORT), Handler)
+
+    url = f'http://127.0.0.1:{SERVER_PORT}'
+    print(f'Serving graph at {url}  (Ctrl-C to stop)')
+
+    if not no_open:
+        open_or_refresh(url)
+
+    running = True
+    def handle_sigterm(signum, frame):
+        nonlocal running
+        running = False
+    signal.signal(signal.SIGTERM, handle_sigterm)
+
+    server.timeout = 0.5
+    try:
+        while running:
+            server.handle_request()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        PID_FILE.unlink(missing_ok=True)
+    return 0
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -918,10 +1031,14 @@ def main():
 
     html = generate_html(workspaces_data, active_name)
 
+    # Server mode: serve via HTTP with open-in-nvim API
+    if args.nvim_server:
+        return start_server(html, args.nvim_server, args.no_open)
+
+    # File mode: write HTML and open in browser
     if args.output:
         out_path = Path(args.output).expanduser()
     else:
-        # Save to the common parent directory of all workspace paths
         all_paths = list(vaults_to_scan.values())
         root = Path(os.path.commonpath(all_paths))
         out_path = root / "graph.html"
@@ -931,7 +1048,7 @@ def main():
     print(f"Graph saved: {out_path}")
 
     if not args.no_open:
-        open_or_refresh(out_path)
+        open_or_refresh(f"file://{out_path}")
 
     return 0
 
