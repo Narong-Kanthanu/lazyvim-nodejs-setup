@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 vault-graph.py — Obsidian vault graph generator
-Scans [[wikilinks]] and generates an interactive D3 force-directed graph.
+Scans [[wikilinks]] and generates an interactive vis.js force-directed graph.
 
 Usage:
     python3 vault-graph.py ~/notes

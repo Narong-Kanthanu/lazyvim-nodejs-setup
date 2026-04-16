@@ -103,7 +103,7 @@ nvim
 |-----|--------|
 | `<Leader>md` | Markdown preview |
 | `<Leader>mq` | Close markdown preview |
-| `<Leader>mo` | Obsidian graph (multi-workspace D3 graph) |
+| `<Leader>mo` | Obsidian graph (multi-workspace vis.js graph with vim navigation) |
 
 ### File Management
 
@@ -160,7 +160,19 @@ export PERSONAL_VAULT_PATH="~/path/to/personal/vault"
 export WORK_VAULT_PATH="~/path/to/work/vault"
 ```
 
-Press `<Leader>mo` to generate an interactive D3 force-directed graph of your vault's `[[wikilinks]]`. The graph includes a workspace selector dropdown to switch between vaults. The HTML output is saved to the common parent directory of your vaults.
+Press `<Leader>mo` to generate an interactive vis.js force-directed graph of your vault's `[[wikilinks]]`. The graph includes a workspace selector dropdown and full vim-style keyboard navigation:
+
+| Key | Action |
+|-----|--------|
+| `h j k l` | Navigate between nodes |
+| `f` | Search notes |
+| `w` | Switch workspace (j/k to pick) |
+| `Enter` | Focus node (zoom into connections) |
+| `o` | Open .md file in Neovim |
+| `y / n` | Confirm / cancel (in modal) |
+| `ESC` | Go back (focus → selection → search → reset) |
+
+Click on a label to open the file. When Neovim is outside the vault, files auto-open in a dedicated tmux "vault" window (falls back to a confirm modal without tmux).
 
 The script can also be run standalone:
 

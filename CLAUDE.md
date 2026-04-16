@@ -79,7 +79,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 #### Scripts (`lua/scripts/`)
 
-- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive vis.js force-directed graph HTML (canvas-based) with in-browser workspace selector dropdown. When launched from Neovim with `--nvim-server`, serves via HTTP (port 18765) with an `/api/open` endpoint — double-clicking a node opens the `.md` file in the running Neovim instance via `nvim --server --remote`. Previous server killed on re-invocation via PID file.
+- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive vis.js force-directed graph HTML (canvas-based) with in-browser workspace selector dropdown. When launched from Neovim with `--nvim-server`, serves via HTTP (port 18765) with APIs for opening files, checking cwd, and tmux integration. Features vim-style keyboard navigation (`hjkl` to move, `Enter` to focus, `o` to open, `f` to search, `w` to switch workspace, `ESC` to go back), single-click on label to open files, smart node selection with red glow highlight and tooltip, connected-node priority in navigation, and cwd-aware file opening (auto-opens in tmux vault window when Neovim is outside the vault, falls back to confirm modal without tmux). Previous server killed on re-invocation via PID file; vault tmux window auto-closed on server shutdown.
 
 #### Refactoring (`lua/plugins/refactoring.lua`)
 
