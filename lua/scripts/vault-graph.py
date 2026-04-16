@@ -769,6 +769,14 @@ window.addEventListener('resize', () => {
   if (network) network.redraw();
 });
 
+// ── Server lifecycle: shutdown on tab close, heartbeat as fallback ────────
+if (IS_SERVER_MODE) {
+  window.addEventListener('beforeunload', () => {
+    navigator.sendBeacon('/api/shutdown');
+  });
+  setInterval(() => fetch('/api/heartbeat').catch(() => {}), 30000);
+}
+
 // ── Initial render ────────────────────────────────────────────────────────
 renderGraph(ACTIVE_WORKSPACE);
 </script>
@@ -870,13 +878,22 @@ def kill_previous_server():
         PID_FILE.unlink(missing_ok=True)
 
 
+IDLE_TIMEOUT = 90  # seconds — auto-stop if no heartbeat
+
+
 def start_server(html_content: str, nvim_server: str, no_open: bool):
     """Start HTTP server that serves the graph and handles open-in-nvim requests."""
     kill_previous_server()
     PID_FILE.write_text(str(os.getpid()))
 
+    import time
+    last_activity = time.time()
+    running = True
+
     class Handler(http.server.BaseHTTPRequestHandler):
         def do_GET(self):
+            nonlocal last_activity
+            last_activity = time.time()
             parsed = urllib.parse.urlparse(self.path)
             if parsed.path in ('/', '/index.html'):
                 self.send_response(200)
@@ -898,9 +915,33 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(b'{"ok":true}')
+            elif parsed.path == '/api/heartbeat':
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"ok":true}')
+            elif parsed.path == '/api/shutdown':
+                nonlocal running
+                running = False
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"ok":true}')
             else:
                 self.send_response(404)
                 self.end_headers()
+
+        def do_POST(self):
+            """Handle sendBeacon (POST) for shutdown."""
+            nonlocal running, last_activity
+            last_activity = time.time()
+            parsed = urllib.parse.urlparse(self.path)
+            if parsed.path == '/api/shutdown':
+                running = False
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(b'{"ok":true}')
 
         def log_message(self, format, *args):
             pass  # suppress request logs
@@ -909,12 +950,11 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
     server = http.server.HTTPServer(('127.0.0.1', SERVER_PORT), Handler)
 
     url = f'http://127.0.0.1:{SERVER_PORT}'
-    print(f'Serving graph at {url}  (Ctrl-C to stop)')
+    print(f'Serving graph at {url}')
 
     if not no_open:
         open_or_refresh(url)
 
-    running = True
     def handle_sigterm(signum, frame):
         nonlocal running
         running = False
@@ -924,10 +964,14 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
     try:
         while running:
             server.handle_request()
+            if time.time() - last_activity > IDLE_TIMEOUT:
+                print('Idle timeout, shutting down')
+                break
     except KeyboardInterrupt:
         pass
     finally:
         PID_FILE.unlink(missing_ok=True)
+        print('Server stopped')
     return 0
 
 
