@@ -555,18 +555,21 @@ function renderGraph(wsName) {
   // ── Hover highlight ──────────────────────────────────────────────────
   const tip = document.getElementById('tooltip');
 
+  function defaultNodeStyle(n) {
+    return { id: n.id, opacity: n._group === 'unresolved' ? 0.25 : 0.9, label: n._total >= 3 ? n._label : undefined };
+  }
+  function defaultEdgeStyle(e) {
+    return { id: e.id, color: { color: '#3a5a63', opacity: 0.35 }, width: 0.5 };
+  }
+  function restoreFocusStyle() {
+    nodesDS.update(nodesDS.get().filter(n => !n.hidden).map(n => ({ id: n.id, opacity: 1 })));
+    edgesDS.update(edgesDS.get().filter(e => !e.hidden).map(e => ({ id: e.id, color: { color: '#79a8eb', opacity: 0.7 }, width: 1.5 })));
+  }
+
   function resetHover() {
     tip.style.opacity = 0;
-    nodesDS.update(nodesDS.get().map(n => ({
-      id: n.id,
-      opacity: n._group === 'unresolved' ? 0.25 : 0.9,
-      label: n._total >= 3 ? n._label : undefined,
-    })));
-    edgesDS.update(edgesDS.get().map(e => ({
-      id: e.id,
-      color: { color: '#3a5a63', opacity: 0.35 },
-      width: 0.5,
-    })));
+    nodesDS.update(nodesDS.get().map(defaultNodeStyle));
+    edgesDS.update(edgesDS.get().map(defaultEdgeStyle));
   }
 
   network.on('hoverNode', function(params) {
@@ -620,33 +623,9 @@ function renderGraph(wsName) {
   network.on('blurNode', function() {
     if (searchActive) return;
     tip.style.opacity = 0;
-
-    if (focusedNode) {
-      // Restore focus-mode appearance
-      nodesDS.update(nodesDS.get().filter(n => !n.hidden).map(n => ({
-        id: n.id,
-        opacity: 1,
-      })));
-      edgesDS.update(edgesDS.get().filter(e => !e.hidden).map(e => ({
-        id: e.id,
-        color: { color: '#79a8eb', opacity: 0.7 },
-        width: 1.5,
-      })));
-      return;
-    }
-
-    // Normal mode blur
-    nodesDS.update(nodesDS.get().map(n => ({
-      id: n.id,
-      opacity: n._group === 'unresolved' ? 0.25 : 0.9,
-      label: n._total >= 3 ? n._label : undefined,
-    })));
-
-    edgesDS.update(edgesDS.get().map(e => ({
-      id: e.id,
-      color: { color: '#3a5a63', opacity: 0.35 },
-      width: 0.5,
-    })));
+    if (focusedNode) { restoreFocusStyle(); return; }
+    nodesDS.update(nodesDS.get().map(defaultNodeStyle));
+    edgesDS.update(edgesDS.get().map(defaultEdgeStyle));
   });
 
   // Position tooltip via mouse
@@ -711,20 +690,12 @@ function renderGraph(wsName) {
     savedSearchQuery = '';
     newSearch.value = '';
     tip.style.opacity = 0;
-
     nodesDS.update(nodesDS.get().map(n => ({
-      id: n.id,
+      ...defaultNodeStyle(n),
       hidden: false,
-      opacity: n._group === 'unresolved' ? 0.25 : 0.9,
-      label: n._total >= 3 ? n._label : undefined,
       font: { color: '#cdd3da', size: n._total > 4 ? 11 : 9, strokeWidth: 2, strokeColor: '#1a2332', vadjust: -(nodeSize(n) + 4) },
     })));
-    edgesDS.update(edgesDS.get().map(e => ({
-      id: e.id,
-      hidden: false,
-      color: { color: '#3a5a63', opacity: 0.35 },
-      width: 0.5,
-    })));
+    edgesDS.update(edgesDS.get().map(e => ({ ...defaultEdgeStyle(e), hidden: false })));
     network.fit({ animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
   }
 
@@ -988,16 +959,14 @@ function renderGraph(wsName) {
         searchActive = false;
         enterFocus(nodeId);
       }
-    } else if (IS_SERVER_MODE) {
-      // Label area miss — try nearest node fallback
-      const nd = findNearestNode(params.pointer.canvas);
-      if (nd) {
-        const filePath = resolveFilePath(nd);
-        if (filePath) { openInNvim(filePath); return; }
-      }
-      if (focusedNode) exitFocus();
-      else if (searchActive) restoreNormal();
     } else {
+      if (IS_SERVER_MODE) {
+        const nd = findNearestNode(params.pointer.canvas);
+        if (nd) {
+          const filePath = resolveFilePath(nd);
+          if (filePath) { openInNvim(filePath); return; }
+        }
+      }
       if (focusedNode) exitFocus();
       else if (searchActive) restoreNormal();
     }
@@ -1228,6 +1197,12 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
     running = True
 
     class Handler(http.server.BaseHTTPRequestHandler):
+        def _json(self, body: bytes = b'{"ok":true}'):
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(body)
+
         def do_GET(self):
             nonlocal last_activity
             last_activity = time.time()
@@ -1242,61 +1217,38 @@ def start_server(html_content: str, nvim_server: str, no_open: bool):
                 file_path = params.get('path', [None])[0]
                 if file_path and nvim_server:
                     try:
-                        subprocess.run(
-                            ['nvim', '--server', nvim_server, '--remote', file_path],
-                            capture_output=True, timeout=5,
-                        )
+                        subprocess.run(['nvim', '--server', nvim_server, '--remote', file_path], capture_output=True, timeout=5)
                     except Exception:
                         pass
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(b'{"ok":true}')
+                self._json()
             elif parsed.path == '/api/cwd':
                 cwd = ''
                 if nvim_server:
                     try:
-                        result = subprocess.run(
-                            ['nvim', '--server', nvim_server, '--remote-expr', 'getcwd()'],
-                            capture_output=True, text=True, timeout=5,
-                        )
+                        result = subprocess.run(['nvim', '--server', nvim_server, '--remote-expr', 'getcwd()'], capture_output=True, text=True, timeout=5)
                         cwd = result.stdout.strip()
                     except Exception:
                         pass
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({"cwd": cwd}).encode())
+                self._json(json.dumps({"cwd": cwd}).encode())
             elif parsed.path == '/api/heartbeat':
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(b'{"ok":true}')
+                self._json()
             elif parsed.path == '/api/shutdown':
                 nonlocal running
                 running = False
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(b'{"ok":true}')
+                self._json()
             else:
                 self.send_response(404)
                 self.end_headers()
 
         def do_POST(self):
-            """Handle sendBeacon (POST) for shutdown."""
             nonlocal running, last_activity
             last_activity = time.time()
-            parsed = urllib.parse.urlparse(self.path)
-            if parsed.path == '/api/shutdown':
+            if urllib.parse.urlparse(self.path).path == '/api/shutdown':
                 running = False
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(b'{"ok":true}')
+            self._json()
 
         def log_message(self, format, *args):
-            pass  # suppress request logs
+            pass
 
     http.server.HTTPServer.allow_reuse_address = True
     server = http.server.HTTPServer(('127.0.0.1', SERVER_PORT), Handler)
