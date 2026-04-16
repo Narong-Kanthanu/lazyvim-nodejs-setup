@@ -484,11 +484,37 @@ function renderGraph(wsName) {
   }
 
   network.on('hoverNode', function(params) {
-    if (searchActive || focusedNode) return;
+    if (searchActive) return;
     const nodeId = params.node;
     const nd = nodesDS.get(nodeId);
     if (nd._group === 'unresolved') return;
 
+    // Show tooltip in any mode
+    tip.querySelector('.title').textContent = nd._label;
+    tip.querySelector('.meta').innerHTML =
+      nd._group + ' &nbsp;&middot;&nbsp; ' + nd._links_in + ' &larr; &nbsp; ' + nd._links_out + ' &rarr;' +
+      (nd._words > 0 ? '<br>' + nd._words + ' words' : '');
+    tip.style.opacity = 1;
+
+    if (focusedNode) {
+      // Focus-mode hover: highlight hovered node's connections within visible subgraph
+      const hoverConn = new Set([nodeId, ...network.getConnectedNodes(nodeId)]);
+      const hoverEdges = new Set(network.getConnectedEdges(nodeId));
+
+      nodesDS.update(nodesDS.get().filter(n => !n.hidden).map(n => ({
+        id: n.id,
+        opacity: hoverConn.has(n.id) ? 1 : 0.3,
+      })));
+
+      edgesDS.update(edgesDS.get().filter(e => !e.hidden).map(e => ({
+        id: e.id,
+        color: { color: '#79a8eb', opacity: hoverEdges.has(e.id) ? 0.9 : 0.15 },
+        width: hoverEdges.has(e.id) ? 2 : 0.5,
+      })));
+      return;
+    }
+
+    // Normal mode hover
     const connNodes = new Set([nodeId, ...network.getConnectedNodes(nodeId)]);
     const connEdges = new Set(network.getConnectedEdges(nodeId));
 
@@ -503,16 +529,27 @@ function renderGraph(wsName) {
       color: { color: connEdges.has(e.id) ? '#79a8eb' : '#3a5a6a', opacity: connEdges.has(e.id) ? 0.8 : 0.03 },
       width: connEdges.has(e.id) ? 1.5 : 0.3,
     })));
-
-    tip.querySelector('.title').textContent = nd._label;
-    tip.querySelector('.meta').innerHTML =
-      nd._group + ' &nbsp;&middot;&nbsp; ' + nd._links_in + ' &larr; &nbsp; ' + nd._links_out + ' &rarr;' +
-      (nd._words > 0 ? '<br>' + nd._words + ' words' : '');
-    tip.style.opacity = 1;
   });
 
   network.on('blurNode', function() {
-    if (searchActive || focusedNode) return;
+    if (searchActive) return;
+    tip.style.opacity = 0;
+
+    if (focusedNode) {
+      // Restore focus-mode appearance
+      nodesDS.update(nodesDS.get().filter(n => !n.hidden).map(n => ({
+        id: n.id,
+        opacity: 1,
+      })));
+      edgesDS.update(edgesDS.get().filter(e => !e.hidden).map(e => ({
+        id: e.id,
+        color: { color: '#79a8eb', opacity: 0.7 },
+        width: 1.5,
+      })));
+      return;
+    }
+
+    // Normal mode blur
     nodesDS.update(nodesDS.get().map(n => ({
       id: n.id,
       opacity: n._group === 'unresolved' ? 0.25 : 0.9,
@@ -524,8 +561,6 @@ function renderGraph(wsName) {
       color: { color: '#3a5a63', opacity: 0.35 },
       width: 0.5,
     })));
-
-    tip.style.opacity = 0;
   });
 
   // Position tooltip via mouse
