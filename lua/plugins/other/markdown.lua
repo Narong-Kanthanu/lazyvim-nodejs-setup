@@ -1,3 +1,14 @@
+local workspaces = {
+  {
+    name = "personal",
+    path = os.getenv("PERSONAL_VAULT_PATH"),
+  },
+  {
+    name = "work",
+    path = os.getenv("WORK_VAULT_PATH"),
+  },
+}
+
 return {
   {
     "toppair/peek.nvim",
@@ -44,35 +55,37 @@ return {
       sync = {
         enabled = false,
       },
-      workspaces = {
-        {
-          name = "personal",
-          path = os.getenv("PERSONAL_VAULT_PATH"), -- set this env variable in your shell config to point to your vault
-        },
-        {
-          name = "work",
-          path = os.getenv("WORK_VAULT_PATH"), -- set this env variable in your shell config to point to your vault
-        },
-      },
+      workspaces = workspaces,
     },
+  },
+  {
+    "Narong-Kanthanu/llm-kiwi.nvim",
+    cmd = { "LlmKiwiOpen", "LlmKiwiClose", "LlmKiwiList" },
+    config = function()
+      require("llm-kiwi").setup({
+        port = 18765,
+        open_browser = true,
+        nvim_server = true,
+        workspaces = workspaces,
+      })
+    end,
     keys = {
+      { "<leader>k", "", desc = "LLM Kiwi", mode = { "n" } },
       {
-        "<leader>mo",
+        "<leader>kw",
         function()
-          local ws = Obsidian.workspace
-          local script = vim.fn.stdpath("config") .. "/lua/scripts/vault-graph.py"
-          vim.fn.jobstart({
-            "python3",
-            script,
-            "--all",
-            "--active",
-            ws.name,
-            "--nvim-server",
-            vim.v.servername,
-          }, { detach = true })
+          require("llm-kiwi").open()
         end,
         mode = { "n" },
-        desc = "Open Obsidian graph",
+        desc = "Open knowledge network graph",
+      },
+      {
+        "<leader>kq",
+        function()
+          require("llm-kiwi").close()
+        end,
+        mode = { "n" },
+        desc = "Stop running graph server",
       },
     },
   },
