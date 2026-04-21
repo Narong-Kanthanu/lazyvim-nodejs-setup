@@ -1,13 +1,15 @@
-local workspaces = {
-  {
-    name = "personal",
-    path = os.getenv("PERSONAL_VAULT_PATH"),
-  },
-  {
-    name = "work",
-    path = os.getenv("WORK_VAULT_PATH"),
-  },
-}
+local workspaces = {}
+local personal_vault_path = os.getenv("PERSONAL_VAULT_PATH")
+local work_vault_path = os.getenv("WORK_VAULT_PATH")
+if personal_vault_path and personal_vault_path ~= "" then
+  table.insert(workspaces, { name = "personal", path = personal_vault_path })
+end
+if work_vault_path and work_vault_path ~= "" then
+  table.insert(workspaces, { name = "work", path = work_vault_path })
+end
+if #workspaces == 0 then
+  table.insert(workspaces, { name = "default", path = vim.fn.getcwd() })
+end
 
 return {
   {
