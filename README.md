@@ -117,21 +117,23 @@ nvim
 ```
 ~/.config/nvim/
 ├── init.lua                 # Entry point
-├── lua/
-│   ├── config/
-│   │   ├── lazy.lua         # Plugin manager setup
-│   │   ├── options.lua      # Editor settings
-│   │   ├── keymaps.lua      # Key bindings
-│   │   ├── autocmds.lua     # Auto-commands
-│   │   └── confirm.lua      # Custom save confirm dialog
-│   └── plugins/
-│       ├── lsp/             # LSP, completion, mason
-│       ├── editor/          # Telescope, treesitter, UI
-│       ├── ai/              # CodeCompanion, Copilot, MCP
-│       ├── git/             # Gitsigns, LazyGit
-│       └── other/           # Clipboard, which-key, markdown/obsidian
-│   └── scripts/
-│       └── vault-graph.py   # Obsidian vault graph generator
+└── lua/
+    ├── config/
+    │   ├── lazy.lua         # Plugin manager setup
+    │   ├── options.lua      # Editor settings
+    │   ├── keymaps.lua      # Key bindings
+    │   ├── autocmds.lua     # Auto-commands
+    │   └── confirm.lua      # Custom save confirm dialog
+    ├── plugins/
+    │   ├── lsp/             # LSP, completion, mason
+    │   ├── editor/          # Telescope, treesitter, UI
+    │   ├── ai/              # CodeCompanion, Copilot, MCP
+    │   ├── git/             # Gitsigns, LazyGit
+    │   └── other/           # Clipboard, which-key, markdown/obsidian
+    ├── scripts/
+    │   └── vault-graph.py   # Obsidian vault graph generator
+    └── utils/
+        └── node_resolver.lua  # Shared nvm-aware node binary resolver
 ```
 
 ## AI Setup
