@@ -40,7 +40,6 @@ nvim
 - [fd](https://github.com/sharkdp/fd) for telescope file finding
 - [lazygit](https://github.com/jesseduffield/lazygit) (optional) for git UI
 - [yazi](https://github.com/sxyazi/yazi) (optional) for file manager
-- [Python 3](https://www.python.org/) (optional) for vault graph generator
 - [deno](https://deno.land/) (optional) for markdown preview (peek.nvim)
 - A [Nerd Font](https://www.nerdfonts.com/) for icons
 
@@ -103,7 +102,8 @@ nvim
 |-----|--------|
 | `<Leader>md` | Markdown preview |
 | `<Leader>mq` | Close markdown preview |
-| `<Leader>mo` | Obsidian graph (multi-workspace vis.js graph with vim navigation) |
+| `<Leader>kw` | Open knowledge graph (llm-kiwi.nvim, multi-workspace vis.js graph) |
+| `<Leader>kq` | Stop knowledge graph server |
 
 ### File Management
 
@@ -130,8 +130,6 @@ nvim
     │   ├── ai/              # CodeCompanion, Copilot, MCP
     │   ├── git/             # Gitsigns, LazyGit
     │   └── other/           # Clipboard, which-key, markdown/obsidian
-    ├── scripts/
-    │   └── vault-graph.py   # Obsidian vault graph generator
     └── utils/
         └── node_resolver.lua  # Shared nvm-aware node binary resolver
 ```
@@ -153,36 +151,21 @@ Manage MCP servers with `<Leader>ah`. Workspace-local config supported via:
 - `.mcphub/servers.json`
 - `.vscode/mcp.json`
 
-### Obsidian Vault Graph
+### Knowledge Graph (Obsidian Vaults)
 
-Set environment variables to point to your Obsidian vaults:
+Powered by [llm-kiwi.nvim](https://github.com/Narong-Kanthanu/llm-kiwi.nvim). Set environment variables to point to your Obsidian vaults (falls back to the current working directory when neither is set):
 
 ```bash
 export PERSONAL_VAULT_PATH="~/path/to/personal/vault"
 export WORK_VAULT_PATH="~/path/to/work/vault"
 ```
 
-Press `<Leader>mo` to generate an interactive vis.js force-directed graph of your vault's `[[wikilinks]]`. The graph includes a workspace selector dropdown and full vim-style keyboard navigation:
-
 | Key | Action |
 |-----|--------|
-| `h j k l` | Navigate between nodes |
-| `f` | Search notes |
-| `w` | Switch workspace (j/k to pick) |
-| `Enter` | Focus node (zoom into connections) |
-| `o` | Open .md file in Neovim |
-| `y / n` | Confirm / cancel (in modal) |
-| `ESC` | Go back (focus → selection → search → reset) |
+| `<Leader>kw` | Open the knowledge graph in your browser |
+| `<Leader>kq` | Stop the running graph server |
 
-Click on a label to open the file. When Neovim is outside the vault, files auto-open in a dedicated tmux "vault" window (falls back to a confirm modal without tmux).
-
-The script can also be run standalone:
-
-```bash
-python3 lua/scripts/vault-graph.py --all          # all workspaces
-python3 lua/scripts/vault-graph.py -w personal     # specific workspace
-python3 lua/scripts/vault-graph.py ~/my-vault      # arbitrary path
-```
+The graph renders `[[wikilinks]]` across all configured workspaces as an interactive vis.js force-directed graph. See the plugin README for in-browser controls and configuration options.
 
 ## Performance Notes
 

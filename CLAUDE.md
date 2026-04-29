@@ -75,11 +75,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 - **clipboard.lua**: OSC52 clipboard support for SSH/remote development (auto-copies on yank)
 - **which_key.lua**: Keymap display helper with modern preset
-- **markdown.lua**: Markdown preview with peek.nvim (`<Leader>md` open, `<Leader>mq` close), Obsidian.nvim integration with workspace-aware vault graph (`<Leader>mo`)
-
-#### Scripts (`lua/scripts/`)
-
-- **vault-graph.py**: Obsidian vault graph generator — scans `[[wikilinks]]` across all configured workspaces (via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars), generates interactive vis.js force-directed graph HTML (canvas-based) with in-browser workspace selector dropdown. When launched from Neovim with `--nvim-server`, serves via HTTP (port 18765) with APIs for opening files, checking cwd, and tmux integration. Features vim-style keyboard navigation (`hjkl` to move, `Enter` to focus, `o` to open, `f` to search, `w` to switch workspace, `ESC` to go back), single-click on label to open files, smart node selection with red glow highlight and tooltip, connected-node priority in navigation, and cwd-aware file opening (auto-opens in tmux vault window when Neovim is outside the vault, falls back to confirm modal without tmux). Previous server killed on re-invocation via PID file; vault tmux window auto-closed on server shutdown.
+- **markdown.lua**: Markdown preview with peek.nvim (`<Leader>md` open, `<Leader>mq` close), Obsidian.nvim integration, and llm-kiwi.nvim knowledge graph (`<Leader>kw` open, `<Leader>kq` close) — workspaces shared across both via `PERSONAL_VAULT_PATH` / `WORK_VAULT_PATH` env vars (falls back to cwd when neither is set).
 
 #### Refactoring (`lua/plugins/refactoring.lua`)
 
@@ -158,7 +154,10 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 ### Markdown
 - `<Leader>md`: Open markdown preview
 - `<Leader>mq`: Close markdown preview
-- `<Leader>mo`: Open Obsidian graph (multi-workspace vis.js force-directed graph)
+
+### LLM Kiwi (Knowledge Graph)
+- `<Leader>kw`: Open knowledge network graph (multi-workspace vis.js force-directed graph)
+- `<Leader>kq`: Stop running graph server
 
 ### Refactoring
 - `<Leader>rn`: Incremental rename
