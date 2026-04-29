@@ -28,11 +28,11 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 #### LSP Configuration (`lua/plugins/lsp/`)
 
-- **lsp-config.lua**: Language servers (vtsls for TS/JS, eslint, lua_ls, bashls, html)
+- **lsp_config.lua**: Language servers (vtsls for TS/JS, eslint, lua_ls, bashls, html)
   - vtsls configured for large monorepos (MaxTsServerMemory: 4096MB, project diagnostics disabled)
   - Root detection: yarn.lock, package.json, tsconfig.json, .git
   - Inlay hints limited to function return types only
-- **cmp-config.lua**: Completion with blink.cmp (sources: LSP, Copilot, path, snippets, buffer)
+- **cmp_config.lua**: Completion with blink.cmp (sources: LSP, Copilot, path, snippets, buffer)
   - Copilot integration as completion source (blink-cmp-copilot)
   - Documentation on manual trigger only (`<C-i>`)
   - Ghost text completion when AI completion disabled
@@ -44,12 +44,12 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - **telescope.lua**: Fuzzy finder with custom layouts and keymaps (`;f`, `;r`, `;d`, etc.)
   - FZF native integration for performance
   - Undo extension with side-by-side preview
-- **nvim-tree.lua**: File explorer (width: 35, auto-open on startup, filters dotfiles and node_modules)
+- **nvim_tree.lua**: File explorer (width: 35, auto-open on startup, filters dotfiles and node_modules)
 - **treesitter.lua**: Syntax highlighting via `vim.treesitter.start()` (disabled for files >500KB, skips special buffers), treesitter-based folding, auto-tag as standalone plugin
 - **ui.lua**: Status line (lualine), bufferline, notifications (noice, notify), incline
 - **colorscheme.lua**: Sonokai theme (shusia variant, transparent background)
 - **delimiters.lua**: Rainbow brackets with smart strategy (global for ≤1000 lines, local for larger)
-- **file-manager.lua**: Yazi integration (`<Leader>fm`)
+- **file_manager.lua**: Yazi integration (`<Leader>fm`)
 - **flash.lua**: Jump navigation (`s` to jump, `S` for treesitter jump)
 - **editor.lua**: TODO comments with navigation (`tj/tk`) and search (`<Leader>td/tf`), mini.hipatterns (hex color highlighting)
 - **snacks.nvim**: Image preview (PNG, JPG, GIF, WebP), zoom mode (`<Leader>zz`), mermaid support
@@ -74,7 +74,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 #### Other Plugins (`lua/plugins/other/`)
 
 - **clipboard.lua**: OSC52 clipboard support for SSH/remote development (auto-copies on yank)
-- **which-key.lua**: Keymap display helper with modern preset
+- **which_key.lua**: Keymap display helper with modern preset
 - **markdown.lua**: Markdown preview with peek.nvim (`<Leader>md` open, `<Leader>mq` close), Obsidian.nvim integration with workspace-aware vault graph (`<Leader>mo`)
 
 #### Scripts (`lua/scripts/`)
@@ -85,6 +85,10 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 - **inc-rename.nvim**: Incremental rename (`<Leader>rn`)
 - **refactoring.nvim**: Refactoring menu (`<Leader>r` in visual mode)
+
+#### Shared Utilities (`lua/utils/`)
+
+- **node_resolver.lua**: Resolves a node binary even when nvm isn't sourced in the launcher shell (`$PATH` → `~/.nvm/alias/default` → highest installed version). Used by `copilot.lua` (`copilot_node_command`) and `mason.lua` (prepends node bin dir to `vim.env.PATH` so spawned `npm` is found).
 
 ## Key Keybindings
 

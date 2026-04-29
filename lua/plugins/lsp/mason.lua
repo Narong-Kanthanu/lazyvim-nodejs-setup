@@ -19,6 +19,9 @@ return {
     },
   },
   config = function(_, opts)
+    -- Mason shells out to `npm` for some packages (e.g. oxfmt); make sure node's
+    -- bin dir is on PATH even when nvm isn't sourced in the launcher shell.
+    require("utils.node_resolver").ensure_on_path()
     require("mason").setup(opts)
     local mr = require("mason-registry")
     mr:on("package:install:success", function()
