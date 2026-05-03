@@ -62,6 +62,7 @@ return {
   },
   {
     "Narong-Kanthanu/llm-kiwi.nvim",
+    version = "*", -- use latest release, remove to use latest commit
     cmd = { "LlmKiwiOpen", "LlmKiwiClose", "LlmKiwiList" },
     config = function()
       require("llm-kiwi").setup({
