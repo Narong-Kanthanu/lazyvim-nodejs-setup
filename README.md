@@ -18,7 +18,27 @@ A LazyVim-based Neovim configuration optimized for Node.js/TypeScript developmen
 
 ## Installation
 
-### Quick Install
+Pick one of the methods below. The symlink method is preferred if you want to keep the repo checked out somewhere other than `~/.config/nvim` (e.g. `~/Code/lazyvim-nodejs-setup`) and still have Neovim pick it up.
+
+### Option 1: Symlink via `install.sh` (recommended)
+
+Clone the repo wherever you keep your projects, then run the bundled installer from inside the clone:
+
+```bash
+git clone https://github.com/user/lazyvim-nodejs-setup
+cd lazyvim-nodejs-setup
+./install.sh
+```
+
+What `install.sh` does:
+
+- Symlinks the current directory to `~/.config/nvim`.
+- If `~/.config/nvim` already exists, prompts before removing it (answer `y` to continue, anything else cancels).
+- After it finishes, open Neovim and lazy.nvim will install the plugins on first launch.
+
+> Make `install.sh` executable first if needed: `chmod +x install.sh`.
+
+### Option 2: Clone directly into `~/.config/nvim`
 
 ```bash
 # Backup existing config
