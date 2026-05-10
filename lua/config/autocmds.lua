@@ -22,13 +22,10 @@ function DiagnosticsConfig()
     },
   })
 end
-vim.cmd("autocmd BufRead *.ts,*.js,*.sh,*.json,*.yml,*.lua lua DiagnosticsConfig()")
-
--- Disable inlay hints for some filetypes
-vim.api.nvim_create_autocmd("BufRead", {
-  pattern = { "*.ts", "*.js", "*.sh", "*.json", "*.yml", "*.lua" },
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "typescript", "javascript", "sh", "bash", "json", "yaml", "lua" },
   callback = function()
-    vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
+    DiagnosticsConfig()
   end,
 })
 

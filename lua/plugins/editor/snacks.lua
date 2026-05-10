@@ -1,7 +1,7 @@
 return {
   "folke/snacks.nvim",
   priority = 1000,
-  lazy = false,
+  event = "VeryLazy",
   keys = {
     {
       "<leader>zz",
@@ -13,6 +13,7 @@ return {
   },
   opts = {
     scroll = { enabled = false },
+    dashboard = { enabled = false },
     image = {
       enabled = true,
       border = "rounded",

@@ -3,6 +3,7 @@ return {
   "mason-org/mason.nvim",
   cmd = "Mason",
   keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+  event = { "BufReadPre", "BufNewFile" },
   build = ":MasonUpdate",
   opts_extend = { "ensure_installed" },
   opts = {
@@ -12,6 +13,7 @@ return {
       "shfmt",
       "vtsls", -- vscode tsserver.
       "bash-language-server", -- bash scripts
+      "eslint-lsp", -- eslint via vscode-eslint-language-server
       "omnisharp", -- dotnet
     },
     ui = {

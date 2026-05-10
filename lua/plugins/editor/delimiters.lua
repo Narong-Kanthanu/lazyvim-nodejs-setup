@@ -2,6 +2,7 @@ return {
   {
     "HiPhish/rainbow-delimiters.nvim",
     dependencies = { "lukas-reineke/indent-blankline.nvim" },
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       local rainbow_delimiters = require("rainbow-delimiters")
       local hooks = require("ibl.hooks")

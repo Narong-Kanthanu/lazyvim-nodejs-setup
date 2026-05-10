@@ -1,5 +1,9 @@
 return {
   "nvim-tree/nvim-tree.lua",
+  cmd = { "NvimTreeFocus", "NvimTreeToggle", "NvimTreeOpen", "NvimTreeFindFile", "NvimTreeFindFileToggle" },
+  keys = {
+    { "<Leader>fe", "<cmd>NvimTreeFindFileToggle<cr>", desc = "File explorer (nvim-tree)" },
+  },
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
@@ -113,11 +117,6 @@ return {
         enable = true,
       },
     })
-
-    -- Auto open on startup if no files were passed
-    if vim.fn.argc(-1) == 0 then
-      vim.cmd("NvimTreeFocus")
-    end
 
     -- Custom highlight colors
     vim.cmd([[

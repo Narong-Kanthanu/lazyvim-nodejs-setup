@@ -7,11 +7,12 @@ return {
   -- neo-tree
   { "nvim-neo-tree/neo-tree.nvim", enabled = false },
   -- dressing (provides vim.ui.select/input floating UI for code actions, etc.)
-  { "stevearc/dressing.nvim", enabled = true },
+  { "stevearc/dressing.nvim", enabled = true, lazy = true },
   -- status line
   {
     "nvim-lualine/lualine.nvim",
     enabled = true,
+    event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
@@ -98,6 +99,7 @@ return {
   -- notify
   {
     "rcarriga/nvim-notify",
+    event = "VeryLazy",
     opts = {
       timeout = 2500,
       background_colour = "#2A2A2A",
@@ -230,8 +232,7 @@ return {
   {
     "b0o/incline.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    event = "BufReadPre",
-    priority = 1200,
+    event = "BufReadPost",
     config = function()
       local helpers = require("incline.helpers")
       require("incline").setup({

@@ -14,12 +14,6 @@ return {
     })
     wk.add({
       {
-        "<Leader>fe",
-        mode = "n",
-        "<cmd>NvimTreeFindFileToggle<cr>",
-        desc = "File explorer",
-      },
-      {
         "<Leader>ca",
         mode = { "n", "v" },
         function()
