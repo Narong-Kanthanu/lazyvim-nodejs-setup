@@ -59,10 +59,28 @@ jobs:
       - name: Run config asserts
         run: tests/run.sh check
 
-      - name: Run startup-time bench (informational)
-        continue-on-error: true
+      - name: Run startup-time bench
         env:
+          # Generous thresholds: CI runners are slower and noisier than dev
+          # machines. Local medians are ~24/~101 ms; CI gets 4-6× headroom.
           THRESHOLD_EMPTY_MS: "300"
           THRESHOLD_FILE_MS: "600"
           RUNS: "5"
         run: tests/run.sh bench
+
+  # Single aggregator job that branch protection should require. If new test
+  # jobs are added later, list them in `needs` here and only this name needs
+  # to be updated in branch protection.
+  required:
+    name: required tests
+    if: always()
+    needs: [check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all required jobs passed
+        run: |
+          if [ "${{ needs.check.result }}" != "success" ]; then
+            echo "config asserts job did not succeed (result: ${{ needs.check.result }})"
+            exit 1
+          fi
+          echo "All required jobs passed."
