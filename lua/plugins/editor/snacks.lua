@@ -13,6 +13,7 @@ return {
   },
   opts = {
     scroll = { enabled = false },
+    dashboard = { enabled = false },
     image = {
       enabled = true,
       border = "rounded",
