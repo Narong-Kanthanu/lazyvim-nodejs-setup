@@ -46,6 +46,6 @@ opt.redrawtime = 5000
 
 -- Performance tweaks
 vim.schedule(function()
-  collectgarbage("setpause", 200)
-  collectgarbage("setstepmul", 400)
+  collectgarbage("setpause", 500)
+  collectgarbage("setstepmul", 800)
 end)

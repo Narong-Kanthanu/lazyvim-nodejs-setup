@@ -1,22 +1,23 @@
 return {
   "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = { "saghen/blink.cmp" },
   opts = function()
     local util = require("lspconfig.util")
 
-    -- Shared inlay hints config for TS/JS
+    -- Shared inlay hints config for TS/JS (disabled — we don't render hints)
     local ts_js_inlay_hints = {
       parameterNames = { enabled = "none" },
       parameterTypes = { enabled = false },
       variableTypes = { enabled = false },
       propertyDeclarationTypes = { enabled = false },
-      functionLikeReturnTypes = { enabled = true },
+      functionLikeReturnTypes = { enabled = false },
       enumMemberValues = { enabled = false },
     }
 
     return {
       inlay_hints = {
-        enabled = true,
+        enabled = false,
       },
       servers = {
         vtsls = {

@@ -29,9 +29,10 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 #### LSP Configuration (`lua/plugins/lsp/`)
 
 - **lsp_config.lua**: Language servers (vtsls for TS/JS, eslint, lua_ls, bashls, html)
+  - Loads on `BufReadPre`/`BufNewFile` (lazy)
   - vtsls configured for large monorepos (MaxTsServerMemory: 4096MB, project diagnostics disabled)
   - Root detection: yarn.lock, package.json, tsconfig.json, .git
-  - Inlay hints limited to function return types only
+  - Inlay hints disabled (TS/JS server skips computing them)
 - **cmp_config.lua**: Completion with blink.cmp (sources: LSP, Copilot, path, snippets, buffer)
   - Copilot integration as completion source (blink-cmp-copilot)
   - Documentation on manual trigger only (`<C-i>`)
@@ -44,7 +45,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - **telescope.lua**: Fuzzy finder with custom layouts and keymaps (`;f`, `;r`, `;d`, etc.)
   - FZF native integration for performance
   - Undo extension with side-by-side preview
-- **nvim_tree.lua**: File explorer (width: 35, auto-open on startup, filters dotfiles and node_modules)
+- **nvim_tree.lua**: File explorer (width: 35, lazy-loaded on `<Leader>fe` / `NvimTree*` commands, filters dotfiles and node_modules)
 - **treesitter.lua**: Syntax highlighting via `vim.treesitter.start()` (disabled for files >500KB, skips special buffers), treesitter-based folding, auto-tag as standalone plugin
 - **ui.lua**: Status line (lualine), bufferline, notifications (noice, notify), incline
 - **colorscheme.lua**: Sonokai theme (shusia variant, transparent background)

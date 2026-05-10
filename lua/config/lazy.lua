@@ -39,7 +39,7 @@ require("lazy").setup({
     { import = "plugins.other" },
   },
   defaults = {
-    lazy = false,
+    lazy = true,
     version = false,
   },
   dev = {
