@@ -49,18 +49,23 @@ jobs:
           restore-keys: |
             nvim-mason-${{ runner.os }}-
 
+      - name: Prepare Neovim config root
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/.config"
+          ln -sfn "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE/.config/nvim"
+
       # Install plugins headlessly. Lazy! restore honors lazy-lock.json so we
       # always test against the pinned commits.
       - name: Install plugins
         env:
-          XDG_CONFIG_HOME: ${{ github.workspace }}/..
+          XDG_CONFIG_HOME: ${{ github.workspace }}/.config
         run: |
           nvim --headless "+Lazy! restore" +qa
           nvim --headless "+Lazy! build" +qa || true
 
       - name: Run config asserts
         env:
-          XDG_CONFIG_HOME: ${{ github.workspace }}/..
+          XDG_CONFIG_HOME: ${{ github.workspace }}/.config
         run: tests/run.sh check
 
       - name: Run startup-time bench
@@ -70,7 +75,7 @@ jobs:
           THRESHOLD_EMPTY_MS: "300"
           THRESHOLD_FILE_MS: "600"
           RUNS: "5"
-          XDG_CONFIG_HOME: ${{ github.workspace }}/..
+          XDG_CONFIG_HOME: ${{ github.workspace }}/.config
         run: tests/run.sh bench
 
   # Single aggregator job that branch protection should require. If new test
