@@ -1,0 +1,91 @@
+name: tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# This workflow uses no untrusted GitHub event inputs (issue/PR titles,
+# commit messages, etc.) in run: blocks. Only runner.os and hashFiles()
+# expressions appear, both of which are safe.
+
+jobs:
+  check:
+    name: config asserts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Neovim (stable)
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+
+      - name: Setup Node (mason needs npm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Cache lazy.nvim plugin clones, keyed on lazy-lock.json so a lockfile
+      # change busts the cache.
+      - name: Cache lazy plugins
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/nvim/lazy
+          key: nvim-lazy-${{ runner.os }}-${{ hashFiles('lazy-lock.json') }}
+          restore-keys: |
+            nvim-lazy-${{ runner.os }}-
+
+      - name: Cache mason packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/nvim/mason
+          key: nvim-mason-${{ runner.os }}-${{ hashFiles('lua/plugins/lsp/mason.lua') }}
+          restore-keys: |
+            nvim-mason-${{ runner.os }}-
+
+      # Install plugins headlessly. Lazy! restore honors lazy-lock.json so we
+      # always test against the pinned commits.
+      - name: Install plugins
+        env:
+          XDG_CONFIG_HOME: ${{ github.workspace }}/..
+        run: |
+          nvim --headless "+Lazy! restore" +qa
+          nvim --headless "+Lazy! build" +qa || true
+
+      - name: Run config asserts
+        env:
+          XDG_CONFIG_HOME: ${{ github.workspace }}/..
+        run: tests/run.sh check
+
+      - name: Run startup-time bench
+        env:
+          # Generous thresholds: CI runners are slower and noisier than dev
+          # machines. Local medians are ~24/~101 ms; CI gets 4-6× headroom.
+          THRESHOLD_EMPTY_MS: "300"
+          THRESHOLD_FILE_MS: "600"
+          RUNS: "5"
+          XDG_CONFIG_HOME: ${{ github.workspace }}/..
+        run: tests/run.sh bench
+
+  # Single aggregator job that branch protection should require. If new test
+  # jobs are added later, list them in `needs` here and only this name needs
+  # to be updated in branch protection.
+  required:
+    name: required tests
+    if: always()
+    needs: [check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all required jobs passed
+        run: |
+          if [ "${{ needs.check.result }}" != "success" ]; then
+            echo "config asserts job did not succeed (result: ${{ needs.check.result }})"
+            exit 1
+          fi
+          echo "All required jobs passed."
