@@ -82,7 +82,7 @@ jobs:
   # jobs are added later, list them in `needs` here and only this name needs
   # to be updated in branch protection.
   required:
-    name: required tests
+    name: required
     if: always()
     needs: [check]
     runs-on: ubuntu-latest
