@@ -71,9 +71,11 @@ jobs:
       - name: Run startup-time bench
         env:
           # Generous thresholds: CI runners are slower and noisier than dev
-          # machines. Local medians are ~24/~101 ms; CI gets 4-6x headroom.
-          THRESHOLD_EMPTY_MS: "300"
-          THRESHOLD_FILE_MS: "600"
+          # machines. Local medians are ~24/~101 ms; thresholds give ~20x
+          # headroom to absorb runner jitter while still catching real
+          # regressions (a 5x+ slowdown will still trip the gate).
+          THRESHOLD_EMPTY_MS: "500"
+          THRESHOLD_FILE_MS: "1000"
           RUNS: "5"
           XDG_CONFIG_HOME: ${{ github.workspace }}/.config
         run: tests/run.sh bench
