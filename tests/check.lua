@@ -46,7 +46,6 @@ local must_be_lazy = {
   "gitsigns.nvim",
   "nvim-lspconfig",
   "nvim-osc52",
-  "obsidian.nvim",
 }
 for _, name in ipairs(must_be_lazy) do
   local p = get(name)

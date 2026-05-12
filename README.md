@@ -116,7 +116,7 @@ nvim
 | `<Leader>gb` | Git blame |
 | `<Leader>gg` | LazyGit |
 
-### Markdown / Obsidian
+### Markdown
 
 | Key | Action |
 |-----|--------|
@@ -149,7 +149,7 @@ nvim
     │   ├── editor/          # Telescope, treesitter, UI
     │   ├── ai/              # CodeCompanion, Copilot, MCP
     │   ├── git/             # Gitsigns, LazyGit
-    │   └── other/           # Clipboard, which-key, markdown/obsidian
+    │   └── other/           # Clipboard, which-key, markdown
     └── utils/
         └── node_resolver.lua  # Shared nvm-aware node binary resolver
 ```
