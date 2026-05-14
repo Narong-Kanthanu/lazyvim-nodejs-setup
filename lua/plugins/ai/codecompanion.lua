@@ -1,4 +1,4 @@
-local function open_agent(name, cwd)
+local function open_agent_view(name, cwd)
   if not vim.env.TMUX then
     vim.notify("Not inside tmux", vim.log.levels.WARN)
     return
@@ -7,9 +7,9 @@ local function open_agent(name, cwd)
   vim.fn.system("tmux has-session -t " .. s .. " 2>/dev/null")
   local is_new = vim.v.shell_error ~= 0
   if is_new then
-    vim.fn.system("tmux new-session -d -s " .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
+    vim.fn.system("tmux new-session -d -s " .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude agents"')
   else
-    vim.fn.system("tmux new-window -t " .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
+    vim.fn.system("tmux new-window -t " .. s .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude agents"')
   end
   vim.fn.system("tmux set-option -t " .. s .. " mouse on && tmux set-option -t " .. s .. " detach-on-destroy off && tmux switch-client -t " .. s)
 end
@@ -61,9 +61,9 @@ return {
         local cwd = vim.fn.getcwd()
         local dir = vim.fn.fnamemodify(cwd, ":t")
         local name = dir .. "[ ]"
-        open_agent(name, cwd)
+        open_agent_view(name, cwd)
       end,
-      desc = "New TMUX window with AI Agent",
+      desc = "New TMUX window with AI agent view",
       mode = { "n", "v" },
       silent = true,
     },
@@ -73,7 +73,7 @@ return {
         local cwd = vim.fn.getcwd()
         vim.fn.jobstart('tmux split-window -v -c "' .. cwd .. '" "claude"', { detach = false })
       end,
-      desc = "New TMUX horizontal pane with AI Agent",
+      desc = "New TMUX horizontal pane with AI agent",
       mode = { "n", "v" },
       silent = true,
     },
@@ -83,7 +83,7 @@ return {
         local cwd = vim.fn.getcwd()
         vim.fn.jobstart('tmux split-window -h -c "' .. cwd .. '" "claude"', { detach = false })
       end,
-      desc = "New TMUX vertical pane with AI Agent",
+      desc = "New TMUX vertical pane with AI agent",
       mode = { "n", "v" },
       silent = true,
     },
