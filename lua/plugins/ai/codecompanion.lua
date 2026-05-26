@@ -7,7 +7,7 @@ local function open_agent(name, cwd)
   vim.fn.system("tmux has-session -t " .. session_name .. " 2>/dev/null")
   local is_new = vim.v.shell_error ~= 0
   if is_new then
-    vim.fn.system("tmux new-session -d -s " .. session_name .. ' -n "agents[ ]" -c "' .. cwd .. '" "claude agents"')
+    vim.fn.system("tmux new-session -d -s " .. session_name .. ' -n "agents[ ]" -c "' .. cwd .. '" "claude"')
   else
     vim.fn.system("tmux new-window -t " .. session_name .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
   end
