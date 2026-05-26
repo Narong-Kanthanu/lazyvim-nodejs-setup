@@ -104,7 +104,10 @@ nvim
 | `<Leader>as` | AI chat (horizontal split) |
 | `<Leader>at` | AI chat (new tab) |
 | `<Leader>ax` | Send selection to chat |
-| `<Leader>ag` | "AI workspace" tmux session — first call opens `claude agents`; later calls add a window running plain `claude` |
+| `<Leader>aa` | "AI workspace" tmux window with the `claude agents` view (focuses the existing window if present) |
+| `<Leader>ag` | "AI workspace" tmux window running plain `claude` (named after the cwd) |
+| `<Leader>aS` | Horizontal tmux pane running `claude` |
+| `<Leader>aV` | Vertical tmux pane running `claude` |
 | `<Leader>ah` | MCP server manager |
 
 ### Git
