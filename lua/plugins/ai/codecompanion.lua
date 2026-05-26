@@ -1,17 +1,46 @@
-local function open_agent(name, cwd)
+local SESSION_NAME = "AI workspace"
+
+local function in_tmux()
   if not vim.env.TMUX then
     vim.notify("Not inside tmux", vim.log.levels.WARN)
+    return false
+  end
+  return true
+end
+
+local function configure_and_switch_session(session)
+  vim.fn.system(table.concat({
+    "tmux set-option -t " .. session .. " mouse on",
+    "tmux set-option -t " .. session .. " detach-on-destroy off",
+    "tmux switch-client -t " .. session,
+  }, " && "))
+end
+
+-- Open a tmux window in the shared "AI workspace" session running `cmd`.
+-- focus_existing: reuse a window with the same name instead of creating a new one.
+local function open_window(name, cwd, cmd, focus_existing)
+  if not in_tmux() then
     return
   end
-  local session_name = vim.fn.shellescape("AI workspace")
-  vim.fn.system("tmux has-session -t " .. session_name .. " 2>/dev/null")
-  local is_new = vim.v.shell_error ~= 0
-  if is_new then
-    vim.fn.system("tmux new-session -d -s " .. session_name .. ' -n "agents[ ]" -c "' .. cwd .. '" "claude"')
+
+  local session = vim.fn.shellescape(SESSION_NAME)
+  local n, c, run = vim.fn.shellescape(name), vim.fn.shellescape(cwd), vim.fn.shellescape(cmd)
+
+  vim.fn.system("tmux has-session -t " .. session .. " 2>/dev/null")
+  if vim.v.shell_error ~= 0 then
+    vim.fn.system(("tmux new-session -d -s %s -n %s -c %s %s"):format(session, n, c, run))
+  elseif focus_existing then
+    local existing = vim.fn.system("tmux list-windows -t " .. session .. ' -F "#{window_name}" 2>/dev/null | grep -xF ' .. n)
+    if vim.v.shell_error == 0 and existing ~= "" then
+      vim.fn.system("tmux select-window -t " .. session .. ":" .. n)
+    else
+      vim.fn.system(("tmux new-window -t %s -n %s -c %s %s"):format(session, n, c, run))
+    end
   else
-    vim.fn.system("tmux new-window -t " .. session_name .. ' -n "' .. name .. '" -c "' .. cwd .. '" "claude"')
+    vim.fn.system(("tmux new-window -t %s -n %s -c %s %s"):format(session, n, c, run))
   end
-  vim.fn.system("tmux set-option -t " .. session_name .. " mouse on && tmux set-option -t " .. session_name .. " detach-on-destroy off && tmux switch-client -t " .. session_name)
+
+  configure_and_switch_session(session)
 end
 
 return {
@@ -56,14 +85,24 @@ return {
       silent = true,
     },
     {
+      "<leader>aa",
+      function()
+        local cwd = vim.fn.getcwd()
+        open_window("agents[ ]", cwd, "claude agents", true)
+      end,
+      desc = "New TMUX window with AI agent view",
+      mode = { "n", "v" },
+      silent = true,
+    },
+    {
       "<leader>ag",
       function()
         local cwd = vim.fn.getcwd()
         local dir = vim.fn.fnamemodify(cwd, ":t")
         local name = dir .. "[ ]"
-        open_agent(name, cwd)
+        open_window(name, cwd, "claude", false)
       end,
-      desc = "New TMUX window with AI agent view",
+      desc = "New TMUX window with AI agent",
       mode = { "n", "v" },
       silent = true,
     },
