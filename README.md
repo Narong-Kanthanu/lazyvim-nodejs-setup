@@ -110,6 +110,8 @@ nvim
 | `<Leader>aV` | Vertical tmux pane running `claude` |
 | `<Leader>ah` | MCP server manager |
 
+> The `<Leader>aa`/`<Leader>ag` mappings remember the pane they were launched from (tagged on the "AI workspace" session as `@origin`), so the [`tmux-simpre`](https://github.com/Narong-Kanthanu/tmux-simpre) `prefix + l` binding can jump you straight back to that exact session/window/pane.
+
 ### Git
 
 | Key | Action |

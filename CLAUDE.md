@@ -60,6 +60,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - **codecompanion.lua**: Primary AI interface
   - Adapters: copilot (claude-sonnet-4.5 primary), claude_code (ACP), anthropic (HTTP)
   - Keymaps: `<Leader>av/as/at` for different chat layouts; tmux helpers share a single `open_window` function (in the shared "AI workspace" session, mouse scrolling enabled). `<Leader>aa` opens/focuses an `agents[ ]` window running `claude agents`; `<Leader>ag` adds a window named after the cwd running plain `claude`; `<Leader>aS`/`<Leader>aV` open a horizontal/vertical pane running `claude`
+  - Before switching to the "AI workspace" session, `open_window` tags it with `@origin = $TMUX_PANE` (the pane nvim was launched from). This is consumed by the `tmux-simpre` config's `prefix + l` binding to jump back to that exact session/window/pane. The value is a **pane id**, not a session name — the two repos are a contract; `current_session()` is kept only to skip tagging when launched from within the AI workspace itself
   - Memory system with common rule files (.clinerules, .cursorrules, .goosehints, CLAUDE.md, AGENT.md, etc.)
   - MCPHub integration for MCP tools/resources
   - Chat keymaps: `<C-s>` send, `<C-c>` close, `<C-l>` clear
@@ -198,7 +199,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - MCP servers can be managed via `<Leader>ah` with auto-toggle based on workspace
 - Workspace MCP config: .mcphub/servers.json, .vscode/mcp.json
 - AI chat can be opened in different layouts for different workflows (vertical for side-by-side coding, tab for focus)
-- Agent mode opens windows in a dedicated "AI workspace" tmux session with mouse scrolling enabled (all helpers share one `open_window` function that shellescapes the window name, cwd, and command). `<Leader>aa` opens or focuses an `agents[ ]` window running `claude agents` (Claude Code agents view); `<Leader>ag` adds a window named `<cwd>[ ]` running plain `claude`; `<Leader>aS`/`<Leader>aV` open a horizontal/vertical pane running `claude`. `detach-on-destroy off` auto-returns to the previous session when the last window closes.
+- Agent mode opens windows in a dedicated "AI workspace" tmux session with mouse scrolling enabled (all helpers share one `open_window` function that shellescapes the window name, cwd, and command). `<Leader>aa` opens or focuses an `agents[ ]` window running `claude agents` (Claude Code agents view); `<Leader>ag` adds a window named `<cwd>[ ]` running plain `claude`; `<Leader>aS`/`<Leader>aV` open a horizontal/vertical pane running `claude`. `detach-on-destroy off` auto-returns to the previous session when the last window closes. The AI workspace session is also tagged with `@origin = $TMUX_PANE` (the launching pane id) so the `tmux-simpre` `prefix + l` binding can jump back to the exact origin session/window/pane.
 
 ## Special UI Features
 
