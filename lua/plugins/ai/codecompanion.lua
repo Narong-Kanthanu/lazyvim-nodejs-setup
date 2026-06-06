@@ -8,22 +8,31 @@ local function in_tmux()
   return true
 end
 
--- Name of the tmux session nvim is currently running in. This becomes the
+-- Pane id (e.g. "%5") nvim is currently running in. This becomes the
 -- "origin" we jump back to via `prefix + l` (see @origin in .tmux.conf).
+-- Storing the pane id (not just the session) lets the jump restore the exact
+-- window and pane, not merely the session.
+local function current_pane()
+  return vim.env.TMUX_PANE or ""
+end
+
+-- Name of the tmux session nvim is currently running in. Used only to avoid
+-- tagging the AI workspace as its own origin.
 local function current_session()
   local s = vim.fn.system('tmux display-message -p -t "$TMUX_PANE" "#{session_name}"')
   return (s:gsub("%s+$", "")) -- strip trailing newline
 end
 
-local function configure_and_switch_session(session, origin)
+local function configure_and_switch_session(session, origin_pane, origin_session)
   local cmds = {
     "tmux set-option -t " .. session .. " mouse on",
     "tmux set-option -t " .. session .. " detach-on-destroy off",
   }
-  -- Tag the AI workspace with the session it was launched from so the tmux
-  -- back-to-origin binding can return there. Skip when launched from itself.
-  if origin and origin ~= "" and origin ~= SESSION_NAME then
-    table.insert(cmds, "tmux set-option -t " .. session .. " @origin " .. vim.fn.shellescape(origin))
+  -- Tag the AI workspace with the pane it was launched from so the tmux
+  -- back-to-origin binding can return to that exact session/window/pane.
+  -- Skip when launched from within the AI workspace itself.
+  if origin_pane and origin_pane ~= "" and origin_session ~= SESSION_NAME then
+    table.insert(cmds, "tmux set-option -t " .. session .. " @origin " .. vim.fn.shellescape(origin_pane))
   end
   table.insert(cmds, "tmux switch-client -t " .. session)
   vim.fn.system(table.concat(cmds, " && "))
@@ -36,7 +45,8 @@ local function open_window(name, cwd, cmd, focus_existing)
     return
   end
 
-  local origin = current_session()
+  local origin_pane = current_pane()
+  local origin_session = current_session()
   local session = vim.fn.shellescape(SESSION_NAME)
   local n, c, run = vim.fn.shellescape(name), vim.fn.shellescape(cwd), vim.fn.shellescape(cmd)
 
@@ -54,7 +64,7 @@ local function open_window(name, cwd, cmd, focus_existing)
     vim.fn.system(("tmux new-window -t %s -n %s -c %s %s"):format(session, n, c, run))
   end
 
-  configure_and_switch_session(session, origin)
+  configure_and_switch_session(session, origin_pane, origin_session)
 end
 
 return {
