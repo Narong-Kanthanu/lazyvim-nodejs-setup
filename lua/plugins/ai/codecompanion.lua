@@ -100,7 +100,7 @@ return {
         local cwd = vim.fn.getcwd()
         local dir = vim.fn.fnamemodify(cwd, ":t")
         local name = dir .. "[ ]"
-        open_window(name, cwd, "claude", false)
+        open_window(name, cwd, "claude --enable-auto-mode", false)
       end,
       desc = "New TMUX window with AI agent",
       mode = { "n", "v" },
@@ -110,7 +110,7 @@ return {
       "<leader>aS",
       function()
         local cwd = vim.fn.getcwd()
-        vim.fn.jobstart('tmux split-window -v -c "' .. cwd .. '" "claude"', { detach = false })
+        vim.fn.jobstart('tmux split-window -v -c "' .. cwd .. '" "claude --enable-auto-mode"', { detach = false })
       end,
       desc = "New TMUX horizontal pane with AI agent",
       mode = { "n", "v" },
@@ -120,7 +120,7 @@ return {
       "<leader>aV",
       function()
         local cwd = vim.fn.getcwd()
-        vim.fn.jobstart('tmux split-window -h -c "' .. cwd .. '" "claude"', { detach = false })
+        vim.fn.jobstart('tmux split-window -h -c "' .. cwd .. '" "claude --enable-auto-mode"', { detach = false })
       end,
       desc = "New TMUX vertical pane with AI agent",
       mode = { "n", "v" },
