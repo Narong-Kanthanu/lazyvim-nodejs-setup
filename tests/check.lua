@@ -176,6 +176,21 @@ do
   check("nvim-tree auto-open block removed", not has_auto_open)
 end
 
+-- ─── 10. tmux-agent spec registered and lazy ──────────────────────────────
+do
+  -- The TMUX Claude Code launchers (<leader>aa/ag/aS/aV) live in their own
+  -- local lazy spec (lua/plugins/ai/tmux-agent.lua), registered via dir/keys.
+  -- They must stay lazy and load on keypress, not eagerly at startup.
+  local p = get("tmux-agent")
+  if not p then
+    check("tmux-agent (registered)", false, "plugin not found in lazy spec")
+  else
+    check("lazy: tmux-agent", p.lazy == true, "p.lazy=" .. tostring(p.lazy))
+    local has_keys = p._ and p._.handlers and p._.handlers.keys ~= nil
+    check("tmux-agent has keys handler", has_keys == true)
+  end
+end
+
 -- ─── Summary ──────────────────────────────────────────────────────────────
 io.write(string.format("\n%d passed, %d failed\n", passes, #failures))
 if #failures > 0 then
