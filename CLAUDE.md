@@ -59,10 +59,13 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 
 - **codecompanion.lua**: Primary AI interface
   - Adapters: copilot (claude-sonnet-4.5 primary), claude_code (ACP), anthropic (HTTP)
-  - Keymaps: `<Leader>av/as/at` for different chat layouts; tmux helpers share a single `open_window` function (in the shared "AI workspace" session, mouse scrolling enabled). `<Leader>aa` opens/focuses an `agents[ ]` window running `claude agents`; `<Leader>ag` adds a window named after the cwd running `claude --enable-auto-mode`; `<Leader>aS`/`<Leader>aV` open a horizontal/vertical pane running `claude --enable-auto-mode`
+  - Keymaps: `<Leader>av/as/at` for different chat layouts; `<Leader>ax` sends the visual selection to chat (the tmux agent keymaps now live in `tmux-agent.lua`)
   - Memory system with common rule files (.clinerules, .cursorrules, .goosehints, CLAUDE.md, AGENT.md, etc.)
   - MCPHub integration for MCP tools/resources
   - Chat keymaps: `<C-s>` send, `<C-c>` close, `<C-l>` clear
+- **tmux-agent.lua**: TMUX Claude Code agent launchers (no plugin dependency — registered as a local lazy spec via `dir`/`keys`)
+  - Window helpers (`<Leader>aa`/`<Leader>ag`) share an `open_window` function that opens windows in the shared "AI workspace" tmux session (mouse scrolling enabled, `detach-on-destroy off`), shellescaping the window name, cwd, and command. `<Leader>aa` opens/focuses an `agents[ ]` window running `claude agents`; `<Leader>ag` adds a window named `<cwd>[ ]` running `claude --enable-auto-mode`
+  - Split helpers (`<Leader>aS`/`<Leader>aV`) open a horizontal/vertical tmux pane in the current window running `claude --enable-auto-mode` (guarded by the same in-tmux check, cwd/command shellescaped)
 - **copilot.lua**: GitHub Copilot (manual trigger, integrated with blink.cmp)
 - **mcphub.lua**: MCP server manager (`<Leader>ah`, port 37373)
   - Workspace-local config: .mcphub/servers.json, .vscode/mcp.json
@@ -198,7 +201,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - MCP servers can be managed via `<Leader>ah` with auto-toggle based on workspace
 - Workspace MCP config: .mcphub/servers.json, .vscode/mcp.json
 - AI chat can be opened in different layouts for different workflows (vertical for side-by-side coding, tab for focus)
-- Agent mode opens windows in a dedicated "AI workspace" tmux session with mouse scrolling enabled (all helpers share one `open_window` function that shellescapes the window name, cwd, and command). `<Leader>aa` opens or focuses an `agents[ ]` window running `claude agents` (Claude Code agents view); `<Leader>ag` adds a window named `<cwd>[ ]` running `claude --enable-auto-mode`; `<Leader>aS`/`<Leader>aV` open a horizontal/vertical pane running `claude --enable-auto-mode`. `detach-on-destroy off` auto-returns to the previous session when the last window closes.
+- Agent launchers live in `tmux-agent.lua` (a standalone local lazy spec). `<Leader>aa`/`<Leader>ag` open windows in a dedicated "AI workspace" tmux session (mouse scrolling enabled) via a shared `open_window` function that shellescapes the window name, cwd, and command; `<Leader>aS`/`<Leader>aV` open a horizontal/vertical split in the current window via `open_split`. `<Leader>aa` opens or focuses an `agents[ ]` window running `claude agents` (Claude Code agents view); `<Leader>ag` adds a window named `<cwd>[ ]` running `claude --enable-auto-mode`; `<Leader>aS`/`<Leader>aV` run `claude --enable-auto-mode` in the new pane. All four guard on being inside tmux first. `detach-on-destroy off` auto-returns to the previous session when the last window closes.
 
 ## Special UI Features
 
