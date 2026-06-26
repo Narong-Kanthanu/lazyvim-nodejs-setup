@@ -152,6 +152,7 @@ return {
       buffers = {
         only_cwd = true,
         show_all_buffers = false,
+        sort_mru = true,
         previewer = false,
         mappings = {
           ["i"] = {
