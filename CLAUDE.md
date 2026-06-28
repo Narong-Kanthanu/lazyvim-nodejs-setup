@@ -64,7 +64,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
   - MCPHub integration for MCP tools/resources
   - Chat keymaps: `<C-s>` send, `<C-c>` close, `<C-l>` clear
 - **tmux-agent.lua**: TMUX Claude Code agent launchers (no plugin dependency — registered as a local lazy spec via `dir`/`keys`)
-  - Window helpers (`<Leader>aa`/`<Leader>ag`) share an `open_window` function that opens windows in the shared "AI workspace" tmux session (mouse scrolling enabled, `detach-on-destroy off`), shellescaping the window name, cwd, and command. `<Leader>aa` opens/focuses an `agents[ ]` window running `claude agents`; `<Leader>ag` adds a window named `<cwd>[ ]` running `claude --enable-auto-mode`
+  - Window helpers (`<Leader>aa`/`<Leader>ag`) share an `open_window` function that opens windows in the shared "AI workspace" tmux session (mouse scrolling enabled, `detach-on-destroy off`), shellescaping the window name, cwd, and command. The window name has `.`/`:` replaced with `-` first (tmux rejects those characters in window names, so an unsanitized cwd like `flowaccount.dotnet.workspace` would make `new-window` fail silently). `<Leader>aa` opens/focuses an `agents[ ]` window running `claude agents`; `<Leader>ag` adds a window named `<cwd>[ ]` running `claude --enable-auto-mode`
   - Split helpers (`<Leader>aS`/`<Leader>aV`) open a horizontal/vertical tmux pane in the current window running `claude --enable-auto-mode` (guarded by the same in-tmux check, cwd/command shellescaped)
 - **copilot.lua**: GitHub Copilot (manual trigger, integrated with blink.cmp)
 - **mcphub.lua**: MCP server manager (`<Leader>ah`, port 37373)
