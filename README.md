@@ -10,7 +10,7 @@ A LazyVim-based Neovim configuration optimized for Node.js/TypeScript developmen
 
 - **LSP Integration**: vtsls for TypeScript/JavaScript, eslint, lua_ls, bashls, html
 - **Intelligent Completion**: blink.cmp with LSP, Copilot, snippets, and buffer sources
-- **AI-Powered Coding**: CodeCompanion with Claude, GitHub Copilot, and MCP server support
+- **AI-Powered Coding**: CodeCompanion with Claude and GitHub Copilot, plus MCP server management via MCPHub
 - **Fuzzy Finding**: Telescope with FZF native, file browser, and undo history
 - **Git Integration**: Gitsigns with inline blame, LazyGit
 - **Modern UI**: Sonokai theme, bufferline, lualine, noice.nvim, floating filename indicators

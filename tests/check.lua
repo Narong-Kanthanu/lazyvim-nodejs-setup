@@ -191,6 +191,31 @@ do
   end
 end
 
+-- ─── 11. codecompanion no longer depends on mcphub.nvim ───────────────────
+do
+  -- The mcphub extension wiring (dependency + extensions.mcphub) was removed
+  -- from codecompanion.lua, so mcphub.nvim must no longer be one of its
+  -- dependencies. The standalone <leader>ah manager (mcphub.lua) is unaffected
+  -- and stays in the spec, so we assert on codecompanion's deps specifically.
+  local p = get("codecompanion.nvim")
+  if not p then
+    check("codecompanion.nvim (registered)", false, "plugin not found in lazy spec")
+  else
+    local has_mcphub = false
+    for _, dep in ipairs(p.dependencies or {}) do
+      if dep == "mcphub.nvim" or dep == "ravitemer/mcphub.nvim" then
+        has_mcphub = true
+        break
+      end
+    end
+    check(
+      "codecompanion no longer depends on mcphub.nvim",
+      not has_mcphub,
+      "deps=" .. vim.inspect(p.dependencies)
+    )
+  end
+end
+
 -- ─── Summary ──────────────────────────────────────────────────────────────
 io.write(string.format("\n%d passed, %d failed\n", passes, #failures))
 if #failures > 0 then
