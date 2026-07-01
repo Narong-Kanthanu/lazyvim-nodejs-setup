@@ -25,7 +25,7 @@ local function open_window(name, cwd, cmd, focus_existing)
 
   -- tmux rejects '.' and ':' in window names (reserved for session:window.pane targets),
   -- so a cwd like "flowaccount.dotnet.workspace" would make new-window fail silently.
-  name = (name:gsub("[.:]", "-"))
+  name = (name:gsub("[.:]", "."))
 
   local session = vim.fn.shellescape(SESSION_NAME)
   local n, c, run = vim.fn.shellescape(name), vim.fn.shellescape(cwd), vim.fn.shellescape(cmd)
