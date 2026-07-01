@@ -61,7 +61,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
   - Adapters: copilot (claude-sonnet-4.5 primary), claude_code (ACP), anthropic (HTTP)
   - Keymaps: `<Leader>av/as/at` for different chat layouts; `<Leader>ax` sends the visual selection to chat (the tmux agent keymaps now live in `tmux-agent.lua`)
   - Memory system with common rule files (.clinerules, .cursorrules, .goosehints, CLAUDE.md, AGENT.md, etc.)
-  - MCPHub integration for MCP tools/resources
+  - No extensions wired in (`extensions = {}`); the mcphub extension was removed, so codecompanion no longer pulls MCP tools/resources from mcphub.nvim
   - Chat keymaps: `<C-s>` send, `<C-c>` close, `<C-l>` clear
 - **tmux-agent.lua**: TMUX Claude Code agent launchers (no plugin dependency — registered as a local lazy spec via `dir`/`keys`)
   - Window helpers (`<Leader>aa`/`<Leader>ag`) share an `open_window` function that opens windows in the shared "AI workspace" tmux session (mouse scrolling enabled, `detach-on-destroy off`), shellescaping the window name, cwd, and command. The window name has `.`/`:` replaced with `-` first (tmux rejects those characters in window names, so an unsanitized cwd like `flowaccount.dotnet.workspace` would make `new-window` fail silently). `<Leader>aa` opens/focuses an `agents[ ]` window running `claude agents`; `<Leader>ag` adds a window named `<cwd>[ ]` running `claude --enable-auto-mode`
