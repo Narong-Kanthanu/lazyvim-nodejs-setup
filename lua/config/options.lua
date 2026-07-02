@@ -43,7 +43,7 @@ opt.cursorline = true
 opt.spell = false
 opt.updatetime = 1000
 opt.redrawtime = 5000
-opt.termsync = false -- TODO: Temporarily disable buffered screen updates as a quick fix for TMUX 3.7.
+opt.termsync = false
 
 -- Performance tweaks
 vim.schedule(function()
