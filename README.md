@@ -71,7 +71,7 @@ nvim
 |-----|--------|
 | `;f` | Find files |
 | `;r` | Live grep |
-| `;d` | Grep in directory |
+| `;d` | Pick a directory, then live grep in it |
 | `\\` | Open buffers |
 | `sf` | File browser |
 | `s` | Flash jump |

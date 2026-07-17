@@ -216,6 +216,31 @@ do
   end
 end
 
+-- ─── 12. telescope ;d is the directory picker ─────────────────────────────
+do
+  -- The ;d keymap was reworked from a blind path prompt into a folder picker
+  -- that then live greps in the chosen directory. Assert the key is registered
+  -- and still wired to the directory-picker workflow.
+  local p = get("telescope.nvim")
+  if not p then
+    check("telescope.nvim (registered)", false, "plugin not found in lazy spec")
+  else
+    local d
+    for _, k in ipairs(p.keys or {}) do
+      if k[1] == ";d" then
+        d = k
+        break
+      end
+    end
+    check("telescope ;d registered", d ~= nil)
+    check(
+      "telescope ;d is the directory picker",
+      d ~= nil and type(d.desc) == "string" and d.desc:match("Pick a directory") ~= nil,
+      "desc=" .. tostring(d and d.desc)
+    )
+  end
+end
+
 -- ─── Summary ──────────────────────────────────────────────────────────────
 io.write(string.format("\n%d passed, %d failed\n", passes, #failures))
 if #failures > 0 then
