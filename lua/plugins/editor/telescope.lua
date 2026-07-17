@@ -46,6 +46,7 @@ return {
         builtin.find_files({
           prompt_title = "Select Directory to Grep",
           cwd = root,
+          hidden = false, -- don't inherit hidden=true from opts.pickers.find_files (Telescope would append --hidden)
           find_command = { "fd", "--type", "d", "--strip-cwd-prefix" },
           entry_maker = function(line)
             return {
