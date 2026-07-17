@@ -69,7 +69,6 @@ return {
               builtin.live_grep({
                 search_dirs = { vim.fs.joinpath(root, dir) },
                 prompt_title = string.format("Live Grep in [%s]", dir),
-                show_line = false, -- hide match text in results; still shown in preview
               })
             end)
             return true
@@ -201,7 +200,10 @@ return {
         hidden = true,
         previewer = true,
         show_line = false, -- hide match text in results; still shown in preview
-        layout_config = { height = 40 },
+        layout_config = {
+          height = 40,
+          preview_width = 0.7, -- narrower Results, wider Grep Preview
+        },
         max_results = 20,
       },
       marks = {
