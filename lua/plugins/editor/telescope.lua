@@ -46,6 +46,7 @@ return {
         builtin.find_files({
           prompt_title = "Select Directory to Grep",
           cwd = root,
+          hidden = false, -- don't inherit hidden=true from opts.pickers.find_files (Telescope would append --hidden)
           find_command = { "fd", "--type", "d", "--strip-cwd-prefix" },
           entry_maker = function(line)
             return {
@@ -68,6 +69,7 @@ return {
               builtin.live_grep({
                 search_dirs = { vim.fs.joinpath(root, dir) },
                 prompt_title = string.format("Live Grep in [%s]", dir),
+                show_line = false, -- hide match text in results; still shown in preview
               })
             end)
             return true
@@ -198,6 +200,7 @@ return {
         no_ignore = false,
         hidden = true,
         previewer = true,
+        show_line = false, -- hide match text in results; still shown in preview
         layout_config = { height = 40 },
         max_results = 20,
       },
