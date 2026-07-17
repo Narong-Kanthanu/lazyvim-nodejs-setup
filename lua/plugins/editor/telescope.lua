@@ -30,30 +30,51 @@ return {
       desc = "Search for a string in your current working directory and get results live as you type, respects .gitignore",
     },
     {
-      ";d", -- search file from string at specific dir
+      ";d", -- pick a directory, then live grep in it
       function()
-        vim.ui.input({ prompt = "Enter directory to grep in: " }, function(dir)
-          if not dir then
-            return
-          end
+        local builtin = require("telescope.builtin")
+        local actions = require("telescope.actions")
+        local action_state = require("telescope.actions.state")
+        local entry_display = require("telescope.pickers.entry_display")
+        local root = require("lazyvim.util").root()
 
-          dir = vim.trim(dir)
-          if dir == "" then
-            vim.notify("No directory provided", vim.log.levels.WARN)
-            return
-          end
+        local displayer = entry_display.create({
+          separator = " ",
+          items = { { width = 2 }, { remaining = true } },
+        })
 
-          local title = string.format("Live Grep in [%s]", dir)
-          local cwd = require("lazyvim.util").root()
-          local search_dir = vim.fs.joinpath(cwd, dir)
+        builtin.find_files({
+          prompt_title = "Select Directory to Grep",
+          cwd = root,
+          find_command = { "fd", "--type", "d", "--strip-cwd-prefix" },
+          entry_maker = function(line)
+            return {
+              value = line,
+              ordinal = line,
+              display = function()
+                return displayer({ { "", "Directory" }, line })
+              end,
+            }
+          end,
+          attach_mappings = function(prompt_bufnr)
+            actions.select_default:replace(function()
+              local entry = action_state.get_selected_entry()
+              actions.close(prompt_bufnr)
+              if not entry then
+                return
+              end
 
-          require("telescope.builtin").live_grep({
-            search_dirs = { search_dir },
-            prompt_title = title,
-          })
-        end)
+              local dir = entry.value or entry[1]
+              builtin.live_grep({
+                search_dirs = { vim.fs.joinpath(root, dir) },
+                prompt_title = string.format("Live Grep in [%s]", dir),
+              })
+            end)
+            return true
+          end,
+        })
       end,
-      desc = "Search for a string in your specific dir, respects .gitignore",
+      desc = "Pick a directory, then live grep in it, respects .gitignore",
     },
     {
       ";m",

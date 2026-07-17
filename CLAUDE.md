@@ -115,7 +115,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 ### Telescope
 - `;f`: Find files
 - `;r`: Live grep
-- `;d`: Grep in directory (interactive)
+- `;d`: Pick a directory (folder picker), then live grep in it
 - `;m`: Marks
 - `\\`: Open buffers
 - `;;`: Resume last search
