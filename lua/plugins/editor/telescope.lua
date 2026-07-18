@@ -36,7 +36,7 @@ return {
         local actions = require("telescope.actions")
         local action_state = require("telescope.actions.state")
         local entry_display = require("telescope.pickers.entry_display")
-        local root = require("lazyvim.util").root()
+        local root = vim.fn.getcwd() -- stable base: don't recompute from the opened file's buffer
 
         local displayer = entry_display.create({
           separator = " ",
