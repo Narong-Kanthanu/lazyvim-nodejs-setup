@@ -116,7 +116,7 @@ Each plugin module is self-contained with dependencies, lazy-loading conditions,
 - `;f`: Find files
 - `;r`: Live grep
 - `;d`: Pick a directory (folder picker), then live grep in it
-- `;m`: Marks
+- `;m`: Marks (filtered to user-added marks `a`–`z`/`A`–`Z` whose file is under cwd; shown as `[mark] => filename:lnum`)
 - `\\`: Open buffers
 - `;;`: Resume last search
 - `;e`: Diagnostics
