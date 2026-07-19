@@ -199,10 +199,10 @@ return {
         no_ignore = false,
         hidden = true,
         previewer = true,
-        show_line = false, -- hide match text in results; still shown in preview
+        show_line = false,
         layout_config = {
           height = 40,
-          preview_width = 0.7, -- narrower Results, wider Grep Preview
+          preview_width = 0.7,
         },
         max_results = 20,
       },
@@ -221,7 +221,10 @@ return {
             ["d"] = actions.delete_mark,
           },
         },
-        layout_config = { height = 40 },
+        layout_config = {
+          height = 40,
+          preview_width = 0.7,
+        },
       },
       treesitter = {
         initial_mode = "normal",
