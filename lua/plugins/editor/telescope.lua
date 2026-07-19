@@ -212,6 +212,28 @@ return {
         no_ignore = false,
         hidden = true,
         previewer = true,
+        -- only show user-added marks (a-z, A-Z) whose file is under cwd
+        entry_maker = function(item)
+          local mark = item.line:match("^(%S+)")
+          if not (mark and mark:match("^%a$")) then
+            return nil -- skip Vim's automatic marks (0-9, ' ` " [ ] ^ . ...)
+          end
+          local rel = vim.fn.fnamemodify(item.filename, ":.")
+          if rel:sub(1, 1) == "/" then
+            return nil -- outside cwd: fnamemodify left it absolute
+          end
+          local name = vim.fn.fnamemodify(item.filename, ":t")
+          local display = string.format("[%s] => %s:%d", mark, name, item.lnum)
+          return require("telescope.make_entry").set_default_entry_mt({
+            value = display,
+            ordinal = string.format("%s %s:%d", mark, name, item.lnum),
+            display = display,
+            lnum = item.lnum,
+            col = item.col,
+            start = item.lnum,
+            filename = item.filename,
+          }, {})
+        end,
         mappings = {
           ["i"] = {
             ["<C-d>"] = actions.delete_mark,
