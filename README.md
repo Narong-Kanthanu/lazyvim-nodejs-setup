@@ -55,6 +55,7 @@ nvim
 
 - [Neovim](https://neovim.io/) 0.10+
 - [Git](https://git-scm.com/)
+- [tree-sitter CLI](https://github.com/tree-sitter/tree-sitter/blob/master/crates/cli/README.md) 0.26.1+ for compiling treesitter parsers (`brew install tree-sitter-cli`; install via your package manager, not npm — Homebrew's `tree-sitter` formula ships only the library)
 - [Node.js](https://nodejs.org/) and npm/yarn/pnpm
 - [ripgrep](https://github.com/BurntSushi/ripgrep) for telescope live grep
 - [fd](https://github.com/sharkdp/fd) for telescope file finding
