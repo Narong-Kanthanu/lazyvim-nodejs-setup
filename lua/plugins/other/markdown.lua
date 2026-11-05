@@ -23,7 +23,7 @@ return {
         syntax = true,
         theme = "dark",
         update_on_change = true,
-        app = "webview", -- 'webview', 'browser', string or a table of strings
+        app = "browser", -- native "webview" window coincided with every tmux server dying on close; browser mode avoids it
         filetype = { "markdown" },
         throttle_at = 200000,
         throttle_time = "auto",
