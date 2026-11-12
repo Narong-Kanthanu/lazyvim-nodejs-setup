@@ -1,6 +1,11 @@
 local SESSION_NAME = "AI workspace"
--- Nerd Font icon appended to every agent window name.
-local ICON = "[ ]"
+-- Nerd Font glyphs (written as escapes so they survive editors without the font).
+local GLYPH_IDLE = "\u{ee0d}" -- robot: idle / status unknown
+local GLYPH_BUSY = "\u{f0185}" -- Claude is working
+local GLYPH_WAITING = "\u{f017d}" -- Claude is waiting for a permission prompt
+-- Bracketed icon appended to every agent window name. The space after the glyph keeps
+-- the wide Nerd Font icon from overlapping the closing bracket.
+local ICON = "[" .. GLYPH_IDLE .. " ]"
 
 local function in_tmux()
   if not vim.env.TMUX then
@@ -21,19 +26,27 @@ end
 -- Window name format that follows the Claude Code session title. Claude Code writes its
 -- session title (e.g. "✳ Fix login redirect") to the terminal title, which tmux stores
 -- as #{pane_title}. The leading status glyph (✳ idle, ·✢✶✻✽ spinner frames) is stripped
--- and ICON appended. Until Claude sets a title, pane_title is empty or the hostname, so
--- fall back to the cwd's basename.
+-- and a bracketed status icon appended. Until Claude sets a title, pane_title is empty or
+-- the hostname, so fall back to the cwd's basename.
 -- The glyphs are listed explicitly rather than as [^[:alnum:]]: tmux reads the ':' in
 -- [:alnum:] as a modifier separator, and an ASCII-only class would eat non-Latin titles.
--- The prefix shows Claude's state from the @claude_status window option, which the
--- user-level Claude Code hook ~/.claude/hooks/tmux-claude-status.sh sets:
--- "● " busy, "◐ " waiting for permission, nothing when idle or unset.
+-- The glyph inside the trailing [ ] shows Claude's state from the @claude_status window
+-- option, which the user-level Claude Code hook ~/.claude/hooks/tmux-claude-status.sh
+-- sets: GLYPH_BUSY while busy, GLYPH_WAITING while waiting for permission, and the
+-- GLYPH_IDLE robot when idle or unset.
 local TITLE_FORMAT = table.concat({
-  "#{?#{==:#{@claude_status},busy},● ,#{?#{==:#{@claude_status},waiting},◐ ,}}",
   "#{?#{||:#{==:#{pane_title},},#{==:#{pane_title},#{host}}},",
   "#{b:pane_current_path},",
   "#{=40;s/^[·✢✳✶✻✽*]+ +//:pane_title}}",
-  ICON,
+  "[",
+  "#{?#{==:#{@claude_status},busy},",
+  GLYPH_BUSY,
+  ",#{?#{==:#{@claude_status},waiting},",
+  GLYPH_WAITING,
+  ",",
+  GLYPH_IDLE,
+  "}}",
+  " ]",
 })
 
 -- `new-window -n` disables automatic-rename for that window; turn it back on with a
