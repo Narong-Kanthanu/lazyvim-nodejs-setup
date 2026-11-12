@@ -1,13 +1,11 @@
 local SESSION_NAME = "AI workspace"
 -- Nerd Font glyphs (written as escapes so they survive editors without the font).
-local GLYPH_IDLE = "\u{ee0d}" -- robot: idle / status unknown
+-- Shown after a space at the very end of the window name, only while busy/waiting; an
+-- idle window shows no icon. tmux counts a Nerd Font glyph as one cell but kitty draws it
+-- wider, so anything placed right after the glyph (e.g. a closing "]") gets overlapped.
+-- Ending the name with the glyph leaves only the status line's padding space after it.
 local GLYPH_BUSY = "\u{f0185}" -- Claude is working
 local GLYPH_WAITING = "\u{f017d}" -- Claude is waiting for a permission prompt
--- Icon appended to every agent window name, after a space and with nothing after it.
--- tmux counts a Nerd Font glyph as one cell but kitty draws it wider, so anything placed
--- right after the glyph (e.g. a closing "]") gets overlapped. Ending the name with the
--- glyph leaves only the status line's padding space after it, which the glyph can use.
-local ICON = " " .. GLYPH_IDLE
 
 local function in_tmux()
   if not vim.env.TMUX then
@@ -28,26 +26,23 @@ end
 -- Window name format that follows the Claude Code session title. Claude Code writes its
 -- session title (e.g. "✳ Fix login redirect") to the terminal title, which tmux stores
 -- as #{pane_title}. The leading status glyph (✳ idle, ·✢✶✻✽ spinner frames) is stripped
--- and a status icon appended after a space. Until Claude sets a title, pane_title is empty or
+-- and a status icon may be appended. Until Claude sets a title, pane_title is empty or
 -- the hostname, so fall back to the cwd's basename.
 -- The glyphs are listed explicitly rather than as [^[:alnum:]]: tmux reads the ':' in
 -- [:alnum:] as a modifier separator, and an ASCII-only class would eat non-Latin titles.
--- The trailing glyph shows Claude's state from the @claude_status window
--- option, which the user-level Claude Code hook ~/.claude/hooks/tmux-claude-status.sh
--- sets: GLYPH_BUSY while busy, GLYPH_WAITING while waiting for permission, and the
--- GLYPH_IDLE robot when idle or unset.
+-- The trailing " <glyph>" shows Claude's state from the @claude_status window option,
+-- which the user-level Claude Code hook ~/.claude/hooks/tmux-claude-status.sh sets:
+-- GLYPH_BUSY while busy, GLYPH_WAITING while waiting for permission, and nothing (not
+-- even the space) when idle or unset.
 local TITLE_FORMAT = table.concat({
   "#{?#{||:#{==:#{pane_title},},#{==:#{pane_title},#{host}}},",
   "#{b:pane_current_path},",
   "#{=40;s/^[·✢✳✶✻✽*]+ +//:pane_title}}",
-  " ",
-  "#{?#{==:#{@claude_status},busy},",
+  "#{?#{==:#{@claude_status},busy}, ",
   GLYPH_BUSY,
-  ",#{?#{==:#{@claude_status},waiting},",
+  ",#{?#{==:#{@claude_status},waiting}, ",
   GLYPH_WAITING,
-  ",",
-  GLYPH_IDLE,
-  "}}",
+  ",}}",
 })
 
 -- `new-window -n` disables automatic-rename for that window; turn it back on with a
@@ -119,7 +114,7 @@ return {
       "<leader>aa",
       function()
         local cwd = vim.fn.getcwd()
-        open_window("agents" .. ICON, cwd, "claude agents", { focus_existing = true })
+        open_window("agents", cwd, "claude agents", { focus_existing = true })
       end,
       desc = "New TMUX window with AI agent view",
       mode = { "n", "v" },
@@ -130,8 +125,7 @@ return {
       function()
         local cwd = vim.fn.getcwd()
         local dir = vim.fn.fnamemodify(cwd, ":t")
-        local name = dir .. ICON
-        open_window(name, cwd, "claude --enable-auto-mode", { follow_title = true })
+        open_window(dir, cwd, "claude --enable-auto-mode", { follow_title = true })
       end,
       desc = "New TMUX window with AI agent",
       mode = { "n", "v" },
