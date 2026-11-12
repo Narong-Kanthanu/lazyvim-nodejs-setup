@@ -1,11 +1,12 @@
 local SESSION_NAME = "AI workspace"
 -- Nerd Font glyphs (written as escapes so they survive editors without the font).
--- Shown after a space at the very end of the window name, only while busy/waiting; an
--- idle window shows no icon. tmux counts a Nerd Font glyph as one cell but kitty draws it
--- wider, so anything placed right after the glyph (e.g. a closing "]") gets overlapped.
--- Ending the name with the glyph leaves only the status line's padding space after it.
-local GLYPH_BUSY = "\u{f0185}" -- Claude is working
-local GLYPH_WAITING = "\u{f017d}" -- Claude is waiting for a permission prompt
+-- Bracketed status icon appended (no space) to the end of the window name, only while
+-- busy/waiting; an idle window shows no icon. tmux counts a Nerd Font glyph as one cell
+-- but kitty draws many of them wider, so a wide glyph overlaps the closing "]". These
+-- two were picked because they stay inside the brackets in the bold status line style;
+-- check any replacement in kitty before switching.
+local GLYPH_BUSY = "[\u{f070e}]" -- Claude is working
+local GLYPH_WAITING = "[\u{f064d}]" -- Claude is waiting for a permission prompt
 
 local function in_tmux()
   if not vim.env.TMUX then
@@ -30,17 +31,17 @@ end
 -- the hostname, so fall back to the cwd's basename.
 -- The glyphs are listed explicitly rather than as [^[:alnum:]]: tmux reads the ':' in
 -- [:alnum:] as a modifier separator, and an ASCII-only class would eat non-Latin titles.
--- The trailing " <glyph>" shows Claude's state from the @claude_status window option,
+-- The trailing "[<glyph>]" shows Claude's state from the @claude_status window option,
 -- which the user-level Claude Code hook ~/.claude/hooks/tmux-claude-status.sh sets:
--- GLYPH_BUSY while busy, GLYPH_WAITING while waiting for permission, and nothing (not
--- even the space) when idle or unset.
+-- GLYPH_BUSY while busy, GLYPH_WAITING while waiting for permission, and nothing when
+-- idle or unset.
 local TITLE_FORMAT = table.concat({
   "#{?#{||:#{==:#{pane_title},},#{==:#{pane_title},#{host}}},",
   "#{b:pane_current_path},",
   "#{=40;s/^[·✢✳✶✻✽*]+ +//:pane_title}}",
-  "#{?#{==:#{@claude_status},busy}, ",
+  "#{?#{==:#{@claude_status},busy},",
   GLYPH_BUSY,
-  ",#{?#{==:#{@claude_status},waiting}, ",
+  ",#{?#{==:#{@claude_status},waiting},",
   GLYPH_WAITING,
   ",}}",
 })
