@@ -1,4 +1,6 @@
 local SESSION_NAME = "AI workspace"
+-- Nerd Font icon appended to every agent window name.
+local ICON = "[ ]"
 
 local function in_tmux()
   if not vim.env.TMUX then
@@ -18,12 +20,20 @@ end
 
 -- Window name format that follows the Claude Code session title. Claude Code writes its
 -- session title (e.g. "✳ Fix login redirect") to the terminal title, which tmux stores
--- as #{pane_title}. Until Claude sets it, pane_title is empty or the hostname, so fall
--- back to the cwd's basename.
+-- as #{pane_title}. The leading status glyph (✳ idle, ·✢✶✻✽ spinner frames) is stripped
+-- and ICON appended. Until Claude sets a title, pane_title is empty or the hostname, so
+-- fall back to the cwd's basename.
+-- The glyphs are listed explicitly rather than as [^[:alnum:]]: tmux reads the ':' in
+-- [:alnum:] as a modifier separator, and an ASCII-only class would eat non-Latin titles.
+-- The prefix shows Claude's state from the @claude_status window option, which the
+-- user-level Claude Code hook ~/.claude/hooks/tmux-claude-status.sh sets:
+-- "● " busy, "◐ " waiting for permission, nothing when idle or unset.
 local TITLE_FORMAT = table.concat({
+  "#{?#{==:#{@claude_status},busy},● ,#{?#{==:#{@claude_status},waiting},◐ ,}}",
   "#{?#{||:#{==:#{pane_title},},#{==:#{pane_title},#{host}}},",
   "#{b:pane_current_path},",
-  "#{=40:pane_title}}",
+  "#{=40;s/^[·✢✳✶✻✽*]+ +//:pane_title}}",
+  ICON,
 })
 
 -- `new-window -n` disables automatic-rename for that window; turn it back on with a
@@ -95,7 +105,7 @@ return {
       "<leader>aa",
       function()
         local cwd = vim.fn.getcwd()
-        open_window("agents[ ]", cwd, "claude agents", { focus_existing = true })
+        open_window("agents" .. ICON, cwd, "claude agents", { focus_existing = true })
       end,
       desc = "New TMUX window with AI agent view",
       mode = { "n", "v" },
@@ -106,7 +116,7 @@ return {
       function()
         local cwd = vim.fn.getcwd()
         local dir = vim.fn.fnamemodify(cwd, ":t")
-        local name = dir .. "[ ]"
+        local name = dir .. ICON
         open_window(name, cwd, "claude --enable-auto-mode", { follow_title = true })
       end,
       desc = "New TMUX window with AI agent",
