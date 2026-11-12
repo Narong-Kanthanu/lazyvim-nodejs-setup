@@ -6,7 +6,7 @@ local SESSION_NAME = "AI workspace"
 -- two were picked because they stay inside the brackets in the bold status line style;
 -- check any replacement in kitty before switching.
 local GLYPH_BUSY = "[\u{f070e}]" -- Claude is working
-local GLYPH_WAITING = "[\u{f064d}]" -- Claude is waiting for a permission prompt
+local GLYPH_WAITING = "[\u{f17c4}]" -- Claude is waiting for a permission prompt
 
 local function in_tmux()
   if not vim.env.TMUX then
