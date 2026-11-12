@@ -1,10 +1,8 @@
 local SESSION_NAME = "AI workspace"
--- Nerd Font glyphs (written as escapes so they survive editors without the font).
--- Bracketed status icon appended (no space) to the end of the window name, only while
--- busy/waiting; an idle window shows no icon. tmux counts a Nerd Font glyph as one cell
--- but kitty draws many of them wider, so a wide glyph overlaps the closing "]". These
--- two were picked because they stay inside the brackets in the bold status line style;
--- check any replacement in kitty before switching.
+-- Status icons shown at the end of the window name (Nerd Font glyphs, written as escapes
+-- so they survive editors without the font). tmux counts a glyph as one cell but kitty
+-- draws many wider, overlapping the closing "]"; these two fit in the bold status line,
+-- so check any replacement in kitty first.
 local GLYPH_BUSY = "[\u{f070e}]" -- Claude is working
 local GLYPH_WAITING = "[\u{f17c4}]" -- Claude is waiting for a permission prompt
 
@@ -24,17 +22,16 @@ local function configure_and_switch_session(session)
   }, " && "))
 end
 
--- Window name format that follows the Claude Code session title. Claude Code writes its
--- session title (e.g. "✳ Fix login redirect") to the terminal title, which tmux stores
--- as #{pane_title}. The leading status glyph (✳ idle, ·✢✶✻✽ spinner frames) is stripped
--- and a status icon may be appended. Until Claude sets a title, pane_title is empty or
+-- Window name format that follows the Claude Code session title, e.g. "Fix login redirect".
+-- Claude Code writes its session title (e.g. "✳ Fix login redirect") to the terminal
+-- title, which tmux stores as #{pane_title}. Until Claude sets one, pane_title is empty or
 -- the hostname, so fall back to the cwd's basename.
--- The glyphs are listed explicitly rather than as [^[:alnum:]]: tmux reads the ':' in
--- [:alnum:] as a modifier separator, and an ASCII-only class would eat non-Latin titles.
--- The trailing "[<glyph>]" shows Claude's state from the @claude_status window option,
--- which the user-level Claude Code hook ~/.claude/hooks/tmux-claude-status.sh sets:
--- GLYPH_BUSY while busy, GLYPH_WAITING while waiting for permission, and nothing when
--- idle or unset.
+-- The leading status glyph (✳ idle, ·✢✶✻✽ spinner frames) is stripped. The glyphs are
+-- listed explicitly rather than as [^[:alnum:]]: tmux reads the ':' in [:alnum:] as a
+-- modifier separator, and an ASCII-only class would eat non-Latin titles.
+-- GLYPH_BUSY or GLYPH_WAITING is appended, with no space, from the @claude_status window
+-- option set by the user-level hook ~/.claude/hooks/tmux-claude-status.sh; idle or unset
+-- appends nothing.
 local TITLE_FORMAT = table.concat({
   "#{?#{||:#{==:#{pane_title},},#{==:#{pane_title},#{host}}},",
   "#{b:pane_current_path},",
