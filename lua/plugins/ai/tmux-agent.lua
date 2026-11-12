@@ -3,9 +3,8 @@ local SESSION_NAME = "AI workspace"
 local GLYPH_IDLE = "\u{ee0d}" -- robot: idle / status unknown
 local GLYPH_BUSY = "\u{f0185}" -- Claude is working
 local GLYPH_WAITING = "\u{f017d}" -- Claude is waiting for a permission prompt
--- Bracketed icon appended to every agent window name. The space after the glyph keeps
--- the wide Nerd Font icon from overlapping the closing bracket.
-local ICON = "[" .. GLYPH_IDLE .. " ]"
+-- Bracketed icon appended to every agent window name.
+local ICON = "[" .. GLYPH_IDLE .. "]"
 
 local function in_tmux()
   if not vim.env.TMUX then
@@ -46,7 +45,7 @@ local TITLE_FORMAT = table.concat({
   ",",
   GLYPH_IDLE,
   "}}",
-  " ]",
+  "]",
 })
 
 -- `new-window -n` disables automatic-rename for that window; turn it back on with a
